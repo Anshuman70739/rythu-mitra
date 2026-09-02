@@ -1,54 +1,136 @@
-# Rythu Mitra — Smart Farmer Decision Support Platform
+# Rythu Mitra
 
-Rythu Mitra is a local-first college prototype for helping farmers decide what to do today. It joins crop recommendations, conservative soil guidance, weather advisories, crop-health image analysis, market comparisons, schemes, equipment, storage, buyers, crop tasks, and expert/community information in one responsive Flask application.
+## Smart Farmer Decision Support Platform
 
-## What is real, demo, and model-based
+Rythu Mitra is a farmer-focused decision-support platform designed to bring
+multiple agricultural tools and information sources into a single application.
 
-- The included crop model is used for the recommendation flow.
-- The included Keras disease artifact is used for image inference. It has 15 outputs but no verified disease-label map, so results are intentionally shown as a model class—not a fabricated diagnosis.
-- OpenWeather is live only when `OPENWEATHER_API_KEY` is configured; otherwise the UI says **DEMO** and explains why.
-- Markets, schemes, equipment, storage, buyers, experts, crop calendar, and alerts are curated demo data. They are visually and structurally marked as such.
-- Yield and market-income values are transparent reference estimates, never yield/profit guarantees.
+The platform is designed around one simple idea: instead of requiring farmers
+to search across different sources, the application brings relevant information
+together and helps turn it into practical daily decisions.
 
-## Features
+## Overview
 
-- Farmer profile, role-aware demo login, personalised dashboard, actions, weather, and crop tasks.
-- Crop planning using NPK, pH, rainfall, temperature, and humidity; fertilizer and favourability guidance.
-- Plant image validation and Keras model inference with confidence and safety wording.
-- Market comparison and net-income calculator; schemes with official-source links; demo buyers, equipment, storage, and expert records.
-- API infrastructure for farmer listings, equipment booking, crop-damage reports, expert questions, notifications, feedback, moderation/audit data, and protected admin summary.
-- English/Telugu translation dictionaries and a Telugu-capable font fallback; installable app-shell cache for weak connectivity.
+Rythu Mitra combines:
 
-## Run locally
+- Crop recommendation using soil and environmental inputs
+- Weather information and advisories
+- Crop-health image analysis
+- Market and price information
+- Storage and sell-now comparisons
+- Farm services and equipment information
+- Government scheme information
+- Farmer and buyer workflows
+- English and Telugu accessibility
 
-This project uses the existing environment at `~/crop-env` where available.
+## Key Features
 
-```bash
-cd ~/crop-recommendation
-cp .env.example .env
-# optionally set OPENWEATHER_API_KEY in .env; never commit it
-python -m pip install -r requirements.txt
-python app.py
-```
+### Crop Recommendation
 
-Open `http://127.0.0.1:5000`. Use the farmer demo account `9999999999` / `demo-farmer`; other documented demo roles are shown on the sign-in dialog. Demo credentials must never be used outside local demonstration.
+Farmers can provide soil and environmental parameters such as:
 
-## Test
+- Nitrogen (N)
+- Phosphorus (P)
+- Potassium (K)
+- Temperature
+- Humidity
+- Soil pH
+- Rainfall
 
-```bash
-python -m pytest -q
-```
+The system uses a machine-learning model to produce a suitable crop
+recommendation.
 
-The test suite covers startup/UI headers, login, dashboard authorization, CSRF, crop validation/model wrapping, weather handling, image rejection, records, market calculations, and role protection.
+### Crop Health Analysis
 
-## Architecture and data
+Farmers can upload an image of a crop leaf for model-based image analysis.
+The system returns a preliminary classification result and confidence
+information where available.
 
-See [ARCHITECTURE.md](ARCHITECTURE.md). SQLite is created locally in `data/rythu_mitra.db` and is ignored by Git. Each seeded content record carries source/status/update metadata. Official links are used where included; verify all eligibility and current rules with the official source.
+### Market Intelligence
 
-## Safety and limitations
+The platform provides market-related information and tools for comparing
+potential selling outcomes.
 
-This is decision support, not agronomy, medical, financial, insurance, or legal advice. Confirm crop disease and chemical choices with a qualified agriculture professional. It does not send SMS/WhatsApp, take payments, submit insurance claims, or guarantee availability, eligibility, price, yield, or profit.
+The net-income calculation can take into account:
 
-## GitHub preparation
+- Quantity
+- Expected selling price
+- Transport cost
+- Other charges
 
-`.gitignore`, `.env.example`, dependency constraints, security documentation, audit, architecture, test report, and release checklist are included. Do not publish until secrets are scanned and the release checklist is reviewed.
+### Storage vs Sell-Now
+
+Farmers can compare an immediate selling option with a storage-and-later-selling
+option using estimated costs and returns.
+
+### Farm Services
+
+The platform brings several farmer-support functions into one place,
+including equipment-related services, crop listings, expert interaction, and
+crop-damage reporting.
+
+### Government Schemes
+
+Relevant agricultural and government-support information can be presented
+according to the farmer's profile and available data.
+
+### Today's Action
+
+The dashboard is designed to summarize relevant information into a simple
+daily action or recommendation rather than requiring the farmer to interpret
+multiple separate screens.
+
+## Technology
+
+The project uses a combination of web technologies and machine-learning
+components.
+
+| Area | Technology |
+|---|---|
+| Backend | Python / Flask |
+| Frontend | HTML / CSS / JavaScript |
+| Machine Learning | scikit-learn |
+| Deep Learning | TensorFlow / Keras |
+| Weather | OpenWeather API |
+| Authentication | Session-based authentication with CSRF protection |
+
+## Architecture
+
+```text
+Farmer
+   |
+   v
+Login
+   |
+   v
+Dashboard
+   |
+   +------ Crop Recommendation
+   |
+   +------ Disease Detection
+   |
+   +------ Market Intelligence
+   |
+   +------ Farm Services
+   |
+   +------ Government Schemes
+   |
+   v
+Today's Action
+
+rythu-mitra/
+├── app.py
+├── backend.py
+├── train_model.py
+├── requirements.txt
+├── data/
+├── static/
+├── templates/
+├── tests/
+├── crop_model.pkl
+├── plant_disease_model.h5
+├── .gitignore
+└── README.md
+   |
+   v
+Farmer Decision
