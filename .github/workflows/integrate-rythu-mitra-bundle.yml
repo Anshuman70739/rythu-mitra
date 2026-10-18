@@ -32,12 +32,13 @@ jobs:
           ZIP="RythuMitra_Complete_Integrated.zip"
           test -f "$ZIP" || { echo "::error::Upload $ZIP to this branch first."; exit 1; }
           unzip -t "$ZIP"
-          unzip -l "$ZIP" | grep -q 'RythuMitra_Complete_Integrated/run.py'
-          unzip -l "$ZIP" | grep -q 'RythuMitra_Complete_Integrated/rythu_mitra_backend/__init__.py'
-          unzip -l "$ZIP" | grep -q 'RythuMitra_Complete_Integrated/templates/rythu_mitra.html'
-          unzip -l "$ZIP" | grep -q 'RythuMitra_Complete_Integrated/static/js/rythu-mitra-app.js'
-          unzip -l "$ZIP" | grep -q 'RythuMitra_Complete_Integrated/models/crop_model.pkl'
-          unzip -l "$ZIP" | grep -q 'RythuMitra_Complete_Integrated/models/plant_disease_model.h5'
+          unzip -Z1 "$ZIP" > "$RUNNER_TEMP/rythu-bundle-entries.txt"
+          grep -Fxq 'RythuMitra_Complete_Integrated/run.py' "$RUNNER_TEMP/rythu-bundle-entries.txt"
+          grep -Fxq 'RythuMitra_Complete_Integrated/rythu_mitra_backend/__init__.py' "$RUNNER_TEMP/rythu-bundle-entries.txt"
+          grep -Fxq 'RythuMitra_Complete_Integrated/templates/rythu_mitra.html' "$RUNNER_TEMP/rythu-bundle-entries.txt"
+          grep -Fxq 'RythuMitra_Complete_Integrated/static/js/rythu-mitra-app.js' "$RUNNER_TEMP/rythu-bundle-entries.txt"
+          grep -Fxq 'RythuMitra_Complete_Integrated/models/crop_model.pkl' "$RUNNER_TEMP/rythu-bundle-entries.txt"
+          grep -Fxq 'RythuMitra_Complete_Integrated/models/plant_disease_model.h5' "$RUNNER_TEMP/rythu-bundle-entries.txt"
 
       - name: Replace tracked project files from the approved package
         shell: bash
@@ -58,18 +59,7 @@ jobs:
 
           # Keep Git metadata, this workflow, local secrets, databases, uploads,
           # and any genuine disease-label mapping that may already exist.
-          rsync -a --delete \
-            --exclude='.git/' \
-            --exclude='.github/' \
-            --exclude='.env' \
-            --exclude='.venv/' \
-            --exclude='venv/' \
-            --exclude='instance/' \
-            --exclude='data/disease_labels.json' \
-            --exclude='data/*.db*' \
-            --exclude='uploads/*' \
-            --exclude="$ZIP" \
-            "$SRC"/ ./
+          rsync -a --delete             --exclude='.git/'             --exclude='.github/'             --exclude='.env'             --exclude='.venv/'             --exclude='venv/'             --exclude='instance/'             --exclude='data/disease_labels.json'             --exclude='data/*.db*'             --exclude='uploads/*'             --exclude="$ZIP"             "$SRC"/ ./
 
           rm -f "$ZIP"
 
