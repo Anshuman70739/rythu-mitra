@@ -4,7 +4,7 @@ An integrated Flask + HTML/CSS/JavaScript farmer decision-support web applicatio
 
 ## Start here
 
-**New to this project? Read `HOW_TO_RUN_RYTHU_MITRA.md` first.** It explains how to open Codespaces, extract the project, create the Python environment, configure `.env`, run tests, start the server, test workflows and prepare for hosting.
+**New to this project? Read `HOW_TO_RUN_RYTHU_MITRA.md` first.** The code and model weight files are already merged into this repository's `main` branch. Open the Codespace for this repository and follow the guide to sync `main`, install dependencies, configure `.env`, run tests and start the server. Do not re-upload or extract the integration ZIP over this repository.
 
 ### Quick start in a Linux terminal
 
@@ -15,14 +15,14 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-cp .env.example .env
+[ -f .env ] || cp .env.example .env
 python -m pytest -q
 python run.py
 ```
 
 Before starting, edit `.env` and set a private development `SECRET_KEY`. In Codespaces open the forwarded port shown in the Ports tab, normally `5000`. The optional TensorFlow dependency is separate in `requirements-ml.txt` and is needed only when testing the disease model.
 
-This project archive does not contain trained model weights or disease labels, and it does not include provider API keys. Model-backed and live-data features must remain unavailable until their actual assets and credentials are configured. Do not claim full integration based only on the page opening.
+The repository includes `models/crop_model.pkl` and `models/plant_disease_model.h5`. The crop model must still be verified in the target environment. The authoritative 15-class disease-label mapping is not available, so disease-name predictions must remain unavailable until the original mapping is recovered and verified. Provider API keys are not included; weather and official daily mandi data need your own server-side credentials. Do not claim full integration based only on the page opening.
 
 Never commit `.env`, private API keys, farmer data, uploads or local database files. Use `SECURITY.md` and `RELEASE_CHECKLIST.md` before any public launch.
 
@@ -64,4 +64,4 @@ Never commit `.env`, private API keys, farmer data, uploads or local database fi
 
 ## Current test status
 
-Static source checks for JavaScript syntax, JSON locale/config parsing, and HTML parsing passed when this package was assembled. The backend pytest suite could not run here because Flask was missing from the execution environment. No end-to-end browser/API test is claimed; see `FRONTEND_TEST_REPORT.md`.
+GitHub Actions passed the integration pull-request checks for Python compilation, required files/JSON, the Python test suite (`28 passed`) and JavaScript syntax. Static frontend contract checks also passed during package review. No end-to-end browser/API test, visual sign-off, live-provider test or full model-inference validation is claimed; see `FRONTEND_TEST_REPORT.md` for limits and remaining checks.
