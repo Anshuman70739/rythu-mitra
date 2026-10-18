@@ -82,3 +82,68 @@ jobs:
 
       - name: Validate frontend JavaScript
         run: node --check static/js/rythu-mitra-app.js
+
+      - name: Start Flask and smoke-test core HTTP routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          export HOST=127.0.0.1
+          export PORT=5000
+          python run.py > "$RUNNER_TEMP/rythu-mitra-flask.log" 2>&1 &
+          server_pid=$!
+          cleanup() {
+            kill "$server_pid" 2>/dev/null || true
+            wait "$server_pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          ready=0
+          for attempt in $(seq 1 30); do
+            if curl --silent --show-error --fail http://127.0.0.1:5000/health >/dev/null; then
+              ready=1
+              break
+            fi
+            if ! kill -0 "$server_pid" 2>/dev/null; then
+              cat "$RUNNER_TEMP/rythu-mitra-flask.log"
+              exit 1
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat "$RUNNER_TEMP/rythu-mitra-flask.log"
+            echo "Flask did not become healthy within 30 seconds."
+            exit 1
+          fi
+
+          python - <<'PY'
+          import json
+          from urllib.request import urlopen
+
+          base = "http://127.0.0.1:5000"
+          paths = [
+              "/", "/health", "/ready", "/api/session", "/privacy-policy",
+              "/terms-and-conditions", "/static/favicon.svg",
+          ]
+          for path in paths:
+              with urlopen(base + path, timeout=5) as response:
+                  status = response.status
+                  body = response.read()
+                  content_type = response.headers.get("Content-Type", "")
+              if status != 200 or not body:
+                  raise SystemExit(f"FAIL {path}: HTTP {status}, empty_body={not body}")
+              if path == "/" and (
+                  "text/html" not in content_type
+                  or b"Rythu Mitra | Farmer decision support" not in body
+              ):
+                  raise SystemExit("Homepage did not return the expected HTML shell.")
+              if path == "/api/session":
+                  session_data = json.loads(body)
+                  if not session_data.get("csrf_token"):
+                      raise SystemExit("Session endpoint did not return a CSRF token.")
+              if path in {"/health", "/ready"}:
+                  payload = json.loads(body)
+                  expected = "ok" if path == "/health" else "ready"
+                  if payload.get("status") != expected:
+                      raise SystemExit(f"{path} status was not {expected!r}: {payload}")
+              print(f"PASS {path}: HTTP {status} ({content_type})")
+          PY
