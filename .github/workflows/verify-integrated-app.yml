@@ -3,6 +3,7 @@ name: Verify integrated Rythu Mitra
 on:
   push:
     branches:
+      - main
       - "integration/complete-model-bundle-20261018"
   pull_request:
     branches:
