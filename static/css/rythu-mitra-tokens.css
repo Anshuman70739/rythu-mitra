@@ -1,0 +1,53 @@
+/* Rythu Mitra design tokens: a quiet field notebook, not a generic green dashboard. */
+:root {
+  color-scheme: light;
+  --ink-950: #172321;
+  --ink-800: #2B3A36;
+  --ink-600: #58655F;
+  --paper: #F6F6F1;
+  --surface: #FFFFFF;
+  --surface-muted: #F0F2ED;
+  --line: #DEE4DF;
+  --line-strong: #C2CBC6;
+  --brand: #344D61;
+  --brand-dark: #263B4D;
+  --field: #718267;
+  --field-soft: #E9EFE7;
+  --accent: #C56F4D;
+  --accent-soft: #F6E8E1;
+  --info: #4B7888;
+  --info-bg: #EAF1F3;
+  --success: #3E6653;
+  --warning: #87591E;
+  --warning-bg: #FAF0DF;
+  --danger: #A84F49;
+  --danger-bg: #FAE9E6;
+  --white: #FFFFFF;
+  --sand: var(--accent-soft);
+  /* Compatibility aliases used by existing components; do not create a second palette. */
+  --forest: var(--field);
+  --forest-deep: var(--brand-dark);
+  --terracotta: var(--accent);
+  --ink: var(--ink-950);
+  --muted: var(--ink-600);
+  --shadow: 0 12px 32px rgba(38, 59, 77, .08);
+  --shadow-soft: 0 3px 12px rgba(38, 59, 77, .045);
+  --font-body: "Noto Sans Telugu", "Nirmala UI", "Gautami", system-ui, "Segoe UI", Arial, sans-serif;
+  --font-display: "Noto Sans Telugu", "Nirmala UI", "Gautami", system-ui, "Segoe UI", sans-serif;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px;
+  --s6: 24px; --s7: 32px; --s8: 40px; --s9: 48px; --s10: 64px;
+  --r-sm: 7px; --r-md: 12px; --r-lg: 18px; --r-pill: 999px;
+  --sidebar-width: 248px;
+  --text-xs: 13px; --text-sm: 14px; --text-base: 16px; --text-lg: 18px;
+  --h3: 20px; --h2: 25px; --h1: 34px; --display: 42px;
+  --motion-instant: 100ms; --motion-fast: 160ms; --motion-standard: 220ms;
+  --motion-slow: 420ms; --motion-signature: 1100ms;
+  --ease-standard: cubic-bezier(.2,.7,.2,1);
+  --ease-emphasis: cubic-bezier(.22,.9,.28,1);
+  --ease-linear: linear;
+  --t-fast: var(--motion-fast); --t-panel: var(--motion-standard); --t-page: var(--motion-standard);
+  --focus: 3px solid var(--accent);
+}
+@media (min-width: 760px) {
+  :root { --h3: 21px; --h2: 28px; --h1: 38px; --display: 46px; }
+}

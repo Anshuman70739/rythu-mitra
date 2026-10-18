@@ -1,23 +1,29 @@
-# Release Checklist
+# Release Checklist — do not release until checked
 
-- [x] Project starts locally and the health/UI smoke test succeeds.
-- [x] Existing crop model, yield heuristic, and fertilizer guidance are preserved and wrapped safely.
-- [x] New integrated dashboard, planning, health, market, storage comparison, schemes, service-request, voice-helper, and services UI works through tested APIs.
-- [x] Weather uses environment configuration and safe demo/error handling; a credential-safe live request returned forecast data.
-- [x] Disease artifact loads; its missing verified class map is disclosed.
-- [x] SQLite demo database and provenance-bearing demo records work.
-- [x] Hardcoded secret removed; `.env` ignored and `.env.example` is safe.
-- [x] Upload controls, CSRF, session/role authorization, rate limiting, validation, and headers are implemented.
-- [x] Demo data is labelled; official source links are labelled where included.
-- [x] English/Telugu dictionaries, persisted preference, navigation switch, and Telugu font fallback are included.
-- [x] Weather forecast/cache semantics and offline API safety were hardened; cached weather is explicitly non-current.
-- [x] Disease class labels are never guessed; an optional verified mapping file is supported.
-- [x] Disease artifact provenance was inspected and documented; no local authoritative class mapping exists (`MODEL_PROVENANCE.md`).
-- [x] Private disaster/booking/feedback/question records are protected from anonymous cross-farmer access; moderation routes are server-authorized.
-- [x] Important automated tests pass (15 total), including buyer/role, label, language/voice/PWA, storage, forecast, and moderation paths.
-- [x] README, audit, architecture, security, and test report are complete.
-- [x] Browser/mobile/voice/camera/PWA verification preparation is documented (`BROWSER_QA_CHECKLIST.md`); actual device pass remains manual.
-- [ ] Git status / local commit: blocked by the pre-existing read-only, invalid `.git` metadata directory.
-- [x] GitHub has not been pushed.
-
-Before publishing: rotate the old exposed OpenWeather credential, set a production secret, replace demo passwords/data, supply verified disease labels, perform browser/mobile review, connect authoritative live sources, and create a usable Git repository after resolving its filesystem ownership/metadata issue.
+- [ ] Run on a copy of the project database first; keep the backup and verify original rows/users remain.
+- [ ] Confirm the favicon loads at `/static/favicon.svg` and browser tab branding is correct.
+- [ ] Confirm the application has no builder watermark, fake reviews, fake counters, fabricated metrics, purple gradients, emoji feature icons, em dashes, custom cursors or scroll-reveal animations.
+- [ ] Confirm the `/privacy-policy` and `/terms-and-conditions` pages return HTTP 200 and are linked in the footer on desktop and mobile.
+- [ ] Replace project-owner/contact placeholders in legal pages, define retention/deletion/export procedures, and obtain legal and Telugu-language review before public launch.
+- [ ] Configure the project-owned custom domain, DNS and HTTPS after selecting the hosting provider; verify the canonical public URL and secure cookies.
+- [ ] Confirm no `.env`, model secrets, real user data, database files or private uploads are committed.
+- [ ] Use a persistent secret; confirm production refuses to start if it is missing/short.
+- [ ] Confirm `DEMO_MODE=false` and no demo user credentials are accessible in production.
+- [ ] Run `python -m compileall -q .`, `pytest -q`, `python scripts/validate_data.py`, `python scripts/health_check.py`.
+- [ ] Test registration/login/logout, invalid CSRF, brute-force throttling and password hash exclusion.
+- [ ] Test farmer A cannot read/update/delete farmer B's farm, records, seed evidence, uploads, scans, expenses or complaints.
+- [ ] Test provider/expert/admin-only routes and last-admin protection.
+- [ ] Test image decode, oversize upload, invalid format, private download, and image pixel limits.
+- [ ] Validate actual crop/disease model preprocessing, class map, model versions and low-confidence behavior with a representative, held-out set.
+- [ ] Ensure weather is UNAVAILABLE with no key; with key, validate observed time, fetched time, units, cache age and failure behavior.
+- [ ] Set `DATA_GOV_IN_API_KEY` as a server-side secret and run a live data.gov.in smoke test; require `LATEST_REPORTED` status, source URL/date and stale warnings. Do not label daily records as instant real-time prices.
+- [ ] Ensure old market prices remain stale and manually imported prices never become LIVE.
+- [ ] Confirm seed scans cannot imply genuineness; complaint and damage reports say NOT_FILED_BY_PLATFORM.
+- [ ] Test every resource required field, invalid enum/date/numeric values, parent-owner relation and soft-delete behavior.
+- [ ] Review logs to ensure passwords, tokens, API keys and image contents are never logged.
+- [ ] Test Telugu data, offline sync idempotency, family-helper consent/revocation and expiry.
+- [ ] Complete frontend, keyboard/mobile accessibility checks and end-to-end browser workflows.
+- [ ] Provision Redis and verify shared API IP/account limits, route-specific limits, `429` plus `Retry-After`, worker sharing and behavior during Redis outage.
+- [ ] Configure `TRUSTED_PROXY_HOPS` from the host documentation; verify per-client rate limits and HTTPS detection from the correct forwarded client address.
+- [ ] Set up backup/restore, monitoring, provider agreements, privacy notice, support and incident response.
+- [ ] Confirm no P0/P1 issues remain, attach actual pytest and browser results, and explicitly approve the candidate before deployment.

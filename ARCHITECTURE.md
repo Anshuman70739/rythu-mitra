@@ -1,36 +1,40 @@
-# Architecture
+# Architecture — Rythu Mitra Master Backend v1
 
-## Current implementation
+## Request flow
 
-Rythu Mitra uses a deliberately small Flask application rather than replacing the existing Flask direction.
+`HTTP route → field allowlist/type/range validation → role check → record ownership/reference checks → domain table/service/provider/model → provenance-aware JSON response`
 
-```text
-Browser / PWA shell
-  → Flask routes (`backend.py`)
-  → validation + CSRF + session/role checks + rate limits
-  → SQLite (`data/rythu_mitra.db`) / model artifacts / OpenWeather
-  → JSON responses
-  → responsive HTML, CSS, and vanilla JavaScript UI
-```
+## Structure
 
-`app.py` is the simple local entry point. `backend.py` owns configuration, routes, narrow service helpers, the SQLite schema/seed data, and ML integration. The compact prototype keeps this together to avoid a premature framework migration; its helpers are deliberately separable into `routes`, `services`, `models`, and `security` packages if it grows.
+- `backend.py`, `run.py`: compatibility entry points.
+- `rythu_mitra_backend/__init__.py`: Flask app factory, headers and generic errors.
+- `config.py`: `.env` loading, development/production settings, SQLite configuration.
+- `db.py`: SQLite connection, additive table setup, schema version and legacy-record migration.
+- `security.py`: auth wrappers, CSRF, public user serializer, audit log and capped single-process rate limiter.
+- `resources.py`: per-domain field allowlists and role visibility.
+- `routes/core.py`: auth/profile, dashboard, model entry points, calculators, weather, markets, schemes, intent suggestion, health.
+- `routes/domains.py`: common secure CRUD and moderation for feature-specific tables.
+- `routes/seeds.py`: seed label evidence, optional OCR, QR inspection, germination, complaint and escalation flows.
+- `routes/disease.py`: preliminary image scan and private scan-history flow.
+- `routes/legacy.py`: compatibility endpoints for original `/api/records/<kind>` consumers.
+- `routes/admin.py`: admin/account controls, audit, data health, market CSV import.
+- `routes/misc.py`: private image uploads, notifications and idempotent offline sync.
+- `services/weather.py`, `markets.py`, `models.py`, `uploads.py`: provider adapters and ML/image logic.
+- `tests/`: test-client and security workflow tests.
+- `scripts/`: first-admin bootstrap, readiness and data-integrity checks.
 
-## Data and access model
+## Database strategy
 
-SQLite has `users`, generic provenance-bearing `records`, `notifications`, and `audit_logs`. Records support market, schemes, equipment, storage, buyers, questions, disease knowledge, bookings, listings, disaster reports, and feedback. Each record includes status, source, source URL where available, data type, and update timestamps. Farmer-owned submissions are associated with their account.
+Every feature in `RESOURCE_TABLES` has a dedicated table with common columns for owner, parent farm, JSON payload, workflow status, source name/URL, data type, confidence, timestamps, and soft deletion through status. The key high-volume supporting tables are normalized separately: `users`, `uploads`, `notifications`, `audit_logs`, `disease_scan_history`, `offline_sync_operations`, `legacy_records`, `schema_migrations`.
 
-Roles are farmer, expert, admin, and buyer. Authenticated endpoints use server-side session checks; the admin summary requires the `admin` role. State-changing APIs require a session-bound CSRF token and use parameterized SQLite statements.
+This per-domain-table JSON payload approach is a migration-friendly v1 bridge from the original `records(kind, payload, ...)` design. It avoids putting every feature in one generic table and applies server-side allowlists, but it is not the final normalized data model. Fields that need analytics, unique constraints, complex reporting or external synchronization should later be promoted to typed columns with explicit migrations.
 
-## ML and integrations
+Existing original `records` entries are copied into `legacy_records` with data-type labels mapped conservatively. Original data is not dropped. Old `users` tables with a role CHECK that excludes `provider` are rebuilt only after a same-directory backup is attempted; failure to create that backup stops the migration.
 
-The supplied `crop_model.pkl` is loaded only on its first recommendation request and receives the existing seven-feature order: N, P, K, temperature, humidity, pH, rainfall. The supplied `plant_disease_model.h5` is loaded on the first scan, accepts 128×128 RGB data, and returns 15 output classes. No verified class mapping accompanied the artifact, so the UI deliberately returns a model class index rather than inventing a disease name.
+## Providers and model integrity
 
-Weather reads `OPENWEATHER_API_KEY` from the local environment (or `.env`, never source). It uses a timed server-side request. If no key is configured it returns clearly-labelled demo weather; provider failures return safe errors.
+Weather uses OpenWeather only when a key is configured. The market connector queries the official data.gov.in OGD resource generated through AGMARKNET when `DATA_GOV_IN_API_KEY` is configured; it returns `LATEST_REPORTED` daily prices, not tick-by-tick real-time data. An explicitly configured HTTPS adapter remains an optional compatibility path. The crop model is loaded only from a trusted pickle artifact. The disease model requires a class-label list whose length matches the output; malformed output is `UNAVAILABLE` rather than a guessed diagnosis. Confidence appears only when the model output looks like a probability distribution, and it is still not promised to be calibrated.
 
-## Security decisions
+## Browser compatibility
 
-The application sends CSP, frame, MIME-sniffing, referrer, and permissions-policy headers; never lets a client specify a fetch URL; limits API use; validates JSON numerics; rejects unsafe uploads; decodes/re-encodes accepted images under generated names; escapes dynamic UI values; and hides operational errors from clients. HTTPS-only session cookies are enabled by `SESSION_COOKIE_SECURE=1` for deployment.
-
-## Offline behavior
-
-`static/sw.js` caches the app shell only. It never presents weather as current while offline; live API requests remain network requests and can be retried.
+All write APIs require a CSRF token and use same-origin cookies. The root route prefers `templates/rythu_mitra.html`, then `templates/index.html`, otherwise displays a backend-only JSON response. Existing frontend work is not replaced in this backend-only package.

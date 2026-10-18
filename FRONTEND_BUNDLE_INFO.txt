@@ -1,0 +1,5 @@
+Rythu Mitra integrated candidate v2
+Source: supplied Master Backend v1 snapshot plus revised frontend v2.
+Entry point: python run.py
+Frontend route: / (existing Flask route serves templates/rythu_mitra.html)
+Do not confuse static checks with full integration testing. See FRONTEND_TEST_REPORT.md.

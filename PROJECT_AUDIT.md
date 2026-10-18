@@ -1,38 +1,41 @@
-# Project Audit — pre-build baseline
+# Rythu Mitra — project audit, integrated v2 repair candidate
 
-Audit date: 2026-08-15
+## Scope and version choice
 
-## Structure and stack
+Audited the uploaded `Rythu_Mitra_Master_v1_Integrated_Frontend_v2.zip`, compared its backend package with `rythu-mitra-master-backend-v1.zip`, and reviewed the earlier `Rythu_Mitra_Frontend_Generated.zip` as a separate legacy frontend starter. Original archives were left unchanged. The integrated v2 candidate was chosen for this repair because it includes the modular Flask backend and matching HTML/CSS/JS frontend. Do not copy the whole candidate over a different active checkout without reconciling versions and preserving existing models/data.
 
-The repository initially contained only `backend.py`, an empty `app.py`, `train_model.py`, a scikit-learn crop model (`crop_model.pkl`), a Keras HDF5 disease-model artifact (`plant_disease_model.h5`), and this build plan. The intended stack is Python, Flask, requests, scikit-learn, TensorFlow/Keras, and NumPy. No templates, static assets, package manifest, database, test suite, environment sample, or project documentation existed.
+## Good foundations
 
-## Existing features and execution flow
+- Flask application factory, route blueprints and separate service modules.
+- Same-origin frontend API client and CSRF header for writes.
+- Server-side role and record-owner checks, field allowlists, audit events and escaped UI rendering patterns.
+- Private upload handling and explicit unavailable states when required providers/models are absent.
+- English/Telugu dictionaries, resource metadata, offline draft sync/idempotency approach, and a pytest suite.
+- Explicit disclaimer that stored complaints/damage/claims are not officially submitted by the app.
 
-| Feature | Files / flow | Status | Findings / action |
-|---|---|---|---|
-| Crop recommendation | `/predict` → pickle model → fertilizer helper | Partially working | Logic was reasonable but had no validation, error handling, or UI. Preserve model and safely wrap it. |
-| Fertilizer advice | `fertilizer_advice()` | Partially working | Preserve conservative nutrient tips; label as general guidance. |
-| Yield estimate | `/yield-estimate` rule score | Partially working | Preserve as a transparent, non-trained favorability estimate. |
-| Weather | `/weather` → OpenWeather | Insecure/broken | Key was hardcoded; no timeout/validation/provider handling. Move to environment config. |
-| Disease detection | intended Keras load | Broken | Syntax error, `tensorflow.kreas` typo, and wrong model path. Retain supplied artifact and load lazily with safe failure handling. |
-| Training utility | `train_model.py` | Repaired | The personal absolute cache path was replaced with an explicit local CSV argument and required-column validation. |
+## Targeted changes made
 
-## Routes, data, and frontend
+- Added direct data.gov.in OGD / AGMARKNET daily mandi integration (resource ID `9ef84268-d588-465a-a308-a864a43d0070`), using server-side `DATA_GOV_IN_API_KEY`, optional state/district/commodity/market filtering, robust normalization and `UNAVAILABLE` errors.
+- Labels official market observations `LATEST_REPORTED` because the dataset cadence is daily rather than instant/tick-level. Each record carries source URL/name, observation date, fetched timestamp, and staleness status.
+- Fixed the frontend live market result to display the actual price fields and source details rather than generic cards.
+- Added market adapter regression tests, local model-bundle verifier, market setup docs, and traceability/backlog reports.
+- Updated app entry points to bind to `0.0.0.0` by default for Codespaces port forwarding, configurable with `HOST` and `PORT`.
+- Removed traceback/URL logging for market provider errors to avoid exposing a query-string API key.
 
-Initial routes were `GET /weather`, `POST /predict`, and `POST /yield-estimate`. There was no authentication, authorization, storage, uploads, or frontend/backend integration. The crop model is a 3.5 MB pickle; the disease model is a 20 MB Keras HDF5 artifact. Crop data was not included. No disease label mapping was included, so the app must state when a model result cannot be reliably named.
+## Verified vs not verified
 
-## Security and dependency findings
+- `compileall`, JS syntax, frontend contract static check, and locale/resource JSON parsing passed.
+- Backend pytest is blocked in this isolated environment because Flask is unavailable, and pip could not reach its package index. Do not represent the suite as passed.
+- Uploaded candidate ZIP does not include `crop_model.pkl`, `plant_disease_model.h5` or `disease_labels.json`. The user reports model weights exist in GitHub; verify those files in the active checkout, their binary sizes / Git LFS status, label order, input preprocessing and output count.
+- Official market live smoke is blocked until the user configures their own `DATA_GOV_IN_API_KEY` in `.env`. The connector's mocked tests are added but not executed through Flask here.
+- No browser E2E, physical phone, screen-reader, native-Telugu, production, security scanner or live weather validation is claimed.
 
-- **Critical:** an OpenWeather credential was hardcoded in `backend.py`. It must be rotated outside the repository. The rebuilt code uses only `OPENWEATHER_API_KEY`; no value is recorded here.
-- No `.gitignore` or `.env.example`; no security headers, CSRF controls, upload controls, input validation, rate limiting, or safe production errors.
-- No database means no privacy/access controls existed.
-- `backend.py` fails `py_compile` because of an incomplete assignment.
-- The apparent `.git` directory is read-only and not a usable Git repository (`git status` reports not a repository), so local commits cannot currently be created without a writable Git metadata directory.
+## Open release blockers
 
-## Preserve / repair / build
+1. Run pytest and health/data scripts in the compatible Python Codespace.
+2. Verify model binary + matching class label map and run inference check. Never invent labels.
+3. Configure official data.gov.in key and test a real provider response, quota and freshness.
+4. Run end-to-end frontend tests, role/owner tests and mobile/accessibility checks.
+5. Complete operational hardening (persistent secret, backups/restore, shared rate limiting, retention/deletion policy and deployment review) before real users/data.
 
-Preserve the two supplied model artifacts, crop prediction feature order (`N,P,K,temperature,humidity,ph,rainfall`), fertilizer heuristics, and the transparent yield heuristic. Repair the backend and weather configuration. Build the database, authenticated roles, safe uploads, dashboard, integrated feature APIs/UI, demo data with provenance, tests, PWA behavior, documentation, and release checklist.
-
-## Risk assessment
-
-Disease-class labels cannot be inferred safely from the supplied artifact alone; results will be class-indexed unless a verified label mapping is later provided. Live weather requires an already configured environment variable. Market, equipment, storage, scheme, and community data will be explicitly labelled as curated demo data rather than represented as live services.
+See `TEST_REPORT.md`, `FRONTEND_TEST_REPORT.md`, `TRACEABILITY_MATRIX.md`, `BUG_BACKLOG.md`, and `RELEASE_CHECKLIST.md`.

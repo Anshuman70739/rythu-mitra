@@ -1,0 +1,4 @@
+# Install only when running the supplied plant_disease_model.h5.
+# TensorFlow is large; use a supported Python version for the selected wheel.
+-r requirements.txt
+tensorflow>=2.16,<2.21
