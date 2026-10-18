@@ -1,0 +1,106 @@
+/* Rythu Mitra motion system: feedback first, decoration second. */
+:root {
+  --motion-instant: 100ms;
+  --motion-fast: 160ms;
+  --motion-standard: 220ms;
+  --motion-slow: 420ms;
+  --motion-signature: 1100ms;
+  --ease-standard: cubic-bezier(.2,.7,.2,1);
+  --ease-emphasis: cubic-bezier(.22,.9,.28,1);
+  --ease-linear: linear;
+}
+@keyframes rm-page-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes rm-signature-draw { from { stroke-dashoffset: 1; opacity: .18; } to { stroke-dashoffset: 0; opacity: .72; } }
+@keyframes rm-scan { from { transform: translateY(-110%); } to { transform: translateY(240%); } }
+@keyframes rm-spin { to { transform: rotate(1turn); } }
+@keyframes rm-check-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes rm-toast-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes rm-weather-enter { from { opacity: .72; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+#view:not([aria-busy="true"]) > .page-heading { animation: rm-page-enter var(--motion-standard) var(--ease-standard) both; }
+#view:not([aria-busy="true"]) .state-stack > .hero-panel,
+#view:not([aria-busy="true"]) .state-stack > .panel:first-child { animation: rm-page-enter var(--motion-standard) var(--ease-standard) both; }
+.field-signature { position: absolute; z-index: 0; top: 2px; right: 10px; width: clamp(130px, 24vw, 260px); height: auto; fill: none; stroke: var(--brand); stroke-width: 1.2; opacity: .12; pointer-events: none; }
+.field-signature path { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.field-signature--draw path { stroke-dashoffset: 1; animation: rm-signature-draw var(--motion-signature) var(--ease-standard) forwards; }
+.field-signature--draw path:nth-child(2) { animation-delay: 90ms; }
+.field-signature--draw path:nth-child(3) { animation-delay: 180ms; }
+.field-signature--draw path:nth-child(4) { animation-delay: 270ms; }
+.hero-panel { background: linear-gradient(108deg, #EAF0F2 0%, #F7F7F3 72%); border-color: var(--line); border-left-color: var(--brand); }
+.hero-panel > * { position: relative; z-index: 1; }
+.hero-panel h2, .hero-panel p, .hero-panel .button-row { max-width: min(100%, 720px); }
+.photo-preview--checking { position: relative; overflow: hidden; }
+.photo-preview--checking::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--info); box-shadow: 0 0 0 1px rgba(75,120,136,.14); transform: translateY(-110%); animation: rm-scan 1200ms var(--ease-linear) 1; pointer-events: none; }
+.photo-preview__caption { display: grid; gap: 3px; min-width: 0; }
+.photo-preview__caption strong { overflow-wrap: anywhere; font-size: 14px; }
+.photo-preview__caption small { color: var(--muted); }
+.disease-actions { align-items: stretch; }
+.steps-strip { position: relative; gap: 6px; margin-bottom: 16px; }
+.steps-strip li { min-height: 42px; transition: background-color var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast); }
+.steps-strip li.is-active { border-color: var(--brand); color: var(--brand-dark); background: var(--info-bg); }
+.steps-strip li.is-complete .step-dot { color: #fff; background: var(--field); }
+.steps-strip li.is-complete .step-dot::after { content: "✓"; }
+.steps-strip li.is-complete .step-dot { font-size: 0; }
+.steps-strip li.is-complete .step-dot::after { font-size: 12px; animation: rm-check-draw var(--motion-standard) var(--ease-standard) both; }
+.result-reveal { animation: rm-page-enter var(--motion-standard) var(--ease-standard) both; }
+.technical-details { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+.technical-details summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--brand); font-weight: 700; }
+.technical-details__body { padding-top: 8px; }
+.loading-state { display: flex; align-items: center; gap: 10px; min-height: 64px; padding: 14px 0; color: var(--muted); }
+.loading-state::before { content: ""; width: 18px; height: 18px; flex: 0 0 auto; border: 2px solid var(--line-strong); border-top-color: var(--brand); border-radius: 50%; animation: rm-spin 900ms linear infinite; }
+#diseaseForm[aria-busy="true"] #diseaseProgress::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 8px; border: 2px solid var(--line-strong); border-top-color: var(--brand); border-radius: 50%; vertical-align: -2px; animation: rm-spin 900ms linear infinite; }
+#diseaseForm[aria-busy="true"] .photo-upload { border-style: solid; border-color: var(--info); }
+.toast { animation: rm-toast-enter var(--motion-fast) var(--ease-standard) both; }
+.weather-current { position: relative; }
+/* One-time information reveal only; source status still comes from the backend. */
+.weather-hero[data-weather-motion="true"] .weather-current { animation: rm-weather-enter var(--motion-slow) var(--ease-standard) both; }
+.weather-hero[data-weather-motion="true"] .weather-temp { color: var(--brand); }
+.rm-tab-hidden *, .rm-tab-hidden *::before, .rm-tab-hidden *::after { animation-play-state: paused !important; transition: none !important; }
+.button:active:not(:disabled), .icon-button:active:not(:disabled) { transform: scale(.985); transition-duration: var(--motion-instant); }
+.button, .icon-button, .nav-item, .module-card, .quick-link, .profile-menu { transition-timing-function: var(--ease-standard); }
+
+@media (max-width: 430px) {
+  .field-signature { width: 120px; right: 2px; top: 4px; opacity: .09; }
+  .steps-strip { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .steps-strip li { display: grid; justify-items: start; align-content: start; padding: 7px; font-size: 12px; }
+  .disease-actions { display: grid; grid-template-columns: minmax(0,1fr); }
+  .disease-actions .button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .field-signature--draw path { animation: none !important; stroke-dashoffset: 0 !important; }
+  .photo-preview--checking::after { display: none; }
+  .loading-state::before, #diseaseForm[aria-busy="true"] #diseaseProgress::before { animation: none !important; border-top-color: var(--brand); }
+  .weather-hero[data-weather-motion="true"] .weather-current { animation: none !important; }
+}
+@media (max-width: 679px) {
+  .bottom-nav a, .bottom-nav button { min-width: 0; min-height: 60px; height: auto; white-space: normal; overflow-wrap: normal; word-break: normal; line-height: 1.2; }
+  .bottom-nav .icon { flex: 0 0 auto; }
+  .dialog { width: min(720px, calc(100vw - 16px)); max-height: min(88dvh, 850px); padding: 16px; margin: auto; }
+  .dialog form { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+  .profile-menu { max-width: calc(100vw - 16px); }
+}
+@media (max-width: 359px) {
+  .bottom-nav a, .bottom-nav button { padding-left: 1px; padding-right: 1px; font-size: 10px; }
+  .bottom-nav a span, .bottom-nav button span { max-width: 100%; white-space: normal; }
+  .topbar-actions { flex-wrap: wrap; }
+}
+
+
+/* Dialog and connectivity motion is brief, state-led, and removed for reduced-motion users. */
+@keyframes rm-dialog-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes rm-backdrop-enter { from { background: rgba(23,35,33,0); } to { background: rgba(23,35,33,.52); } }
+@keyframes rm-offline-drop { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+dialog[open] { animation: rm-dialog-enter var(--motion-fast) var(--ease-standard) both; }
+dialog[open]::backdrop { animation: rm-backdrop-enter var(--motion-fast) var(--ease-standard) both; }
+#offlineBanner:not([hidden]) { animation: rm-offline-drop var(--motion-fast) var(--ease-standard) both; }
+.status-badge--completed { animation: rm-page-enter var(--motion-fast) var(--ease-standard) both; }
+/* Results enter as a calm reading sequence instead of every nested node flying in. */
+.result-reveal > .status-line { animation: rm-page-enter var(--motion-fast) var(--ease-standard) both; }
+.result-reveal > h3 { animation: rm-page-enter var(--motion-standard) var(--ease-standard) both; animation-delay: 40ms; }
+.result-reveal > .result-number { animation: rm-page-enter var(--motion-standard) var(--ease-standard) both; animation-delay: 70ms; }
+.result-reveal > .inline-warning { animation: rm-page-enter var(--motion-standard) var(--ease-standard) both; animation-delay: 100ms; }
+@media (prefers-reduced-motion: reduce) {
+  dialog[open], dialog[open]::backdrop, #offlineBanner:not([hidden]), .status-badge--completed,
+  .result-reveal > .status-line, .result-reveal > h3, .result-reveal > .result-number, .result-reveal > .inline-warning { animation: none !important; }
+}

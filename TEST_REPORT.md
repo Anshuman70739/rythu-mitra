@@ -1,21 +1,41 @@
-# Test Report
+# Test Report — Rythu Mitra integrated v2 repair candidate
 
-Date: 2026-08-15
+Date: 2026-10-15. Scope: extracted integrated v2 archive, modified in an isolated copy. Original archives were not changed. This is not a test of the user's active remote Codespace.
 
-## Executed
+## Checks executed in this environment
 
-`python -m py_compile app.py backend.py train_model.py` passed.
+| Check | Result | Details |
+|---|---|---|
+| Python source compile (`python -m compileall -q .`) | PASS | All candidate Python files compiled. This does not import dependencies or start Flask. |
+| Frontend JS parse (`node --check static/js/rythu-mitra-app.js`) | PASS | No JavaScript syntax error. |
+| Frontend contract script (`python scripts/check_frontend_contract.py`) | PASS | 68 resource schemas, 613 field definitions, locale/resource config parse, core API markers, CSRF and market provider markers. |
+| Locale/resource JSON parsing | PASS | `en.json`, `te.json`, and `resource-config.json` parse successfully. |
+| Disease/crop asset verifier | BLOCKED / EXPECTED IN ZIP | `scripts/verify_model_assets.py` reported the crop `.pkl`, disease `.h5`, and `disease_labels.json` missing from the candidate ZIP. The user says model files are in GitHub; run the verifier inside the active checkout and preserve the model assets while applying repairs. |
+| Backend pytest suite | BLOCKED | `python -m pytest -q` stops while importing `tests/conftest.py`: `ModuleNotFoundError: No module named 'flask'`. Installing dependencies was attempted but package-index DNS/network access failed in this review environment. No pytest pass is claimed. |
+| Official market adapter live smoke | BLOCKED | Requires the user's own `DATA_GOV_IN_API_KEY`, and this review environment could not reach package/provider hosts. Mocked regression tests were added, but could not execute through Flask here. |
+| Live weather provider | NOT RUN | No user OpenWeather key supplied. |
+| Browser end-to-end / mobile / screen reader | NOT RUN | A full browser test environment was not available here. |
+| Bandit / pip-audit / coverage | NOT RUN | Tool installation unavailable in this environment. |
 
-`python -m pytest -q` passed: **15 passed in 13.43 seconds**. This includes the earlier regression coverage plus forecast/cache semantics, the no-guessed-disease-label guarantee, private farmer-record visibility, storage calculation, scheme matching, moderation, normal 404 handling, buyer-role workflow authorization, and language/voice/PWA asset checks.
+## Test coverage added
 
-The suite verifies page startup/security headers, login/dashboard authorization, CSRF, crop-input validation and model response, demo and provider-error weather paths, invalid image/type rejection, market arithmetic/records, and role authorization.
+Six regression tests in `tests/test_backend.py` cover: valid official-provider row and field normalization, invalid minimum/modal/maximum ordering, missing official API key, stale observation dates, provider timeouts, and malformed rows. They are **added but not executed through Flask** here due to the missing Flask dependency. A separate dependency-light mocked harness against the market service passed the valid-row normalization/filter case, impossible-price rejection, and missing-key status case.
 
-Local runtime smoke test passed: `python app.py`, `GET /health`, and `GET /` returned successfully. The health response indicated a configured weather environment variable without disclosing it. A one-time live OpenWeather verification using the configured server environment returned `LIVE` status and 8 forecast points; no credential was printed. The supplied crop model loaded with 7 input features. The supplied disease artifact loaded successfully with input `(None, 128, 128, 3)` and output `(None, 15)`; TensorFlow used CPU because no GPU driver is installed.
+## Recommended checks in the Codespace
 
-The service-worker implementation was reviewed to confirm that it caches only the shell and returns an explicit offline error for API calls, so cached weather is never represented as current.
+From project root, using a Python 3.12 environment compatible with `requirements.txt`:
 
-Release-preparation checks also passed for the camera capture hint, equal English/Telugu translation keys, voice feature detection/fallback hooks, responsive CSS breakpoint, PWA shell/offline guard, model provenance documentation, and absence of the previously exposed weather-key value.
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q
+python -m compileall -q .
+node --check static/js/rythu-mitra-app.js
+python scripts/check_frontend_contract.py
+python scripts/verify_model_assets.py
+python scripts/verify_model_assets.py --load-disease
+python scripts/health_check.py
+```
 
-## Not automatically verified
+The last model-loading check requires the optional ML dependencies installed and actual trusted model files + a verified `disease_labels.json`. Do not invent the class list or infer its order from alphabetic sorting; verify the training-time class mapping.
 
-Browser-device camera/speech support, actual responsive devices, external scheme links, and production HTTPS deployment require manual verification. The supplied disease model lacks a verified class mapping, so semantic disease labels cannot be tested honestly.
+After setting `DATA_GOV_IN_API_KEY` in the ignored local `.env` and restarting Flask, use the Markets page's live/latest action. Confirm HTTP 200, a non-empty `records` list, `status=LATEST_REPORTED`, correct Telangana filters, source URL, observation date, rupee-per-quintal unit, ordered non-negative prices and stale warning. If the provider responds with 403/429/no data, document it as BLOCKED/UNAVAILABLE rather than using sample prices.
