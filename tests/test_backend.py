@@ -73,15 +73,81 @@ def test_net_income_calculation_is_user_entered_math(client):
     assert body["data_type"] == "USER_ENTERED_CALCULATION"
 
 
-def test_missing_weather_key_is_unavailable_not_fake_live_data(client):
+def test_missing_weather_key_is_unavailable_for_unmatched_location_not_fake_live_data(client, monkeypatch):
     from rythu_mitra_backend.services import weather
+
+    class FakeResponse:
+        status_code = 200
+        def raise_for_status(self):
+            return None
+        def json(self):
+            return {"results": []}
+
     weather._CACHE.clear()
+    monkeypatch.setattr(weather.requests, "get", lambda *args, **kwargs: FakeResponse())
     response = client.get("/api/weather?city=Test-No-Key-City")
     assert response.status_code == 503
     body = response.get_json()
     assert body["status"] == "UNAVAILABLE"
     assert body["data_type"] == "UNAVAILABLE"
     assert "temperature" not in body
+
+
+def test_weather_uses_open_meteo_without_a_provider_key(client, monkeypatch):
+    from rythu_mitra_backend.services import weather
+
+    class FakeResponse:
+        status_code = 200
+        def __init__(self, body):
+            self.body = body
+        def raise_for_status(self):
+            return None
+        def json(self):
+            return self.body
+
+    def fake_get(url, **kwargs):
+        if "geocoding-api.open-meteo.com" in url:
+            return FakeResponse({"results": [{
+                "name": "Hyderabad", "admin1": "Telangana",
+                "latitude": 17.385, "longitude": 78.4867,
+            }]})
+        return FakeResponse({
+            "current": {
+                "time": "2026-10-26T12:00", "temperature_2m": 29.2,
+                "relative_humidity_2m": 50, "precipitation": 0.0, "wind_speed_10m": 5.2,
+            },
+            "hourly": {
+                "time": ["2026-10-26T12:00", "2026-10-26T13:00"],
+                "temperature_2m": [29.2, 30.0],
+                "precipitation_probability": [5, 10],
+                "precipitation": [0.0, 0.0],
+            },
+        })
+
+    weather._CACHE.clear()
+    monkeypatch.setattr(weather.requests, "get", fake_get)
+    response = client.get("/api/weather?city=Hyderabad")
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body["success"] is True
+    assert body["data_type"] == "MODEL_OUTPUT"
+    assert body["source_name"] == "Open-Meteo (model-based weather)"
+    assert body["temperature"] == 29.2
+    assert body["forecast"]
+
+
+def test_scheme_matches_include_official_curated_entries_for_a_new_database(client):
+    register(client)
+    response = client.get("/api/schemes/matches")
+    assert response.status_code == 200, response.get_data(as_text=True)
+    body = response.get_json()
+    assert body["success"] is True
+    schemes = {item["name"]: item for item in body["matches"]}
+    assert "PM-KISAN Samman Nidhi" in schemes
+    assert "Telangana Rythu Bharosa" in schemes
+    assert "Pradhan Mantri Fasal Bima Yojana (PMFBY)" in schemes
+    assert all(item["data_type"] == "CURATED" for item in schemes.values())
+    assert all(item["official_url"].startswith("https://") for item in schemes.values())
 
 
 def test_crop_model_missing_is_unavailable(client):
