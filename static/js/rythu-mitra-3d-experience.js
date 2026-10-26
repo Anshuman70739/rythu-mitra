@@ -403,7 +403,7 @@
     state.renderer.setSize(w, h, false); state.camera.aspect = w / h; state.camera.updateProjectionMatrix();
   }
   function animate(state) {
-    if (!state.host.isConnected) { state.ro?.disconnect(); state.visibilityObserver?.disconnect(); state.controls?.dispose(); disposeObject(state.group); state.renderer?.dispose(); active.delete(state); return; }
+    if (!state.host.isConnected) { state.ro?.disconnect(); state.visibilityObserver?.disconnect(); state.controls?.dispose(); disposeObject(state.group); if (state.loadedRoot) { state.scene.remove(state.loadedRoot); disposeObject(state.loadedRoot); } state.renderer?.dispose(); active.delete(state); return; }
     state.raf = requestAnimationFrame(() => animate(state));
     const dt = Math.min(state.clock.getDelta(), 0.05);
     if (state.visible && state.running) {
@@ -692,6 +692,6 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
-  window.addEventListener('pagehide', () => active.forEach(s => { cancelAnimationFrame(s.raf); s.ro?.disconnect(); s.visibilityObserver?.disconnect(); s.controls?.dispose(); disposeObject(s.group); s.renderer?.dispose(); }));
+  window.addEventListener('pagehide', () => active.forEach(s => { cancelAnimationFrame(s.raf); s.ro?.disconnect(); s.visibilityObserver?.disconnect(); s.controls?.dispose(); disposeObject(s.group); if (s.loadedRoot) { s.scene.remove(s.loadedRoot); disposeObject(s.loadedRoot); } s.renderer?.dispose(); }));
   window.RythuMitra3D = Object.freeze({ version: VERSION, engine: 'Three.js / WebGL', scenes: Object.keys(BUILDERS), modelInference: false, dataUploads: false });
 })();
