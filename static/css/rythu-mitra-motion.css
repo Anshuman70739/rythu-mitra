@@ -104,3 +104,23 @@ dialog[open]::backdrop { animation: rm-backdrop-enter var(--motion-fast) var(--e
   dialog[open], dialog[open]::backdrop, #offlineBanner:not([hidden]), .status-badge--completed,
   .result-reveal > .status-line, .result-reveal > h3, .result-reveal > .result-number, .result-reveal > .inline-warning { animation: none !important; }
 }
+
+/* Purposeful landing motion: plant sway and birds in flight. */
+@keyframes rm-plant-breeze { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+@keyframes rm-bird-cross { 0% { transform: translateX(-35px); opacity: 0; } 8% { opacity: .82; } 84% { opacity: .76; } 100% { transform: translateX(610px); opacity: 0; } }
+.rm-landing-hero { animation: rm-page-enter var(--motion-standard) var(--ease-standard) both; }
+.rm-scene-plant--one { animation: rm-plant-breeze 4.8s ease-in-out infinite alternate; }
+.rm-scene-plant--two { animation: rm-plant-breeze 5.6s ease-in-out -1.7s infinite alternate; }
+.rm-scene-plant--three { animation: rm-plant-breeze 4.2s ease-in-out -2.4s infinite alternate; }
+.rm-scene-plant--four { animation: rm-plant-breeze 5.2s ease-in-out -.9s infinite alternate; }
+.rm-bird-flight--one { animation: rm-bird-cross 16s linear -2s infinite; }
+.rm-bird-flight--two { animation: rm-bird-cross 20s linear -9s infinite; }
+.rm-bird-flight--three { animation: rm-bird-cross 18s linear -13s infinite; }
+.rm-tool-card { transition: border-color 140ms ease, background-color 140ms ease; }
+.rm-tool-card:hover { border-color: #B7A88D; }
+.rm-tab-hidden .rm-bird-flight, .rm-tab-hidden .rm-scene-plant { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  .rm-landing-hero, .rm-scene-plant, .rm-bird-flight { animation: none !important; }
+  .rm-bird-flight { opacity: .72; }
+  .rm-tool-card { transition: none; }
+}
