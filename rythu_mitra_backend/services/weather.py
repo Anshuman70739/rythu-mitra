@@ -85,7 +85,7 @@ def _open_meteo_weather(city: str, *, fallback_reason: str | None = None) -> dic
             "source_name": "Open-Meteo (model-based weather)", "source_url": "https://open-meteo.com/",
             "provider_observed_at": current_time or None, "server_fetched_at": fetched,
             "last_updated": fetched, "cache_age_seconds": 0,
-            "temperature": round(float(temperature), 1), "humidity": int(round(float(humidity)),
+            "temperature": round(float(temperature), 1), "humidity": int(round(float(humidity))),
             "rainfall": round(float(rainfall), 1) if isinstance(rainfall, (int, float)) else None,
             "rain_probability": max(rain_probs) if rain_probs else None,
             "wind": round(float(wind), 1) if isinstance(wind, (int, float)) else None,
