@@ -1,5 +1,5 @@
 /* Interactive Field Atlas 3D experience */
-.rm3d-host{position:relative;min-width:0;color:#26382e;background:#f9f7ef;border:1px solid #d6dfcf;box-shadow:0 18px 52px #243a2e12;overflow:hidden}
+.rm3d-host{display:block;position:relative;width:100%;max-width:100%;min-height:0;min-width:0;perspective:none;place-items:unset;color:#26382e;background:#f9f7ef;border:1px solid #d6dfcf;box-shadow:0 18px 52px #243a2e12;overflow:hidden}
 .rm3d-topline{display:flex;align-items:center;gap:9px;min-height:42px;padding:10px 15px;border-bottom:1px solid #d9e1d2;background:#fbf9f1}
 .rm3d-topline strong{font:700 10px/1.2 var(--sans,Arial,sans-serif);letter-spacing:.12em;text-transform:uppercase}
 .rm3d-live-dot{width:7px;height:7px;border-radius:50%;background:#6d9866;box-shadow:0 0 0 4px #6d98661c;flex:0 0 auto}
@@ -83,3 +83,7 @@
 .rm3d-cinematic-error .rm3d-cinematic-load{background:#f4e7d7;color:#7b5939}
 @media(max-width:800px){.rm3d-cinematic-hud{top:10px;left:10px;right:10px;padding:8px;font-size:7px}.rm3d-cinematic-hud small{width:100%;margin-left:15px}.rm3d-cinematic-note{bottom:42px;left:9px;right:9px;padding:8px;font-size:8px}.rm3d-cinematic-active .cinematic-scene{border-radius:28% 28% 4px 4px}}
 @media(prefers-reduced-motion:reduce){.rm3d-cinematic-active .rm3d-cinematic-canvas.rm3d-story-transition canvas{animation:none}}
+
+.rm3d-host>.rm3d-topline,.rm3d-host>.rm3d-stage,.rm3d-host>.rm3d-toolbar,.rm3d-host>.rm3d-stage-row,.rm3d-host>.rm3d-detail,.rm3d-host>.rm3d-honesty{width:100%;box-sizing:border-box}
+
+.rm3d-host.rm3d-ready{height:auto!important;min-height:0!important;max-height:none!important}
