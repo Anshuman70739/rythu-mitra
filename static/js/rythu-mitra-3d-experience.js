@@ -286,6 +286,7 @@
   }
   function setScene(state, kind) {
     if (state.group) { state.scene.remove(state.group); disposeObject(state.group); }
+    if (state.loadedRoot) { state.scene.remove(state.loadedRoot); disposeObject(state.loadedRoot); state.loadedRoot = null; state.loadedScene = null; state.assetScale = 1; }
     state.kind = kind; state.stage = 0; state.exploded = false;
     state.built = BUILDERS[kind] ? BUILDERS[kind]() : createFarmScene();
     state.group = state.built.root; state.scene.add(state.group);
@@ -294,6 +295,7 @@
     else if (kind === 'architecture' || kind === 'history') { state.camera.position.set(0, 3.1, 10.5); state.controls.target.set(0, 0, 0); state.fitDistance = 10.5; }
     else { state.camera.position.set(4.2, 2.3, 7.8); state.controls.target.set(0, 0, 0); state.fitDistance = 8; }
     state.controls.update();
+    state.controls.saveState();
     $('.rm3d-title', state.host).textContent = sceneTitle(kind);
     $('.rm3d-engine', state.host).textContent = 'WEBGL / PROCEDURAL 3D';
     const options = $('.rm3d-stage-options', state.host);
@@ -304,8 +306,11 @@
       b.addEventListener('click', () => {
         state.stage = i;
         $$('.rm3d-stage-options button', state.host).forEach((el, j) => el.setAttribute('aria-pressed', String(j === i)));
-        if (state.built.applyStage) state.built.applyStage(i);
-        detail(state, name, 'Selected scene state. This changes the illustration only; it does not run an agricultural model or API.');
+        if (state.loadedRoot) {
+          state.loadedRoot.scale.setScalar([0.88, 0.95, 1][i] || 1);
+          state.loadedRoot.rotation.y = i * 0.24;
+        } else if (state.built.applyStage) state.built.applyStage(i);
+        detail(state, name, state.loadedRoot ? 'Imported GLTF asset stage. The stage changes are visual only; no agricultural model or API runs.' : 'Selected procedural scene state. This changes the illustration only; no agricultural model or API runs.');
       });
       options.append(b);
     });
@@ -323,7 +328,15 @@
       }
       if (action === 'explode') {
         state.exploded = !state.exploded; btn.setAttribute('aria-pressed', String(state.exploded));
-        if (state.built && state.kind === 'crop' && state.built.model) {
+        if (state.loadedScene && state.loadedScene.children.length) {
+          state.loadedScene.children.forEach((child, i) => {
+            if (state.exploded) {
+              child.userData.rmOriginalPos = child.userData.rmOriginalPos || child.position.clone();
+              child.position.x = child.userData.rmOriginalPos.x + (i % 2 ? 1 : -1) * (0.18 + (i % 4) * 0.12);
+              child.position.y = child.userData.rmOriginalPos.y + (i % 3 - 1) * 0.08;
+            } else if (child.userData.rmOriginalPos) child.position.copy(child.userData.rmOriginalPos);
+          });
+        } else if (state.built && state.kind === 'crop' && state.built.model) {
           state.built.model.children.forEach((child, i) => {
             if (state.exploded) { child.userData.rmOriginalPos = child.userData.rmOriginalPos || child.position.clone(); child.position.x += (i % 2 ? 1 : -1) * (0.25 + (i % 4) * 0.12); child.position.y += (i % 3 - 1) * 0.18; }
             else if (child.userData.rmOriginalPos) child.position.copy(child.userData.rmOriginalPos);
@@ -353,7 +366,10 @@
       }
       if (action === 'pause') { state.running = !state.running; btn.setAttribute('aria-pressed', String(!state.running)); btn.textContent = state.running ? 'Pause motion' : 'Resume motion'; }
       if (action === 'reset') {
-        state.controls.reset(); state.controls.autoRotate = false; state.running = true; state.exploded = false;
+        state.controls.reset(); state.controls.autoRotate = false; state.running = true; state.exploded = false; state.stage = 0;
+        if (state.loadedRoot) { state.loadedRoot.rotation.set(0,0,0); state.loadedRoot.scale.setScalar(1); }
+        if (state.loadedScene) state.loadedScene.children.forEach(child => { if (child.userData.rmOriginalPos) child.position.copy(child.userData.rmOriginalPos); });
+        $('.rm3d-stage-options button', host).forEach((el, i) => el.setAttribute('aria-pressed', String(i === 0)));
         if (state.built && state.built.materialSet) state.built.materialSet.forEach(n => n.g.position.copy(n.base));
         if ((state.kind === 'crop' || state.kind === 'leaf' || state.kind === 'other' || state.kind === 'history') && state.built.model) state.built.model.children.forEach(child => { if (child.userData.rmOriginalPos) child.position.copy(child.userData.rmOriginalPos); });
         if (state.kind === 'other' && state.built.roots) state.built.roots.visible = state.stage !== 0;
@@ -397,8 +413,10 @@
         const clouds = state.group.children.find(o => o.type === 'Group' && o.children.length === 4);
         if (clouds) clouds.children.forEach((c, i) => { c.position.x = -7 + i * 4.6 + Math.sin(state.elapsed * 0.13 + i) * 0.4; });
       }
-      if (state.kind === 'leaf' && state.built && state.built.model) state.built.model.rotation.y = Math.sin(state.elapsed * 0.52) * 0.09;
-      if (state.kind === 'crop' && state.built && state.built.model && !state.exploded) state.built.model.rotation.z = Math.sin(state.elapsed * 1.15) * 0.025;
+      if (state.kind === 'leaf' && state.loadedRoot) state.loadedRoot.rotation.y = Math.sin(state.elapsed * 0.52) * 0.09 + state.stage * 0.24;
+      else if (state.kind === 'leaf' && state.built && state.built.model) state.built.model.rotation.y = Math.sin(state.elapsed * 0.52) * 0.09;
+      if (state.kind === 'crop' && state.loadedRoot && !state.exploded) state.loadedRoot.rotation.z = Math.sin(state.elapsed * 1.15) * 0.025;
+      else if (state.kind === 'crop' && state.built && state.built.model && !state.exploded) state.built.model.rotation.z = Math.sin(state.elapsed * 1.15) * 0.025;
       if (state.kind === 'architecture' && state.built && state.built.packets) {
         state.built.packets.children.forEach(packet => { const t = (state.elapsed * 0.22 + packet.userData.rmPhase) % 1; packet.position.copy(packet.userData.rmCurve.getPoint(t)); });
       }
@@ -410,13 +428,15 @@
     if (!host || host.dataset.rm3dMounted === 'true') return;
     host.dataset.rm3dMounted = 'true';
     createShell(host, kind, compact);
+    if (kind === 'leaf') host.dataset.modelUrl = '/static/models/rythu-leaf.gltf';
+    if (kind === 'crop') host.dataset.modelUrl = '/static/models/rythu-cereal-crop.gltf';
     let state;
     try {
       await loadEngine();
       if (!host.isConnected) return;
       state = {
         host, kind, compact: !!compact, visible: true, scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(38, 1, 0.1, 100),
-        controls: null, renderer: null, group: null, built: null, raf: 0, elapsed: 0, running: !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
+        controls: null, renderer: null, group: null, built: null, loadedRoot: null, loadedScene: null, assetScale: 1, raf: 0, elapsed: 0, running: !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
         showHotspots: true, exploded: false, fitDistance: 8, ro: null, pointer: new THREE.Vector2(),
         ray: new THREE.Raycaster(), stage: 0, clock: new THREE.Clock()
       };
@@ -446,7 +466,41 @@
       detail(state, sceneTitle(kind), 'Real WebGL scene ready. Drag to rotate; use scroll or pinch to zoom; select highlighted parts.');
       const optional = host.dataset.modelUrl;
       if (optional && GLTFLoader) {
-        new GLTFLoader().load(optional, gltf => { state.scene.add(gltf.scene); detail(state, '3D asset loaded', 'An optional GLB/GLTF asset loaded successfully. Procedural scene remains available as a reference.'); }, undefined, () => detail(state, 'Asset unavailable', 'The optional GLB/GLTF asset could not be loaded; procedural 3D remains active.'));
+        new GLTFLoader().load(optional, gltf => {
+          if (!host.isConnected || !state.renderer) { disposeObject(gltf.scene); return; }
+          const bounds = new THREE.Box3().setFromObject(gltf.scene);
+          const size = bounds.getSize(new THREE.Vector3());
+          const center = bounds.getCenter(new THREE.Vector3());
+          const scale = (kind === 'crop' ? 2.85 : 2.55) / (size.y || 1);
+          gltf.scene.scale.setScalar(scale);
+          gltf.scene.position.copy(center).multiplyScalar(-scale);
+          gltf.scene.traverse(obj => {
+            if (obj.isMesh) {
+              obj.castShadow = true; obj.receiveShadow = true;
+              obj.userData.rmNote = (obj.name || 'Imported model part') + ': reusable GLTF geometry. This illustration is not a diagnosis or biological simulation.';
+            }
+          });
+          const loadedRoot = new THREE.Group();
+          loadedRoot.add(gltf.scene);
+          state.scene.add(loadedRoot);
+          state.group.visible = false;
+          state.loadedRoot = loadedRoot; state.loadedScene = gltf.scene; state.assetScale = scale;
+          const marks = kind === 'leaf' ? [
+            hotSpot(loadedRoot, 0, 0.72, 0.11, 'Leaf tip: shape alone cannot confirm crop disease.'),
+            hotSpot(loadedRoot, 0, 0.05, 0.12, 'Midrib: a central vein visible in this reusable 3D asset.'),
+            hotSpot(loadedRoot, -0.18, -0.55, 0.12, 'Leaf blade: an illustrative mesh, not a disease classification.')
+          ] : [
+            hotSpot(loadedRoot, 0.04, 0.94, 0.1, 'Grain head: illustrative crop structure; not a verified variety model.'),
+            hotSpot(loadedRoot, 0.0, 0.0, 0.16, 'Stem and leaves: interactive geometry only, not a growth prediction.'),
+            hotSpot(loadedRoot, 0.0, -1.05, 0.12, 'Root structure: illustrative mesh, not a soil or root measurement.')
+          ];
+          state.built.marks = marks;
+          marks.forEach(mark => { mark.visible = state.showHotspots; });
+          $('.rm3d-engine', host).textContent = 'GLTF ASSET + WEBGL';
+          detail(state, '3D asset loaded', 'A reusable GLTF model loaded from this project repository. Rotate, zoom, inspect hotspots and separate parts.');
+        }, undefined, () => detail(state, 'Asset unavailable', 'The repository GLTF asset could not be loaded; the procedural WebGL model remains available as a fallback.'));
+      } else if (optional) {
+        detail(state, 'GLTF loader unavailable', 'Interactive procedural 3D remains active. The repository model asset could not be loaded by the optional loader.');
       }
       state.visible = !window.IntersectionObserver;
       state.visibilityObserver = window.IntersectionObserver ? new IntersectionObserver(entries => { state.visible = !!entries[0]?.isIntersecting; }) : null;
