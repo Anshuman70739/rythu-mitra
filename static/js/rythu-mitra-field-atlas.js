@@ -288,6 +288,23 @@
   }
   initCinematicJourney();
 
+  // Optional low-amplitude pointer parallax for the desktop illustration.
+  const cinematicScene=$('.cinematic-scene');
+  if(cinematicScene && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+    cinematicScene.addEventListener('pointermove',event=>{
+      if(state.motionPaused)return;
+      const rect=cinematicScene.getBoundingClientRect();
+      const x=((event.clientX-rect.left)/rect.width-.5)*2;
+      const y=((event.clientY-rect.top)/rect.height-.5)*2;
+      cinematicScene.style.setProperty('--pointer-x',x.toFixed(3));
+      cinematicScene.style.setProperty('--pointer-y',y.toFixed(3));
+    });
+    cinematicScene.addEventListener('pointerleave',()=>{
+      cinematicScene.style.setProperty('--pointer-x','0');
+      cinematicScene.style.setProperty('--pointer-y','0');
+    });
+  }
+
   // Keep the demo lab state visibly separate from real outputs.
   window.RythuMitraShowcase = Object.freeze({
     version:'field-atlas-1',
