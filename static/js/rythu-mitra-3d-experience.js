@@ -309,7 +309,7 @@
       });
       options.append(b);
     });
-    $$('[data-action="explode"]', state.host).forEach(b => { b.setAttribute('aria-pressed', 'false'); b.disabled = !(kind === 'crop' || kind === 'architecture' || kind === 'history'); });
+    $$('[data-action="explode"]', state.host).forEach(b => { b.setAttribute('aria-pressed', 'false'); b.disabled = !(kind === 'leaf' || kind === 'crop' || kind === 'architecture' || kind === 'history' || kind === 'other'); });
     detail(state, sceneTitle(kind), 'Drag the scene to rotate. Use scroll or pinch to zoom. Tap visible markers to inspect them.');
   }
   function connectControls(state) {
@@ -330,8 +330,24 @@
           });
         } else if (state.built && state.kind === 'architecture' && state.built.materialSet) {
           state.built.materialSet.forEach((n, i) => n.g.position.x = n.base.x + (state.exploded ? (i - 2) * 0.46 : 0));
+        } else if (state.built && (state.kind === 'leaf' || state.kind === 'other') && state.built.model) {
+          state.built.model.children.forEach((child, i) => {
+            if (state.exploded) {
+              child.userData.rmOriginalPos = child.userData.rmOriginalPos || child.position.clone();
+              const delta = state.kind === 'leaf' ? (i === 0 ? -0.55 : i === 1 ? 0 : (i % 2 ? 0.3 : -0.3)) : (i % 2 ? 0.12 : -0.12);
+              child.position.x = child.userData.rmOriginalPos.x + delta;
+              if (state.kind === 'other') child.position.y = child.userData.rmOriginalPos.y + (i % 2 ? 0.16 : -0.16);
+            } else if (child.userData.rmOriginalPos) child.position.copy(child.userData.rmOriginalPos);
+          });
+          if (state.kind === 'other' && state.built.roots) state.built.roots.visible = state.exploded || state.stage !== 0;
         } else if (state.built && state.kind === 'history') {
-          state.built.model.scale.setScalar(state.exploded ? 1.18 : 1);
+          state.built.model.children.forEach((child, i) => {
+            if (child.userData.rmHotspot) {
+              child.userData.rmOriginalPos = child.userData.rmOriginalPos || child.position.clone();
+              if (state.exploded) child.position.x = child.userData.rmOriginalPos.x + (i % 2 ? 0.32 : -0.32);
+              else child.position.copy(child.userData.rmOriginalPos);
+            }
+          });
         }
         detail(state, state.exploded ? 'Parts separated' : 'Model assembled', 'Exploded view is a visual explanation of the model structure, not a technical measurement.');
       }
@@ -339,12 +355,17 @@
       if (action === 'reset') {
         state.controls.reset(); state.controls.autoRotate = false; state.running = true; state.exploded = false;
         if (state.built && state.built.materialSet) state.built.materialSet.forEach(n => n.g.position.copy(n.base));
-        if (state.kind === 'crop' && state.built.model) state.built.model.children.forEach(child => { if (child.userData.rmOriginalPos) child.position.copy(child.userData.rmOriginalPos); });
+        if ((state.kind === 'crop' || state.kind === 'leaf' || state.kind === 'other' || state.kind === 'history') && state.built.model) state.built.model.children.forEach(child => { if (child.userData.rmOriginalPos) child.position.copy(child.userData.rmOriginalPos); });
+        if (state.kind === 'other' && state.built.roots) state.built.roots.visible = state.stage !== 0;
         $$('[data-action="auto"],[data-action="pause"],[data-action="explode"]', host).forEach(el => { el.setAttribute('aria-pressed', 'false'); if (el.dataset.action === 'pause') el.textContent = 'Pause motion'; });
         detail(state, 'View reset', 'The initial camera and assembly view are restored.');
       }
-      if (action === 'zoom-in') { state.camera.position.multiplyScalar(0.86); state.controls.update(); }
-      if (action === 'zoom-out') { state.camera.position.multiplyScalar(1.16); state.controls.update(); }
+      if (action === 'zoom-in' || action === 'zoom-out') {
+        const direction = state.camera.position.clone().sub(state.controls.target);
+        direction.multiplyScalar(action === 'zoom-in' ? 0.86 : 1.16);
+        state.camera.position.copy(state.controls.target).add(direction);
+        state.controls.update();
+      }
     }));
     const wrap = $('.rm3d-canvas-wrap', host);
     wrap.addEventListener('pointerdown', e => { const r = wrap.getBoundingClientRect(); state.pointer.x = ((e.clientX-r.left)/r.width)*2-1; state.pointer.y = -((e.clientY-r.top)/r.height)*2+1; });
@@ -538,7 +559,7 @@
       observer.observe(stage,{attributes:true,attributeFilter:['data-step']});
       const motion=$('#motionToggle');
       motion?.addEventListener('click',()=>{storyState.running=!storyState.running;active.forEach(s=>{s.running=storyState.running;});});
-      window.addEventListener('pagehide',()=>{observer?.disconnect();storyVisibility?.disconnect();storyState.ro?.disconnect();storyState.controls?.dispose();disposeObject(storyState.group);storyState.renderer?.dispose();},{once:true});
+      window.addEventListener('pagehide',()=>{cancelAnimationFrame(storyState.raf);observer?.disconnect();storyVisibility?.disconnect();storyState.ro?.disconnect();storyState.controls?.dispose();disposeObject(storyState.group);storyState.renderer?.dispose();},{once:true});
       frame();
     } catch(error) {
       host.classList.add('rm3d-cinematic-error');
@@ -552,7 +573,7 @@
     if (!wrap) return;
     const host = document.createElement('section');
     host.className = 'rm3d-home-panel';
-    host.innerHTML = '<div class="rm3d-home-heading"><span>FIELD ATLAS / INTERACTIVE WORLD</span><h2>Step into the field.</h2><p>Explore real-time 3D interaction in a locally generated scene. Rotate, zoom, inspect hotspots and switch worlds.</p></div><div class="rm3d-home-scene"></div><div class="rm3d-world-switch" aria-label="Choose a 3D world"><button type="button" data-world="farm" aria-pressed="true">Farm</button><button type="button" data-world="leaf" aria-pressed="false">Leaf</button><button type="button" data-world="crop" aria-pressed="false">Crop</button><button type="button" data-world="architecture" aria-pressed="false">System</button><button type="button" data-world="other" aria-pressed="false">Soil layers</button></div>';
+    host.innerHTML = '<div class="rm3d-home-heading"><span>FIELD ATLAS / INTERACTIVE WORLD</span><h2>Step into the field.</h2><p>Explore a locally generated interactive 3D scene. Rotate, zoom, inspect hotspots and switch worlds.</p></div><div class="rm3d-home-scene"></div><div class="rm3d-world-switch" aria-label="Choose a 3D world"><button type="button" data-world="farm" aria-pressed="true">Farm</button><button type="button" data-world="leaf" aria-pressed="false">Leaf</button><button type="button" data-world="crop" aria-pressed="false">Crop</button><button type="button" data-world="architecture" aria-pressed="false">System</button><button type="button" data-world="other" aria-pressed="false">Soil layers</button></div>';
     const story = $('#approach') || $('#models');
     if (story && story.parentNode) story.parentNode.insertBefore(host, story); else { const main = $('#showcaseMain'); if (main) main.append(host); }
     mount($('.rm3d-home-scene', host), 'farm', false);
