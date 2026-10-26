@@ -177,7 +177,7 @@
       blocks.forEach((block,i)=>{
         runTimer.push(setTimeout(()=>{if(myId!==runId)return;blocks.forEach((b,j)=>{b.classList.toggle('is-active',j===i);b.classList.toggle('is-passed',j<i);});nodeButtons.forEach((b,j)=>b.classList.toggle('is-active',j===i));selectNode(block.dataset.flowNode);},i*900));
       });
-      runTimer.push(setTimeout(()=>{if(myId!==runId)return;graph.classList.remove('is-running');$('#flowStatus').dataset.state='demo';$('#flowStatus').textContent='SIMULATION COMPLETE — the nodes were animated for explanation only. No API request, model inference, database write or external provider call occurred.';},4900);
+      runTimer.push(setTimeout(()=>{if(myId!==runId)return;graph.classList.remove('is-running');$('#flowStatus').dataset.state='demo';$('#flowStatus').textContent='SIMULATION COMPLETE — the nodes were animated for explanation only. No API request, model inference, database write or external provider call occurred.';},4900));
     });
   }
   $('#languageToggle')?.addEventListener('click',()=>{
