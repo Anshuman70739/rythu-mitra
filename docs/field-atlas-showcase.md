@@ -49,8 +49,8 @@ The homepage now has a scroll-driven four-chapter landscape scene. Users can scr
 
 ### Deep-dive URLs (existing backend routes only)
 - `/features`: interactive feature directory
-- `/features?topic=crop-recommendation`: crop input walkthrough and rotatable illustrative crop object
-- `/features?topic=plant-health`: local-only image preview, rotatable illustrative leaf and model-pipeline steps
+- `/features?topic=crop-recommendation`: crop input walkthrough and interactive procedural WebGL crop scene
+- `/features?topic=plant-health`: local-only image preview, interactive WebGL leaf scene and model-pipeline steps
 - `/features?topic=weather-market`: source, freshness and provider-state explainer
 - `/architecture?topic=data-flow`: selectable system nodes and animated conceptual data-flow simulation
 - `/about?topic=evidence`: dataset/model/evaluation evidence checklist and status vocabulary
