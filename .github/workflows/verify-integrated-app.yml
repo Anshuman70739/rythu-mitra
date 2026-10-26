@@ -87,6 +87,9 @@ jobs:
         run: |
           node --check static/js/rythu-mitra-app.js
           node --check static/js/monsoon-atlas.js
+          node --check static/js/monsoon-atlas-cinematic.js
+          node --check static/js/monsoon-atlas-experience.js
+          node --check static/js/monsoon-atlas-signature.js
 
       - name: Start Flask and smoke-test core HTTP routes
         shell: bash
@@ -127,8 +130,11 @@ jobs:
           base = "http://127.0.0.1:5000"
           paths = [
               "/", "/app", "/health", "/ready", "/api/session", "/privacy-policy",
-              "/terms-and-conditions", "/static/favicon.svg",
+              "/terms-and-conditions", "/about", "/features", "/architecture", "/static/favicon.svg",
               "/static/css/monsoon-atlas.css", "/static/js/monsoon-atlas.js",
+              "/static/css/monsoon-atlas-cinematic.css", "/static/js/monsoon-atlas-cinematic.js",
+              "/static/css/monsoon-atlas-workspace.css", "/static/css/monsoon-atlas-signature.css",
+              "/static/js/monsoon-atlas-experience.js", "/static/js/monsoon-atlas-signature.js",
           ]
           for path in paths:
               with urlopen(base + path, timeout=5) as response:
@@ -139,7 +145,7 @@ jobs:
                   raise SystemExit(f"FAIL {path}: HTTP {status}, empty_body={not body}")
               if path == "/" and (
                   "text/html" not in content_type
-                  or b"Empowering Farmers," not in body
+                  or b"A clearer path" not in body
               ):
                   raise SystemExit("Public Monsoon Atlas landing page did not return expected HTML.")
               if path == "/app" and (
@@ -156,5 +162,7 @@ jobs:
                   expected = "ok" if path == "/health" else "ready"
                   if payload.get("status") != expected:
                       raise SystemExit(f"{path} status was not {expected!r}: {payload}")
+              if path in {"/about", "/features", "/architecture"} and "text/html" not in content_type:
+                  raise SystemExit(f"Expected an HTML showcase page at {path}.")
               print(f"PASS {path}: HTTP {status} ({content_type})")
           PY
