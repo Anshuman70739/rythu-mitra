@@ -48,7 +48,7 @@
       'future.title':'Room for the next good idea.','future.p':'These are possible directions—not promised or completed features.',
       'collab.kicker':'07 / BUILD IT THOUGHTFULLY','collab.title':'A promising idea grows<br><em>with the right people.</em>',
       'collab.intro':'Rythu Mitra is an academic project in development. Feedback from collaborators, domain experts and potential users can help prioritise what to validate and build next.',
-      'collab.button':'Discuss collaboration','footer.note':'A farmer decision-support project concept.<br>Built with care; transparent about what remains to be verified.'
+      'collab.button':'Discuss collaboration','team.label':'TEAM & COLLABORATION · ROLES TO CONFIRM','team.context':'Project & field context','team.frontend':'Frontend experience','team.model':'Model & evaluation','team.data':'Data source verification','footer.note':'A farmer decision-support project concept.<br>Built with care; transparent about what remains to be verified.'
     },
     te: {
       'nav.story':'ప్రాజెక్ట్ కథ','nav.approach':'మా విధానం','nav.models':'మోడళ్లు','nav.architecture':'సాంకేతిక నిర్మాణం','nav.roadmap':'భవిష్యత్ ప్రణాళిక',
@@ -90,7 +90,7 @@
       'future.title':'తదుపరి మంచి ఆలోచనకు స్థలం.','future.p':'ఇవి సాధ్యమైన దిశలు మాత్రమే—పూర్తయిన లేదా హామీ ఇచ్చిన ఫీచర్లు కావు.',
       'collab.kicker':'07 / ఆలోచనతో నిర్మిద్దాం','collab.title':'మంచి ఆలోచన ఎదుగుతుంది<br><em>సరైన వ్యక్తులతో.</em>',
       'collab.intro':'రైతు మిత్ర అభివృద్ధిలో ఉన్న విద్యా ప్రాజెక్ట్. సహకారులు, రంగ నిపుణులు, భావితర వినియోగదారుల అభిప్రాయాలు తదుపరి ధృవీకరణ, నిర్మాణ పనులకు ప్రాధాన్యం నిర్ణయించడంలో సహాయపడతాయి.',
-      'collab.button':'సహకారం గురించి చర్చించండి','footer.note':'రైతు నిర్ణయ సహాయక ప్రాజెక్ట్ కాన్సెప్ట్.<br>ధృవీకరించాల్సిన విషయాలపై పారదర్శకతతో రూపొందించబడింది.'
+      'collab.button':'సహకారం గురించి చర్చించండి','team.label':'బృందం & సహకారం · పాత్రలు నిర్ధారించాలి','team.context':'ప్రాజెక్ట్ & క్షేత్ర సందర్భం','team.frontend':'ఫ్రంట్‌ఎండ్ అనుభవం','team.model':'మోడల్ & మూల్యాంకనం','team.data':'డేటా మూలాల ధృవీకరణ','footer.note':'రైతు నిర్ణయ సహాయక ప్రాజెక్ట్ కాన్సెప్ట్.<br>ధృవీకరించాల్సిన విషయాలపై పారదర్శకతతో రూపొందించబడింది.'
     }
   };
   const mapped = [
@@ -110,7 +110,7 @@
     ['.integrity-note strong','integrity.title'],['.integrity-note p','integrity.p'],['.architecture-intro p','arch.map.title'],['.architecture-intro small','arch.map.p'],
     ['.status-grid article:nth-child(1) h3','status.card1'],['.status-grid article:nth-child(1) p','status.card1p'],['.status-grid article:nth-child(2) h3','status.card2'],['.status-grid article:nth-child(2) p','status.card2p'],['.status-grid article:nth-child(3) h3','status.card3'],['.status-grid article:nth-child(3) p','status.card3p'],
     ['.roadmap-line article:nth-child(1) h3','roadmap.card1'],['.roadmap-line article:nth-child(1) p','roadmap.card1p'],['.roadmap-line article:nth-child(2) h3','roadmap.card2'],['.roadmap-line article:nth-child(2) p','roadmap.card2p'],['.roadmap-line article:nth-child(3) h3','roadmap.card3'],['.roadmap-line article:nth-child(3) p','roadmap.card3p'],
-    ['.future-catalogue h3','future.title'],['.future-catalogue p','future.p'],['.collab-copy .section-kicker','collab.kicker'],['.collab-copy h2','collab.title'],['.collab-copy>p:not(.fineprint)','collab.intro'],['#collabButton','collab.button'],['.site-footer>p','footer.note']
+    ['.future-catalogue h3','future.title'],['.future-catalogue p','future.p'],['.collab-copy .section-kicker','collab.kicker'],['.collab-copy h2','collab.title'],['.collab-copy>p:not(.fineprint)','collab.intro'],['#collabButton','collab.button'],['.team-areas-label','team.label'],['.team-area-list span:nth-child(1)','team.context'],['.team-area-list span:nth-child(2)','team.frontend'],['.team-area-list span:nth-child(3)','team.model'],['.team-area-list span:nth-child(4)','team.data'],['.site-footer>p','footer.note']
   ];
   const englishSnapshots = new Map();
   function setLanguage(lang) {
