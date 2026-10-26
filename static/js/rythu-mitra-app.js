@@ -516,15 +516,17 @@
     try { sessionStorage.setItem('rm-field-signature-played','1'); } catch { /* Animation remains one-time per render state. */ }
   }
 
-  async function renderHome() {
-    const title = t('home.title','Farm tasks and latest updates');
-    if (!state.user) {
-      return htmlPage('home', `<section class="hero-panel"><svg id="fieldSignature" class="field-signature" viewBox="0 0 260 150" aria-hidden="true" focusable="false"><path pathLength="1" d="M8 28 C56 4 111 8 151 28 S222 55 252 23"/><path pathLength="1" d="M8 57 C52 35 105 37 151 57 S220 83 252 52"/><path pathLength="1" d="M8 86 C54 65 110 66 155 86 S217 110 252 81"/><path pathLength="1" d="M8 115 C54 96 106 96 153 116 S218 140 252 110"/></svg><span class="kicker">${esc(t('top.kicker','FIELD NOTEBOOK / TELANGANA'))}</span><h2>${esc(t('home.guestTitle'))}</h2><p>${esc(t('home.guestBody'))}</p><div class="button-row"><button class="button button--primary" data-action="open-auth" data-auth-mode="login">${esc(t('home.signIn'))}</button><button class="button button--secondary" data-action="open-auth" data-auth-mode="register">${esc(t('home.register'))}</button></div></section><div class="grid grid--2">${panel(t('home.shortTitle'), `<div class="module-grid">${cardLink('crop-health',t('nav.cropHealth'),t('page.cropHealthDesc'),'i-leaf')}${cardLink('seed-safety',t('nav.seedSafety'),t('page.seedSafetyDesc'),'i-shield')}${cardLink('weather',t('nav.weather'),t('page.weatherDesc'),'i-weather')}${cardLink('markets',t('nav.markets'),t('page.marketsDesc'),'i-market')}</div>`)}${panel(t('home.weather'), `<p class="muted-copy">${esc(t('weather.noProvider'))}</p>${statusBadge('UNAVAILABLE')}`, '')}</div>`, { title });
+    function renderGuestHome(title = t('home.title','Farm tasks and latest updates')) {
+      return htmlPage('home', `<section class="hero-panel"><svg id="fieldSignature" class="field-signature" viewBox="0 0 260 150" aria-hidden="true" focusable="false"><path pathLength="1" d="M8 28 C56 4 111 8 151 28 S222 55 252 23"/><path pathLength="1" d="M8 57 C52 35 105 37 151 57 S220 83 252 52"/><path pathLength="1" d="M8 86 C54 65 110 66 155 86 S217 110 252 81"/><path pathLength="1" d="M8 115 C54 96 106 96 153 116 S218 140 252 110"/></svg><span class="kicker">${esc(t('top.kicker','FIELD NOTEBOOK / TELANGANA'))}</span><h2>${esc(t('home.guestTitle'))}</h2><p>${esc(t('home.guestBody'))}</p><div class="button-row"><button class="button button--primary" data-action="open-auth" data-auth-mode="login">${esc(t('home.signIn'))}</button><button class="button button--secondary" data-action="open-auth" data-auth-mode="register">${esc(t('home.register'))}</button></div></section><div class="grid grid--2">${panel(t('home.shortTitle'), `<div class="module-grid">${cardLink('crop-planning',t('nav.cropPlanning'),t('page.cropPlanningDesc'),'i-plan')}${cardLink('crop-health',t('nav.cropHealth'),t('page.cropHealthDesc'),'i-leaf')}${cardLink('seed-safety',t('nav.seedSafety'),t('page.seedSafetyDesc'),'i-shield')}${cardLink('weather',t('nav.weather'),t('page.weatherDesc'),'i-weather')}${cardLink('markets',t('nav.markets'),t('page.marketsDesc'),'i-market')}</div>`)}${panel(t('home.weather'), `<p class="muted-copy">${esc(t('weather.noProvider'))}</p>${statusBadge('UNAVAILABLE')}`, '')}</div>`, { title });
     }
+
+async function renderHome() {
+    const title = t('home.title','Farm tasks and latest updates');
+    if (!state.user) return renderGuestHome(title);
     let data;
     try { data = mapDashboardResponse(await api('/api/dashboard')); }
     catch (error) {
-      if (error.status === 401) { state.user = null; renderNavigation(); return htmlPage('home', authOrExplain()); }
+      if (error.status === 401) { state.user = null; state.session = { ...(state.session || {}), user: null }; state.sessionStatus = 'signed-out'; renderNavigation(); return renderGuestHome(title); }
       return htmlPage('home', errorBox(error.message, 'home'));
     }
     const profile = data.profile || {};
