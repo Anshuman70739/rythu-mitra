@@ -207,6 +207,39 @@
     const marks = nodesGroup.children.flatMap(g => g.children.filter(o => o.userData.rmHotspot || o.userData.rmNodeId));
     return { root, model: nodesGroup, marks, nodesGroup, materialSet, packets, stageNames: ['Crop request', 'Plant-health request', 'Weather request'], applyStage: i => { nodesGroup.children.forEach((g, j) => { g.visible = true; g.scale.setScalar(i === 1 && j === 3 ? 1.18 : 1); }); } };
   }
+  function createSoilScene() {
+    const root = new THREE.Group(), layers = new THREE.Group(), roots = new THREE.Group();
+    root.add(layers, roots);
+    const layerDefs = [
+      { y: 0.9, h: 0.34, color: '#78966a', label: 'Topsoil: organic matter and surface activity.' },
+      { y: 0.42, h: 0.58, color: '#a77f58', label: 'Topsoil zone: illustrative texture, not a soil test.' },
+      { y: -0.26, h: 0.72, color: '#c6a47b', label: 'Subsoil: real composition depends on the actual field.' },
+      { y: -0.95, h: 0.62, color: '#9b927c', label: 'Weathered parent material: conceptual cross-section.' }
+    ];
+    layerDefs.forEach((d, i) => {
+      const block = new THREE.Mesh(new THREE.BoxGeometry(4.9, d.h, 1.9), mat(d.color));
+      block.position.set(0, d.y, 0); block.userData.rmNote = d.label; block.userData.rmHotspot = true; layers.add(block);
+      for (let j = 0; j < 7; j++) {
+        const pebble = new THREE.Mesh(new THREE.SphereGeometry(0.035 + (j%2)*0.015, 6, 5), mat(i === 0 ? '#dce4bf' : '#715f4b'));
+        pebble.position.set(-2 + (j*0.59)%4, d.y + (j%3-1)*0.09, 0.99); layers.add(pebble);
+      }
+    });
+    const rootMat = mat('#ead2a7');
+    for (let i = 0; i < 15; i++) {
+      const x = Math.sin(i*2.2)*0.42, y = 0.91, z = 0.16;
+      const ex = Math.sin(i*1.37)* (0.3+(i%4)*0.18), ey = -1.25-(i%5)*0.08, ez = z+(i%3)*0.06;
+      roots.add(segment([x,y,z],[ex,ey,ez],0.018,rootMat));
+      if (i%2===0) roots.add(segment([ex,ey,ez],[ex+Math.cos(i)*0.4,ey-0.18,ez+0.03],0.009,rootMat));
+    }
+    const rain = new THREE.Group();
+    for(let i=0;i<24;i++){
+      const drop=new THREE.Mesh(new THREE.SphereGeometry(0.035,6,5),new THREE.MeshStandardMaterial({color:'#74a8bc',emissive:'#47798a',emissiveIntensity:0.25}));
+      drop.position.set(-2.1+(i%8)*0.6,1.45+Math.floor(i/8)*0.18,-0.35+(i%3)*0.25); rain.add(drop);
+    }
+    root.add(rain);
+    const marks = layers.children.filter(o=>o.userData.rmHotspot);
+    return {root,model:layers,marks,stageNames:['Soil layers','Root zone','Moisture concept'],applyStage:i=>{roots.visible=i!==0;rain.visible=i!==1;layers.children.forEach((o,j)=>{if(o.userData.rmHotspot)o.material.emissive=new THREE.Color(i===j?'#3e6345':'#000000');});}};
+  }
   function createHistoryScene() {
     const root = new THREE.Group(), path = new THREE.Group(); root.add(path);
     const points = [
@@ -233,9 +266,9 @@
     const marks = path.children.filter(o => o.userData.rmHotspot);
     return { root, model: path, marks, stageNames: names, applyStage: i => { const m = marks[i]; if (m) { root.rotation.y = i * 0.22; } } };
   }
-  const BUILDERS = { leaf: createLeafScene, crop: createCropScene, farm: createFarmScene, architecture: createArchitectureScene, history: createHistoryScene };
+  const BUILDERS = { leaf: createLeafScene, crop: createCropScene, farm: createFarmScene, architecture: createArchitectureScene, history: createHistoryScene, other: createSoilScene };
   function sceneTitle(kind) {
-    return ({ leaf: 'Leaf anatomy', crop: 'Crop structure', farm: 'Field explorer', architecture: 'System data flow', history: 'Project timeline' })[kind] || '3D explorer';
+    return ({ leaf: 'Leaf anatomy', crop: 'Crop structure', farm: 'Field explorer', architecture: 'System data flow', history: 'Project timeline', other: 'Soil & root layers' })[kind] || '3D explorer';
   }
   function createShell(host, initialKind, compact) {
     host.classList.add('rm3d-host');
@@ -365,7 +398,7 @@
       if (!host.isConnected) return;
       state = {
         host, kind, compact: !!compact, scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(38, 1, 0.1, 100),
-        controls: null, renderer: null, group: null, built: null, raf: 0, elapsed: 0, running: true,
+        controls: null, renderer: null, group: null, built: null, raf: 0, elapsed: 0, running: !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
         showHotspots: true, exploded: false, fitDistance: 8, ro: null, pointer: new THREE.Vector2(),
         ray: new THREE.Raycaster(), stage: 0, clock: new THREE.Clock()
       };
@@ -414,9 +447,9 @@
     if (!wrap) return;
     const host = document.createElement('section');
     host.className = 'rm3d-home-panel';
-    host.innerHTML = '<div class="rm3d-home-heading"><span>FIELD ATLAS / INTERACTIVE WORLD</span><h2>Step into the field.</h2><p>Explore real-time 3D interaction in a locally generated scene. Rotate, zoom, inspect hotspots and switch worlds.</p></div><div class="rm3d-home-scene"></div><div class="rm3d-world-switch" aria-label="Choose a 3D world"><button type="button" data-world="farm" aria-pressed="true">Farm</button><button type="button" data-world="leaf" aria-pressed="false">Leaf</button><button type="button" data-world="crop" aria-pressed="false">Crop</button><button type="button" data-world="architecture" aria-pressed="false">System</button></div>';
-    const story = $('#approach') || $('#models') || $('#showcaseMain');
-    if (story && wrap.parentNode) wrap.parentNode.insertBefore(host, story);
+    host.innerHTML = '<div class="rm3d-home-heading"><span>FIELD ATLAS / INTERACTIVE WORLD</span><h2>Step into the field.</h2><p>Explore real-time 3D interaction in a locally generated scene. Rotate, zoom, inspect hotspots and switch worlds.</p></div><div class="rm3d-home-scene"></div><div class="rm3d-world-switch" aria-label="Choose a 3D world"><button type="button" data-world="farm" aria-pressed="true">Farm</button><button type="button" data-world="leaf" aria-pressed="false">Leaf</button><button type="button" data-world="crop" aria-pressed="false">Crop</button><button type="button" data-world="architecture" aria-pressed="false">System</button><button type="button" data-world="other" aria-pressed="false">Soil layers</button></div>';
+    const story = $('#approach') || $('#models');
+    if (story && story.parentNode) story.parentNode.insertBefore(host, story); else { const main = $('#showcaseMain'); if (main) main.append(host); }
     mount($('.rm3d-home-scene', host), 'farm', false);
     $('.rm3d-world-switch', host).addEventListener('click', async e => {
       const btn = e.target.closest('[data-world]'); if (!btn) return;
