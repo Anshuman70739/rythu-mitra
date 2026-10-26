@@ -44,6 +44,7 @@ The homepage now has a scroll-driven four-chapter landscape scene. Users can scr
 - `static/js/rythu-mitra-field-atlas.js`: chapter tracking, jump-to-chapter controls, bilingual chapter copy, desktop parallax and pause state.
 - `templates/showcase_page.html`: shared page shell used by existing Flask `/about`, `/features`, and `/architecture` routes.
 - `static/css/rythu-mitra-field-atlas-deepdive.css` and `static/js/rythu-mitra-field-atlas-deepdive.js`: dedicated interactive pages, local-only model labs and concept architecture simulation.
+- `static/models/rythu-leaf.gltf` and `static/models/rythu-cereal-crop.gltf`: repository-owned reusable glTF mesh assets, with inline geometry buffers so they do not depend on separate model files.
 - `static/js/rythu-mitra-3d-experience.js`: real Three.js/WebGL procedural 3D scenes for leaf anatomy, crop structure, farm rows, a soil cross-section, architecture data flow and the project timeline. Includes drag rotation, wheel/pinch zoom, selectable hotspots, stages, animated packets, explode/reset controls and optional GLB/GLTF asset loading when a model URL is provided.
 - `static/css/rythu-mitra-field-atlas-3d.css`: responsive 3D viewer controls, loading/error states, scene layouts and the commit-linked history timeline.
 
@@ -61,7 +62,7 @@ All of these use existing route handlers and a query parameter to select the pag
 
 ## 3D implementation notes
 - The 3D engine is loaded as a version-pinned browser module from esm.sh. If the module cannot load or WebGL is unavailable, the scene shows a visible error state instead of pretending the CSS illustration is a working model.
-- Current scenes are generated from Three.js geometry, with an optional GLTFLoader hook for future repository-owned `.glb` / `.gltf` assets. They are not measured copies of real crops, fields, or system telemetry.
+- Current scenes are generated from Three.js geometry, with repository-owned `.gltf` assets for the leaf and cereal-like crop, loaded through GLTFLoader. If asset loading fails, procedural WebGL scenes remain available. They are not measured copies of real crops, fields, or system telemetry.
 - Scene motion respects the system reduced-motion setting; camera rotation, zoom and visible controls are available on mouse and touch.
 - History entries link to repository commits when an exact commit is known and to the live branch history for the newest showcase changes. Planned integrations are explicitly labelled.
 
