@@ -429,7 +429,7 @@
       if (optional && GLTFLoader) {
         new GLTFLoader().load(optional, gltf => { state.scene.add(gltf.scene); detail(state, '3D asset loaded', 'An optional GLB/GLTF asset loaded successfully. Procedural scene remains available as a reference.'); }, undefined, () => detail(state, 'Asset unavailable', 'The optional GLB/GLTF asset could not be loaded; procedural 3D remains active.'));
       }
-      state.visible = false;
+      state.visible = !window.IntersectionObserver;
       state.visibilityObserver = window.IntersectionObserver ? new IntersectionObserver(entries => { state.visible = !!entries[0]?.isIntersecting; }) : null;
       state.visibilityObserver?.observe(host);
       const pauseButton = $('[data-action="pause"]', host);
@@ -539,7 +539,7 @@
       observer = new MutationObserver(()=>swapStoryScene(stage.dataset.step||0));
       observer.observe(stage,{attributes:true,attributeFilter:['data-step']});
       const motion=$('#motionToggle');
-      motion?.addEventListener('click',()=>{storyState.running=!storyState.running;});
+      motion?.addEventListener('click',()=>{storyState.running=!storyState.running;active.forEach(s=>{s.running=storyState.running;});});
       window.addEventListener('pagehide',()=>{observer?.disconnect();storyVisibility?.disconnect();storyState.ro?.disconnect();storyState.controls?.dispose();disposeObject(storyState.group);storyState.renderer?.dispose();},{once:true});
       frame();
     } catch(error) {
