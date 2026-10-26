@@ -104,8 +104,8 @@
     $('#technicalToggle').innerHTML = state.lang === 'te' ? (state.technical ? 'సాధారణ వీక్షణ <span>↗</span>' : 'సాంకేతిక వివరాలు <span>↗</span>') : (state.technical ? 'Overview view <span>↗</span>' : 'Technical view <span>↗</span>');
     const details = $('#technicalDetails');
     if(details) details.hidden = !state.technical;
-    $$('.accordion-panel').forEach(panel => { if(state.technical) panel.hidden = false; });
-    $$('.accordion-trigger').forEach(btn => { btn.setAttribute('aria-expanded',String(state.technical)); if(state.technical) btn.querySelector('span').textContent='−'; });
+    $('.accordion-panel').forEach(panel => { panel.hidden = !state.technical; });
+    $('.accordion-trigger').forEach(btn => { btn.setAttribute('aria-expanded',String(state.technical)); btn.querySelector('span').textContent = state.technical ? '−' : '＋'; });
   });
 
   $$('.accordion-trigger').forEach(btn => btn.addEventListener('click', () => {
