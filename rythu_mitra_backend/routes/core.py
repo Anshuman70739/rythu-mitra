@@ -51,6 +51,24 @@ def app_workspace():
     return render_template("rythu_mitra.html", csrf_token=session.get("csrf_token", ""))
 
 
+@bp.get("/about")
+def public_about():
+    """Serve the public project story page."""
+    return render_template("showcase_page.html", page="about", csrf_token=session.get("csrf_token", ""))
+
+
+@bp.get("/features")
+def public_features():
+    """Serve the public feature showcase page."""
+    return render_template("showcase_page.html", page="features", csrf_token=session.get("csrf_token", ""))
+
+
+@bp.get("/architecture")
+def public_architecture():
+    """Serve the public technical architecture story page."""
+    return render_template("showcase_page.html", page="architecture", csrf_token=session.get("csrf_token", ""))
+
+
 @bp.get("/privacy-policy")
 def privacy_policy():
     """Serve the project-specific privacy information page."""
