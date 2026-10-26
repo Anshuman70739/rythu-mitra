@@ -37,3 +37,29 @@ The current application has paths including `/api/session`, `/api/login`, `/api/
 - The previously approved `preview/landing-animations` and its Render service are not part of this iteration.
 - `baseline/monsoon-atlas-approved` and `main` are untouched.
 - Do not merge/promote the experiment without explicit approval.
+
+## Cinematic story and dedicated explorer pages
+The homepage now has a scroll-driven four-chapter landscape scene. Users can scroll through the field → separate information signals → connected context → human decision support story, or use the numbered chapter buttons. The background landscape reacts subtly to pointer movement on fine-pointer devices. Motion can be paused and reduced-motion preferences are respected.
+- `static/css/rythu-mitra-field-atlas-cinematic.css`: sticky scene, landscape layers, chapter state transitions, connecting paths, small pointer parallax.
+- `static/js/rythu-mitra-field-atlas.js`: chapter tracking, jump-to-chapter controls, bilingual chapter copy, desktop parallax and pause state.
+- `templates/showcase_page.html`: shared page shell used by existing Flask `/about`, `/features`, and `/architecture` routes.
+- `static/css/rythu-mitra-field-atlas-deepdive.css` and `static/js/rythu-mitra-field-atlas-deepdive.js`: dedicated interactive pages, local-only model labs and concept architecture simulation.
+
+### Deep-dive URLs (existing backend routes only)
+- `/features`: interactive feature directory
+- `/features?topic=crop-recommendation`: crop input walkthrough and rotatable illustrative crop object
+- `/features?topic=plant-health`: local-only image preview, rotatable illustrative leaf and model-pipeline steps
+- `/features?topic=weather-market`: source, freshness and provider-state explainer
+- `/architecture?topic=data-flow`: selectable system nodes and animated conceptual data-flow simulation
+- `/about?topic=evidence`: dataset/model/evaluation evidence checklist and status vocabulary
+- `/about?topic=roadmap`: current-priority / next / future roadmap and feature catalogue
+
+All of these use existing route handlers and a query parameter to select the page content. No backend routes, authentication, database code or model services were edited to introduce the explorer pages.
+
+## Simulation boundaries
+- The scroll story is illustrative motion, not a live map or a telemetry feed.
+- The crop object and leaf are CSS 3D-style illustrations, not agronomic growth simulators or disease models.
+- Crop-input validation runs in the browser and does not call `POST /api/recommendations`.
+- Plant-image preview uses a browser-local object URL and does not upload the image or call `POST /api/disease-scan`.
+- Architecture animation is conceptual and sends no network request.
+- Weather/market page does not fetch current values.
