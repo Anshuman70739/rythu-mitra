@@ -670,9 +670,9 @@ async function renderHome() {
       ['soil-inputs', t('nav.soilInputs', 'Soil inputs'), t('page.soilInputsDesc', 'Keep soil test values and input records traceable.'), 'i-soil', 'atlas-tone--leaf']
     ].map(([route, label, description, symbol, tone]) => toolCard(route, label, description, symbol, tone)).join('');
 
-    const weatherValue = weatherAvailable && weather.temperature != null ? esc(num(weather.temperature)) + '°' : '—';
+    const weatherValue = weatherAvailable && weather.temperature != null ? esc(num(weather.temperature)) + '°' : '-';
     const weatherNote = weatherAvailable ? (weather.source_name || weather.reason || t('common.noSourceMetadata', 'No source metadata returned.')) : t('home.noWeather', 'Weather was not available in the dashboard response.');
-    const marketValue = markets.length ? esc(num(markets.length, 0)) : '—';
+    const marketValue = markets.length ? esc(num(markets.length, 0)) : '-';
     const marketNote = firstMarket ? (firstMarket.price_date ? (t('field.price_date', 'Price date') + ': ' + firstMarket.price_date) : t('home.market', 'Market snapshot')) : t('home.noMarket', 'No market record was returned.');
     const stats = [
       { label: t('home.taskTitle', 'Crop tasks returned by the backend'), value: esc(num(tasks.length, 0)), note: t('home.tasksNote', 'Tasks returned by backend'), symbol: 'i-plan', tone: 'atlas-tone--leaf', badge: statusBadge(data.status || 'PARTIAL_DASHBOARD') },
