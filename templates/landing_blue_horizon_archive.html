@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F5F8F4">
+  <meta name="description" content="Rythu Mitra — a farmer decision-support project exploring clearer connections between field conditions, crop health, weather and market information.">
+  <title>Rythu Mitra — A clearer path from field to decision</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/monsoon-atlas-cinematic.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/monsoon-atlas-signature.css') }}">
+  <script src="{{ url_for('static', filename='js/monsoon-atlas-cinematic.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/monsoon-atlas-signature.js') }}" defer></script>
+</head>
+<body class="showcase-page">
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
+<header class="masthead" id="masthead">
+  <div class="masthead__inner">
+    <a class="brand" href="/" aria-label="Rythu Mitra home">
+      <span class="brand__symbol" aria-hidden="true"><svg viewBox="0 0 44 44"><path d="M22 36V11M22 22C9 22 8 13 8 8c10 0 14 5 14 14ZM22 29c13 0 14-9 14-14-10 0-14 5-14 14Z"/><path d="M7 37c8-4 22-4 30 0"/></svg></span>
+      <span class="brand__copy"><strong>Rythu Mitra</strong><small>Field knowledge, in better focus</small></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Open menu"><span></span><span></span></button>
+    <nav class="site-nav" id="siteNav" aria-label="Main navigation">
+      <a href="#story" data-en="The story" data-te="మా కథ">The story</a>
+      <a href="/about" data-en="About" data-te="గురించి">About</a>
+      <a href="/features" data-en="Explore features" data-te="ఫీచర్లు">Explore features</a>
+      <a href="/architecture" data-en="Technology" data-te="సాంకేతికత">Technology</a>
+      <div class="language-switch" aria-label="Choose language">
+        <button type="button" data-language="en" aria-pressed="true">EN</button>
+        <button type="button" data-language="te" aria-pressed="false">తెలుగు</button>
+      </div>
+      <button class="utility-toggle" id="motionToggle" type="button" aria-pressed="false" title="Pause decorative motion"><span aria-hidden="true">Ⅱ</span><span data-en="Motion on" data-te="చలనం ఆన్">Motion on</span></button>
+      <button class="utility-toggle sound-toggle" id="soundToggle" type="button" aria-pressed="false" title="Optional ambient tone, off by default"><span aria-hidden="true">♫</span><span data-en="Sound off" data-te="శబ్దం ఆఫ్">Sound off</span></button>
+      <a class="nav-cta" href="/app"><span data-en="Open platform" data-te="ప్లాట్‌ఫారమ్ తెరవండి">Open platform</span><span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="home" aria-labelledby="heroTitle">
+    <div class="hero__atmosphere" aria-hidden="true"><span class="atmosphere-glow"></span><span class="atmosphere-grain"></span><span class="atmosphere-line atmosphere-line--one"></span><span class="atmosphere-line atmosphere-line--two"></span></div>
+    <div class="hero__content">
+      <div class="hero__copy">
+        <p class="eyebrow"><span class="eyebrow__index">01</span><span data-en="A FIELD-TO-DECISION PROJECT" data-te="పొలం నుంచి నిర్ణయం వరకు">A FIELD-TO-DECISION PROJECT</span></p>
+        <h1 id="heroTitle"><span class="title-mask"><span data-en="A clearer path" data-te="మరింత స్పష్టమైన">A clearer path</span></span><span class="title-mask"><em data-en="from field to decision." data-te="పొలం నుంచి నిర్ణయం వరకు.">from field to decision.</em></span></h1>
+        <p class="hero__intro" data-en="Rythu Mitra brings crop insights, weather, market information and farm guidance into one connected project—designed around the decisions that shape a season." data-te="రైతు మిత్ర పంట సమాచారం, వాతావరణం, మార్కెట్ వివరాలు, వ్యవసాయ మార్గదర్శకత్వాన్ని ఒకే వేదికలో కలపడానికి రూపొందించిన ప్రాజెక్ట్.">Rythu Mitra brings crop insights, weather, market information and farm guidance into one connected project—designed around the decisions that shape a season.</p>
+        <div class="hero__actions">
+          <a class="magnetic-button magnetic-button--primary" href="#story"><span data-en="Explore the story" data-te="కథను చూడండి">Explore the story</span><span aria-hidden="true">↓</span></a>
+          <a class="magnetic-button magnetic-button--ghost" href="/app"><span data-en="Enter the platform" data-te="ప్లాట్‌ఫారమ్‌లోకి వెళ్లండి">Enter the platform</span><span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero__footnote"><span class="orbit-dot" aria-hidden="true"></span><span data-en="A living prototype for better-informed farm decisions" data-te="మెరుగైన వ్యవసాయ నిర్ణయాల కోసం అభివృద్ధి చేస్తున్న నమూనా">A living prototype for better-informed farm decisions</span></div>
+      </div>
+      <div class="hero__scene" id="heroScene" aria-label="A layered illustration of fields, hills and monsoon light">
+        <div class="scene-depth scene-depth--sky" data-depth="0.15"></div>
+        <div class="scene-sun" data-depth="0.22"><span></span></div>
+        <svg class="scene-landscape" viewBox="0 0 980 760" role="img" aria-labelledby="landTitle landDesc">
+          <title id="landTitle">A layered landscape inspired by Telangana farmland</title>
+          <desc id="landDesc">Soft monsoon sky, distant hills, curved crop fields and a winding path into the landscape.</desc>
+          <defs>
+            <linearGradient id="atlasSky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#BFDDE5"/><stop offset=".53" stop-color="#EAF2E8"/><stop offset="1" stop-color="#F8E6C4"/></linearGradient>
+            <radialGradient id="atlasSun"><stop stop-color="#FFF3CE" stop-opacity=".95"/><stop offset=".38" stop-color="#F3C66B" stop-opacity=".32"/><stop offset="1" stop-color="#F3C66B" stop-opacity="0"/></radialGradient>
+            <linearGradient id="atlasHillOne" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#A9C9C4"/><stop offset="1" stop-color="#7DA89A"/></linearGradient>
+            <linearGradient id="atlasFieldOne" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#A7C78D"/><stop offset="1" stop-color="#518465"/></linearGradient>
+            <linearGradient id="atlasPath" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F0CB8D"/><stop offset="1" stop-color="#C58C5F"/></linearGradient>
+            <clipPath id="sceneClip"><rect x="0" y="0" width="980" height="760" rx="32"/></clipPath>
+          </defs>
+          <g clip-path="url(#sceneClip)">
+            <rect width="980" height="760" fill="url(#atlasSky)"/>
+            <rect width="980" height="760" fill="url(#atlasSun)"/>
+            <circle cx="714" cy="242" r="63" fill="#F4C96F" opacity=".82"/><circle cx="714" cy="242" r="101" fill="none" stroke="#FFF4D6" stroke-width="2" opacity=".7"/><circle cx="714" cy="242" r="132" fill="none" stroke="#FFF4D6" stroke-width="1" opacity=".35"/>
+            <g class="cloud-shape cloud-shape--a" fill="#FFFFFF" opacity=".76"><path d="M67 171c-25 0-43-17-43-38s17-37 39-37c8-26 35-41 63-33 18 5 31 18 37 35 7-3 14-5 21-5 27 0 48 18 48 41s-18 37-42 37H67Z"/></g>
+            <g class="cloud-shape cloud-shape--b" fill="#FFFFFF" opacity=".58"><path d="M470 128c-17 0-30-12-30-27 0-14 12-26 27-27 6-20 26-31 47-25 13 4 23 13 28 26 5-2 10-3 16-3 20 0 36 14 36 31 0 15-13 27-31 27H470Z"/></g>
+            <path d="M-30 384C83 311 163 323 246 353c95 34 158-56 259-68 105-12 155 52 252 39 97-12 153 22 253-2v438H-30Z" fill="#C1D7C9"/>
+            <path d="M-30 453c104-73 199-50 286-26 107 30 176-30 274-29 104 1 163 62 259 49 85-11 144-7 221 21v292H-30Z" fill="url(#atlasHillOne)"/>
+            <path d="M-20 509c117-44 191-22 284 9 110 37 174 8 281-1 98-8 168 42 264 33 74-7 129 13 201 37v173H-20Z" fill="#91B88E"/>
+            <g class="contour-draw" fill="none" stroke="#DBE8D1" stroke-width="2.5" opacity=".88"><path d="M0 533c112-34 190-19 280 9s170 20 264 4 172 2 257 20 124 13 179-3"/><path d="M0 562c112-31 190-17 280 11s170 21 264 5 172 3 257 21 124 13 179-3"/><path d="M0 590c112-29 190-15 280 13s170 22 264 6 172 5 257 22 124 13 179-3"/></g>
+            <path d="M-30 625c95-49 204-36 313-7 118 32 185 75 297 58 113-17 208 10 430 71v70H-30Z" fill="url(#atlasFieldOne)"/>
+            <path d="M-30 687c104-30 200-10 302 17 122 32 204 13 314 12 114-1 221 21 424 43v50H-30Z" fill="#2F6E54"/>
+            <path d="M475 760c-44-76-9-127 31-164 34-31 59-42 63-70 4-29-31-55-58-74 45 19 92 45 86 80-5 31-37 47-65 81-28 34-43 75-13 147Z" fill="url(#atlasPath)" opacity=".94"/>
+            <g class="field-ridges" fill="none" stroke="#DAE6B9" stroke-width="3" opacity=".9"><path d="M-20 717c133-45 208 3 300 19 92 16 132 13 226-2"/><path d="M-20 739c133-45 208 3 300 19 92 16 132 13 226-2"/><path d="M584 713c97-12 188 18 419 49"/><path d="M576 735c97-12 188 18 419 49"/></g>
+            <g class="crop-silhouette" stroke-linecap="round" fill="none"><g transform="translate(94 617)" stroke="#2D6D4E" stroke-width="7"><path d="M0 125-3 0M-1 65-27 42M0 47 25 23M0 25-15 9"/><path d="M16 125 23 13M20 74 43 53" stroke="#87AC66" stroke-width="6"/></g><g transform="translate(820 609)" stroke="#2D6D4E" stroke-width="7"><path d="M0 125-3 0M-1 65-27 42M0 47 25 23M0 25-15 9"/><path d="M16 125 23 13M20 74 43 53" stroke="#87AC66" stroke-width="6"/></g></g>
+            <g class="bird-batch" fill="none" stroke="#284A43" stroke-linecap="round" stroke-width="4"><path d="M0 10q12-15 23 0q12-15 24 0"/><path d="M59 33q10-12 20 0q10-12 20 0"/></g>
+            <g class="foreground-leaves" transform="translate(0 0)" fill="#316C50"><path d="M0 760V675c39 4 63 25 72 59-28-4-47-19-72-59Z"/><path d="M0 760V707c48-13 76-3 102 24-37 2-62-3-102-24Z"/></g>
+          </g>
+        </svg>
+        <div class="scene-float scene-float--weather" data-depth="0.35"><span class="float-symbol">☼</span><div><small>WEATHER</small><strong>Source-aware</strong><span>Forecast when available</span></div></div>
+        <div class="scene-float scene-float--crop" data-depth="0.5"><span class="float-symbol float-symbol--leaf">✳</span><div><small>CROP HEALTH</small><strong>Model-assisted</strong><span>Not a confirmed diagnosis</span></div></div>
+        <div class="scene-caption"><span>MONSOON ATLAS / 01</span><span>Illustrated concept scene</span></div>
+      </div>
+    </div>
+    <div class="hero__bottom"><span data-en="TELANGANA · FIELD KNOWLEDGE · CONNECTED TOOLS" data-te="తెలంగాణ · వ్యవసాయ జ్ఞానం · అనుసంధాన సాధనాలు">TELANGANA · FIELD KNOWLEDGE · CONNECTED TOOLS</span><a href="#story" class="scroll-cue"><span class="scroll-cue__line"></span><span data-en="Scroll to discover" data-te="మరింత చూడటానికి స్క్రోల్ చేయండి">Scroll to discover</span></a><span>01 — 04</span></div>
+  </section>
+
+  <section class="manifesto section-pad" id="story">
+    <div class="section-index reveal"><span>02</span><i></i><span data-en="THE CHALLENGE" data-te="సవాలు">THE CHALLENGE</span></div>
+    <div class="manifesto__grid">
+      <div class="manifesto__statement reveal"><p class="eyebrow" data-en="A season is made of many decisions." data-te="ఒక పంటకాలం అనేక నిర్ణయాలతో రూపుదిద్దుకుంటుంది.">A season is made of many decisions.</p><h2 data-en="The signals are scattered. The decisions are connected." data-te="సమాచారం చెల్లాచెదురుగా ఉంది. నిర్ణయాలు పరస్పరం అనుసంధానమై ఉంటాయి.">The signals are scattered. <em>The decisions are connected.</em></h2></div>
+      <div class="manifesto__body reveal"><p data-en="Weather, crop suitability, plant-health information, market reports and scheme guidance often live in different places. Rythu Mitra explores how these signals could sit together in a clearer decision-support experience." data-te="వాతావరణం, పంట ఎంపిక, మొక్కల ఆరోగ్య సమాచారం, మార్కెట్ నివేదికలు, పథకాల మార్గదర్శకత్వం వేర్వేరు చోట్ల ఉంటాయి. ఈ సమాచారాన్ని స్పష్టమైన నిర్ణయ సహాయక అనుభవంలో కలపడం రైతు మిత్ర లక్ష్యం.">Weather, crop suitability, plant-health information, market reports and scheme guidance often live in different places. Rythu Mitra explores how these signals could sit together in a clearer decision-support experience.</p><a class="text-link" href="/about"><span data-en="Why this project exists" data-te="ఈ ప్రాజెక్ట్ ఎందుకు">Why this project exists</span><span aria-hidden="true">↗</span></a></div>
+    </div>
+    <div class="manifesto__rule"><span>FIELD NOTE / 01</span><p data-en="Useful technology should clarify a decision—not hide uncertainty behind a polished screen." data-te="ఉపయోగకరమైన సాంకేతికత నిర్ణయాన్ని స్పష్టం చేయాలి; అందమైన తెర వెనుక అనిశ్చితిని దాచకూడదు.">Useful technology should clarify a decision—not hide uncertainty behind a polished screen.</p><span>RM—01</span></div>
+  </section>
+
+  <section class="chapter-section" id="journey">
+    <div class="chapter-intro section-pad">
+      <div class="section-index reveal"><span>03</span><i></i><span data-en="THE CONNECTED JOURNEY" data-te="అనుసంధాన ప్రయాణం">THE CONNECTED JOURNEY</span></div>
+      <h2 class="section-title reveal" data-en="One field. Many signals. A clearer next step." data-te="ఒక పొలం. అనేక సంకేతాలు. మరింత స్పష్టమైన తదుపరి అడుగు.">One field. Many signals. A clearer next step.</h2>
+      <p class="section-lede reveal" data-en="Follow the idea from context, to crop insight, to a better-informed action. These scenes are product concepts—not live readings." data-te="పరిస్థితిని అర్థం చేసుకోవడం నుంచి పంట సమాచారానికి, అక్కడి నుంచి మెరుగైన చర్యకు ఈ ఆలోచనను అనుసరించండి. ఇవి ఉత్పత్తి భావనలు మాత్రమే; ప్రత్యక్ష రీడింగ్‌లు కావు.">Follow the idea from context, to crop insight, to a better-informed action. These scenes are product concepts—not live readings.</p>
+    </div>
+    <div class="chapter-layout">
+      <div class="chapter-list">
+        <article class="chapter-card is-active reveal" data-chapter="0"><span class="chapter-number">01 / CONTEXT</span><h3 data-en="Read the conditions." data-te="పరిస్థితులను అర్థం చేసుకోండి.">Read the conditions.</h3><p data-en="Bring weather availability, field details and seasonal context into view—with sources clearly identified." data-te="వాతావరణ సమాచారం, పొలం వివరాలు, పంటకాల పరిస్థితులను మూలాలతో సహా ఒకచోట చూడండి.">Bring weather availability, field details and seasonal context into view—with sources clearly identified.</p><a href="/app#/weather" class="chapter-link"><span data-en="Explore weather tools" data-te="వాతావరణ సాధనాలు">Explore weather tools</span><span>↗</span></a></article>
+        <article class="chapter-card reveal" data-chapter="1"><span class="chapter-number">02 / INSIGHT</span><h3 data-en="Look closer at the crop." data-te="పంటను మరింత దగ్గరగా పరిశీలించండి.">Look closer at the crop.</h3><p data-en="Explore soil-and-season crop recommendations and image-assisted crop-health screening, with limitations stated plainly." data-te="నేల, కాలానికి తగిన పంట సూచనలు మరియు చిత్ర ఆధారిత పంట ఆరోగ్య పరిశీలనను పరిమితులతో సహా చూడండి.">Explore soil-and-season crop recommendations and image-assisted crop-health screening, with limitations stated plainly.</p><a href="/app#/crop-health" class="chapter-link"><span data-en="Explore crop health" data-te="పంట ఆరోగ్యాన్ని చూడండి">Explore crop health</span><span>↗</span></a></article>
+        <article class="chapter-card reveal" data-chapter="2"><span class="chapter-number">03 / ACTION</span><h3 data-en="Connect information to action." data-te="సమాచారాన్ని చర్యతో అనుసంధానించండి.">Connect information to action.</h3><p data-en="Compare dated market information, review relevant guidance and keep a record of decisions in the same workspace." data-te="తేదీతో కూడిన మార్కెట్ సమాచారం పోల్చండి, మార్గదర్శకత్వాన్ని పరిశీలించండి, నిర్ణయాలను ఒకే వర్క్‌స్పేస్‌లో నమోదు చేయండి.">Compare dated market information, review relevant guidance and keep a record of decisions in the same workspace.</p><a href="/app#/markets" class="chapter-link"><span data-en="Explore market tools" data-te="మార్కెట్ సాధనాలు">Explore market tools</span><span>↗</span></a></article>
+      </div>
+      <div class="chapter-stage-wrap"><div class="chapter-stage" id="chapterStage" aria-label="Illustrated concept preview for the current story chapter">
+        <div class="stage-sky"></div><div class="stage-sun"></div><div class="stage-hills stage-hills--back"></div><div class="stage-hills stage-hills--front"></div><div class="stage-field"><span></span><span></span><span></span><span></span></div><div class="stage-path"></div>
+        <div class="stage-ui stage-ui--context"><span class="mini-label">CONTEXT / WEATHER</span><div class="stage-ui__line"><i></i><b></b></div><div class="stage-ui__line short"><i></i><b></b></div><small>Source and timestamp</small></div>
+        <div class="stage-ui stage-ui--crop"><span class="mini-label">CROP HEALTH / MODEL OUTPUT</span><div class="scan-preview"><span class="scan-leaf"></span><span class="scan-sweep"></span></div><small>Screening result · review limits</small></div>
+        <div class="stage-ui stage-ui--action"><span class="mini-label">MARKET / DATED REPORT</span><div class="chart-lines"><i></i><i></i><i></i><i></i><i></i></div><small>Source label · report date</small></div>
+        <div class="stage-stamp"><span id="stageStamp">01</span><span id="stageCaption">Read the conditions</span></div>
+      </div><p class="stage-disclaimer" data-en="Illustrative interface preview — no live data is shown here." data-te="ఇది నమూనా ఇంటర్‌ఫేస్ మాత్రమే — ఇక్కడ ప్రత్యక్ష డేటా చూపించబడదు.">Illustrative interface preview — no live data is shown here.</p></div>
+    </div>
+  </section>
+
+  <section class="feature-section section-pad" id="tools">
+    <div class="section-index reveal"><span>04</span><i></i><span data-en="THE TOOLKIT" data-te="సాధనాలు">THE TOOLKIT</span></div>
+    <div class="feature-heading"><h2 class="section-title reveal" data-en="Designed around real farm questions." data-te="నిజమైన వ్యవసాయ ప్రశ్నల చుట్టూ రూపకల్పన.">Designed around real farm questions.</h2><p class="section-lede reveal" data-en="An evolving set of connected tools, shown here as a showcase of the project—not a claim that every service is live." data-te="ఇది అనుసంధాన సాధనాల అభివృద్ధి చెందుతున్న సమాహారం. ప్రతి సేవ ప్రత్యక్షంగా ఉందనే హామీ కాదు.">An evolving set of connected tools, shown here as a showcase of the project—not a claim that every service is live.</p></div>
+    <div class="feature-grid">
+      <a class="feature-card feature-card--crop reveal" href="/features#crop-planning"><div class="feature-card__visual crop-visual"><span class="visual-orbit"></span><span class="crop-sprout">✳</span><span class="visual-label">MODEL-ASSISTED</span><div class="crop-visual__soil"><i></i><i></i><i></i><i></i></div></div><div class="feature-card__content"><span class="card-index">01 / CROP PLANNING</span><h3 data-en="Start with the field." data-te="పొలం నుంచే ప్రారంభించండి.">Start with the field.</h3><p data-en="Explore crop suggestions using soil and seasonal inputs, with the model role clearly explained." data-te="నేల, కాలానికి సంబంధించిన వివరాలతో పంట సూచనలను తెలుసుకోండి; మోడల్ పాత్ర స్పష్టంగా ఉంటుంది.">Explore crop suggestions using soil and seasonal inputs, with the model role clearly explained.</p><span class="feature-card__arrow">↗</span></div></a>
+      <a class="feature-card feature-card--health reveal" href="/features#crop-health"><div class="feature-card__visual health-visual"><div class="leaf-form"><span></span></div><span class="scan-ring"></span><span class="scan-corner scan-corner--one"></span><span class="scan-corner scan-corner--two"></span><span class="visual-label">SCREENING PREVIEW</span></div><div class="feature-card__content"><span class="card-index">02 / CROP HEALTH</span><h3 data-en="Look for a signal." data-te="సూచనను గమనించండి.">Look for a signal.</h3><p data-en="Image-assisted screening is a starting point for inspection, not a confirmed diagnosis or treatment prescription." data-te="చిత్ర ఆధారిత పరిశీలన ప్రారంభ సూచన మాత్రమే; నిర్ధారిత వ్యాధి నిర్ధారణ లేదా చికిత్స సూచన కాదు.">Image-assisted screening is a starting point for inspection, not a confirmed diagnosis or treatment prescription.</p><span class="feature-card__arrow">↗</span></div></a>
+      <a class="feature-card feature-card--weather reveal" href="/features#weather"><div class="feature-card__visual weather-visual"><div class="weather-sun"></div><div class="weather-cloud weather-cloud--one"></div><div class="weather-cloud weather-cloud--two"></div><div class="weather-horizon"></div><span class="visual-label">SOURCE-AWARE</span></div><div class="feature-card__content"><span class="card-index">03 / WEATHER & ADVISORY</span><h3 data-en="Understand the conditions." data-te="పరిస్థితులను అర్థం చేసుకోండి.">Understand the conditions.</h3><p data-en="Weather and advisory views should show their source, freshness and availability instead of inventing a current reading." data-te="వాతావరణ వివరాల మూలం, తాజాదనం, అందుబాటు చూపాలి; కల్పిత ప్రస్తుత రీడింగ్‌లు కాదు.">Weather and advisory views should show their source, freshness and availability instead of inventing a current reading.</p><span class="feature-card__arrow">↗</span></div></a>
+      <a class="feature-card feature-card--market reveal" href="/features#markets"><div class="feature-card__visual market-visual"><span class="market-bar" style="--bar-height:33%"></span><span class="market-bar" style="--bar-height:66%"></span><span class="market-bar" style="--bar-height:47%"></span><span class="market-bar" style="--bar-height:84%"></span><span class="market-bar" style="--bar-height:59%"></span><span class="market-trend"></span><span class="visual-label">DATED REPORTS</span></div><div class="feature-card__content"><span class="card-index">04 / MARKET CONTEXT</span><h3 data-en="Compare with context." data-te="సందర్భంతో పోల్చండి.">Compare with context.</h3><p data-en="Present market reports with dates, units and provider labels so comparisons have meaning." data-te="మార్కెట్ నివేదికలను తేదీ, యూనిట్, మూలంతో చూపించి అర్థవంతమైన పోలికకు సహాయపడండి.">Present market reports with dates, units and provider labels so comparisons have meaning.</p><span class="feature-card__arrow">↗</span></div></a>
+    </div>
+    <div class="features-footer reveal"><span data-en="The interface evolves with the project. The facts remain labelled." data-te="ప్రాజెక్ట్‌తో పాటు ఇంటర్‌ఫేస్ అభివృద్ధి చెందుతుంది. సమాచారం స్పష్టంగా లేబుల్ చేయబడుతుంది.">The interface evolves with the project. The facts remain labelled.</span><a class="text-link" href="/features"><span data-en="See the full feature map" data-te="అన్ని ఫీచర్లు చూడండి">See the full feature map</span><span>↗</span></a></div>
+  </section>
+
+  <section class="architecture-section" id="architecture">
+    <div class="architecture-backdrop" aria-hidden="true"><div class="architecture-contours"></div><div class="architecture-orb"></div></div>
+    <div class="architecture-inner section-pad">
+      <div class="section-index reveal"><span>05</span><i></i><span data-en="UNDER THE SURFACE" data-te="లోపలి నిర్మాణం">UNDER THE SURFACE</span></div>
+      <div class="architecture-grid">
+        <div class="architecture-copy reveal"><p class="eyebrow" data-en="A connected system, clearly explained" data-te="స్పష్టంగా వివరించిన అనుసంధాన వ్యవస్థ">A connected system, clearly explained</p><h2 class="section-title" data-en="Purposeful technology. Transparent signals." data-te="ఉద్దేశ్యపూర్వక సాంకేతికత. పారదర్శక సమాచారం.">Purposeful technology. Transparent signals.</h2><p data-en="The project brings a Flask-based application, data services and model-assisted tools into one coherent experience. Each feature should explain whether its information is live, model-generated, curated, cached, demo or entered by the user." data-te="ఈ ప్రాజెక్ట్ Flask అప్లికేషన్, డేటా సేవలు, మోడల్ ఆధారిత సాధనాలను ఒక అనుభవంలో కలుపుతుంది. సమాచారం ప్రత్యక్షమా, మోడల్ రూపొందించిందా, సేకరించిందా, కాష్‌లోదా, డెమోనా, వినియోగదారు ఇచ్చిందా అన్నది స్పష్టంగా ఉండాలి.">The project brings a Flask-based application, data services and model-assisted tools into one coherent experience. Each feature should explain whether its information is live, model-generated, curated, cached, demo or entered by the user.</p><a class="magnetic-button magnetic-button--light" href="/architecture"><span data-en="Explore the architecture" data-te="ఆర్కిటెక్చర్‌ను చూడండి">Explore the architecture</span><span>↗</span></a></div>
+        <div class="architecture-diagram reveal" role="img" aria-label="Illustrative architecture: farmer inputs and providers, Flask API layer, decision-support services, and workspace outputs">
+          <div class="arch-node arch-node--input"><span>01</span><strong>Inputs & sources</strong><small>Field details · Providers</small></div><div class="arch-connector arch-connector--one"><i></i></div>
+          <div class="arch-node arch-node--api"><span>02</span><strong>Flask application</strong><small>Routes · Auth · Validation</small></div><div class="arch-connector arch-connector--two"><i></i></div>
+          <div class="arch-node arch-node--model"><span>03</span><strong>Decision services</strong><small>Models · Rules · Reports</small></div><div class="arch-connector arch-connector--three"><i></i></div>
+          <div class="arch-node arch-node--output"><span>04</span><strong>Workspace</strong><small>Useful view · Source labels</small></div>
+          <span class="arch-caption">ILLUSTRATIVE SYSTEM MAP / NOT A PERFORMANCE CLAIM</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing-section">
+    <div class="closing-landscape" aria-hidden="true"><div class="closing-sun"></div><div class="closing-hill closing-hill--one"></div><div class="closing-hill closing-hill--two"></div><div class="closing-fields"></div><div class="closing-bird">⌁</div></div>
+    <div class="closing-copy reveal"><span class="eyebrow" data-en="THE NEXT CHAPTER STARTS IN THE FIELD" data-te="తదుపరి అధ్యాయం పొలంలో మొదలవుతుంది">THE NEXT CHAPTER STARTS IN THE FIELD</span><h2 data-en="Better questions. Clearer decisions. A brighter tomorrow." data-te="మెరుగైన ప్రశ్నలు. స్పష్టమైన నిర్ణయాలు. उज్వలమైన రేపు.">Better questions. Clearer decisions. A brighter tomorrow.</h2><div class="closing-actions"><a class="magnetic-button magnetic-button--primary" href="/app"><span data-en="Enter the platform" data-te="ప్లాట్‌ఫారమ్‌లోకి వెళ్లండి">Enter the platform</span><span>↗</span></a><a class="text-link" href="/about"><span data-en="About Rythu Mitra" data-te="రైతు మిత్ర గురించి">About Rythu Mitra</span><span>↗</span></a></div></div>
+    <div class="closing-signature"><span>RYTHU MITRA</span><span>FIELD KNOWLEDGE / SHARED CLEARLY</span><span>2026</span></div>
+  </section>
+</main>
+<footer class="site-footer"><a class="brand brand--footer" href="/"><span class="brand__symbol" aria-hidden="true"><svg viewBox="0 0 44 44"><path d="M22 36V11M22 22C9 22 8 13 8 8c10 0 14 5 14 14ZM22 29c13 0 14-9 14-14-10 0-14 5-14 14Z"/><path d="M7 37c8-4 22-4 30 0"/></svg></span><span class="brand__copy"><strong>Rythu Mitra</strong><small data-en="A clearer path from field to decision" data-te="పొలం నుంచి నిర్ణయం వరకు స్పష్టమైన మార్గం">A clearer path from field to decision</small></span></a><div class="footer-links"><a href="/about">About</a><a href="/features">Features</a><a href="/architecture">Architecture</a><a href="/privacy-policy">Privacy</a><a href="/terms-and-conditions">Terms</a></div><p>Designed for clarity. Built with care.</p></footer>
+<div class="screen-reader-status" id="motionStatus" role="status" aria-live="polite"></div>
+</body>
+</html>
