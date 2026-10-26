@@ -16,11 +16,11 @@
   function loadEngine() {
     if (THREE && OrbitControls) return Promise.resolve();
     if (!window.__rmThreeLoading) {
-      window.__rmThreeLoading = Promise.all([import(CDN), import(ORBIT_CDN), import(LOADER_CDN)])
-        .then(([three, orbit, loader]) => {
+      window.__rmThreeLoading = Promise.all([import(CDN), import(ORBIT_CDN)])
+        .then(([three, orbit]) => {
           THREE = three;
           OrbitControls = orbit.OrbitControls;
-          GLTFLoader = loader.GLTFLoader;
+          return import(LOADER_CDN).then(loader => { GLTFLoader = loader.GLTFLoader; }).catch(() => { GLTFLoader = null; });
         });
     }
     return window.__rmThreeLoading;
@@ -510,7 +510,7 @@
       const initialStep = Number(stage.dataset.step || 0);
       swapStoryScene(initialStep);
       function frame() {
-        if (!host.isConnected) { observer?.disconnect(); storyState.ro?.disconnect(); storyState.controls?.dispose(); disposeObject(storyState.group); storyState.renderer?.dispose(); return; }
+        if (!host.isConnected) { observer?.disconnect(); storyVisibility?.disconnect(); storyState.ro?.disconnect(); storyState.controls?.dispose(); disposeObject(storyState.group); storyState.renderer?.dispose(); return; }
         storyState.raf = requestAnimationFrame(frame);
         const dt = Math.min(storyState.clock.getDelta(), 0.05);
         if (storyVisible && storyState.running) {
