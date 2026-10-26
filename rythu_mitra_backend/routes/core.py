@@ -613,7 +613,7 @@ def ready():
         with connect() as conn:
             conn.execute("SELECT 1").fetchone()
             version=conn.execute("SELECT MAX(version) FROM schema_migrations").fetchone()[0]
-        return jsonify(status="ready",database="healthy",schema_version=version,models={"crop":"configured" if has_model_asset("crop_model.pkl") else "unavailable", "disease":"configured" if has_disease_model_bundle() else "unavailable"},weather="configured" if current_app.config.get("OPENWEATHER_API_KEY") else "unavailable",market_adapter="configured" if (current_app.config.get("DATA_GOV_IN_API_KEY") or current_app.config.get("MARKET_DATA_BASE_URL")) else "unavailable")
+        return jsonify(status="ready",database="healthy",schema_version=version,models={"crop":"configured" if has_model_asset("crop_model.pkl") else "unavailable", "disease":"configured" if has_disease_model_bundle() else "unavailable"},weather="OPENWEATHER" if current_app.config.get("OPENWEATHER_API_KEY") else "OPEN_METEO_FALLBACK",market_adapter="configured" if (current_app.config.get("DATA_GOV_IN_API_KEY") or current_app.config.get("MARKET_DATA_BASE_URL")) else "unavailable")
     except Exception:
         current_app.logger.exception("Readiness probe failed")
         return jsonify(status="not_ready",database="unavailable"),503
