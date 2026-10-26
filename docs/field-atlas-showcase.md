@@ -45,7 +45,7 @@ The homepage now has a scroll-driven four-chapter landscape scene. Users can scr
 - `templates/showcase_page.html`: shared page shell used by existing Flask `/about`, `/features`, and `/architecture` routes.
 - `static/css/rythu-mitra-field-atlas-deepdive.css` and `static/js/rythu-mitra-field-atlas-deepdive.js`: dedicated interactive pages, local-only model labs and concept architecture simulation.
 - `static/models/rythu-leaf.gltf` and `static/models/rythu-cereal-crop.gltf`: repository-owned reusable glTF mesh assets, with inline geometry buffers so they do not depend on separate model files.
-- `static/js/rythu-mitra-3d-experience.js`: real Three.js/WebGL procedural 3D scenes for leaf anatomy, crop structure, farm rows, a soil cross-section, architecture data flow and the project timeline. Includes drag rotation, wheel/pinch zoom, selectable hotspots, stages, animated packets, explode/reset controls and optional GLB/GLTF asset loading when a model URL is provided.
+- `static/js/rythu-mitra-3d-experience.js`: native same-origin WebGL renderer and scene controls for farm, leaf, crop, soil, architecture and history. Supports drag rotation, wheel/pinch zoom, keyboard controls, hotspots, stages, animated packets, explode/reset controls, and local glTF/GLB geometry loading.
 - `static/css/rythu-mitra-field-atlas-3d.css`: responsive 3D viewer controls, loading/error states, scene layouts and the commit-linked history timeline.
 
 ### Deep-dive URLs (existing backend routes only)
@@ -61,14 +61,15 @@ The homepage now has a scroll-driven four-chapter landscape scene. Users can scr
 All of these use existing route handlers and a query parameter to select the page content. No backend routes, authentication, database code or model services were edited to introduce the explorer pages.
 
 ## 3D implementation notes
-- The 3D engine is loaded as a version-pinned browser module from esm.sh. If the module cannot load or WebGL is unavailable, the scene shows a visible error state instead of pretending the CSS illustration is a working model.
-- Current scenes are generated from Three.js geometry, with repository-owned `.gltf` assets for the leaf and cereal-like crop, loaded through GLTFLoader. If asset loading fails, procedural WebGL scenes remain available. They are not measured copies of real crops, fields, or system telemetry.
-- Scene motion respects the system reduced-motion setting; camera rotation, zoom and visible controls are available on mouse and touch.
+- The viewer uses the browser's native WebGL API with code served from this same site. It does not import third-party JavaScript, so it complies with the current Content Security Policy (`script-src 'self'`, `connect-src 'self'`) without weakening backend security.
+- The leaf page loads `static/models/rythu-leaf.gltf`, and the crop page loads `static/models/rythu-cereal-crop.gltf`. Both repository-owned glTF files include embedded geometry buffers. The loader also accepts same-origin GLB files; unsupported assets fail visibly and leave the procedural scene as a fallback.
+- Farm, soil, architecture, and project-history scenes are procedural WebGL geometry. Movement and data packets are explanatory illustrations, not measurements, live telemetry, or agricultural predictions.
+- Scene motion respects the system reduced-motion setting. Rotation and zoom work with pointer/touch gestures, mouse-wheel zoom, keyboard arrows, and visible controls.
 - History entries link to repository commits when an exact commit is known and to the live branch history for the newest showcase changes. Planned integrations are explicitly labelled.
 
 ## Simulation boundaries
 - The scroll story is illustrative motion, not a live map or a telemetry feed.
-- The dedicated crop and plant-health pages now use actual Three.js/WebGL procedural geometry. They are interactive 3D illustrations, not agronomic growth simulators or disease models. Imported GLB/GLTF assets are optional and load only when a model URL is configured; no external farm data or inference is implied.
+- The dedicated crop and plant-health pages load repository-owned glTF geometry in a native WebGL viewer. These are interactive 3D illustrations, not agronomic growth simulators or disease models. No external farm data or inference is implied.
 - Crop-input validation runs in the browser and does not call `POST /api/recommendations`.
 - Plant-image preview uses a browser-local object URL and does not upload the image or call `POST /api/disease-scan`.
 - Architecture animation is conceptual and sends no network request.
