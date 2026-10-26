@@ -136,17 +136,19 @@
     const field = new THREE.Group(); root.add(field);
     const soil = new THREE.Mesh(new THREE.PlaneGeometry(18, 15, 24, 18), mat('#a5b687'));
     soil.rotation.x = -Math.PI / 2; soil.position.y = -0.05; field.add(soil);
-    for (let row = 0; row < 11; row++) {
-      const z = -6.2 + row * 1.15;
+    for (let row = 0; row < 7; row++) {
+      const z = -4.2 + row * 1.35;
       const furrow = new THREE.Mesh(new THREE.BoxGeometry(17, 0.025, 0.055), mat(row % 2 ? '#8b9c72' : '#c9b58a'));
       furrow.position.set(0, 0.015, z); field.add(furrow);
-      for (let col = 0; col < 18; col++) {
-        const x = -8 + col * 0.94;
+      for (let col = 0; col < 9; col++) {
+        const x = -7 + col * 1.75;
         const plant = new THREE.Group();
         plant.position.set(x, 0.02, z + 0.14);
         plant.add(segment([0, 0, 0], [0.04, 0.38, 0], 0.022, mat('#47754b')));
-        addLeaf(plant, -0.06, 0.1, 0.02, 0.25, -0.75 + (col % 2) * 1.4, '#5a8b4d', 'Field crop marker: illustrative, not a mapped farm.');
-        addLeaf(plant, 0.02, 0.18, 0, 0.23, 0.75, '#79a45d', 'Crop canopy: conceptual visualization.');
+        const leafA = new THREE.Mesh(new THREE.SphereGeometry(0.14, 7, 5), mat('#5a8b4d'));
+        leafA.position.set(-0.08, 0.19, 0.01); leafA.scale.set(1.8, 0.42, 0.62); leafA.rotation.z = -0.45; plant.add(leafA);
+        const leafB = new THREE.Mesh(new THREE.SphereGeometry(0.13, 7, 5), mat('#79a45d'));
+        leafB.position.set(0.09, 0.28, 0); leafB.scale.set(1.7, 0.4, 0.58); leafB.rotation.z = 0.42; plant.add(leafB);
         field.add(plant);
       }
     }
@@ -238,8 +240,7 @@
   function createShell(host, initialKind, compact) {
     host.classList.add('rm3d-host');
     host.innerHTML = '<div class="rm3d-topline"><span class="rm3d-live-dot"></span><strong class="rm3d-title">Loading real 3D scene…</strong><span class="rm3d-engine">WEBGL / PROCEDURAL MESH</span></div><div class="rm3d-stage"><div class="rm3d-canvas-wrap" aria-label="Interactive 3D scene. Drag to rotate; scroll or pinch to zoom."></div><div class="rm3d-wait" role="status">Preparing the 3D engine…</div><div class="rm3d-hover-label" aria-live="polite">Drag to rotate · scroll or pinch to zoom</div></div><div class="rm3d-toolbar"><button type="button" data-action="auto" aria-pressed="false">Auto rotate</button><button type="button" data-action="hotspots" aria-pressed="true">Hotspots</button><button type="button" data-action="explode" aria-pressed="false">Explode parts</button><button type="button" data-action="pause" aria-pressed="false">Pause motion</button><button type="button" data-action="reset">Reset view</button></div><div class="rm3d-stage-row"><div class="rm3d-stage-options" aria-label="Scene stages"></div><div class="rm3d-zoom-controls"><button type="button" data-action="zoom-in" aria-label="Zoom in">+</button><button type="button" data-action="zoom-out" aria-label="Zoom out">−</button></div></div><div class="rm3d-detail" aria-live="polite"><strong>Explore the model</strong><span>Tap a highlighted marker to inspect a part.</span></div><p class="rm3d-honesty">INTERACTIVE 3D ILLUSTRATION · NOT A DIAGNOSIS OR LIVE FARM DATA</p>';
-    const state = { host, kind: initialKind, compact: !!compact, renderer: null, scene: null, camera: null, controls: null, group: null, built: null, raf: 0, elapsed: 0, running: true, showHotspots: true, exploded: false, fitDistance: 8, ro: null, pointer: new THREE.Vector2(), ray: new THREE.Raycaster(), stage: 0, clock: new THREE.Clock() };
-    return state;
+    return null;
   }
   function detail(state, title, text) {
     const box = $('.rm3d-detail', state.host);
