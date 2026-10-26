@@ -442,6 +442,108 @@
       console.error('[Rythu Mitra 3D]', error);
     }
   }
+  async function mountCinematicStory() {
+    const stage = $('#cinematicStage'), sceneFrame = $('.cinematic-scene', stage || document);
+    if (!stage || !sceneFrame || stage.dataset.rmCinematicMounted === 'true') return;
+    stage.dataset.rmCinematicMounted = 'true';
+    const host = document.createElement('div');
+    host.className = 'rm3d-cinematic-canvas';
+    host.innerHTML = '<div class="rm3d-cinematic-hud"><span class="rm3d-live-dot"></span><span>INTERACTIVE 3D STORY</span><small>DRAG TO ROTATE · SCROLL / PINCH TO ZOOM</small></div><div class="rm3d-cinematic-note" aria-live="polite">Explore the scene. Select a highlighted marker for detail.</div><div class="rm3d-cinematic-load">Preparing the interactive 3D story…</div>';
+    sceneFrame.append(host);
+    let storyState = null, observer = null;
+    const kindForStep = ['farm', 'leaf', 'architecture', 'crop'];
+    function swapStoryScene(step) {
+      if (!storyState) return;
+      const kind = kindForStep[Math.max(0, Math.min(3, Number(step) || 0))];
+      if (storyState.kind === kind) return;
+      if (storyState.group) { storyState.scene.remove(storyState.group); disposeObject(storyState.group); }
+      storyState.kind = kind;
+      storyState.built = BUILDERS[kind]();
+      storyState.group = storyState.built.root;
+      storyState.scene.add(storyState.group);
+      if (storyState.built.applyStage) storyState.built.applyStage(0);
+      if (kind === 'farm') { storyState.camera.position.set(7.8, 6.8, 9.7); storyState.controls.target.set(0,0.4,0); }
+      else if (kind === 'architecture') { storyState.camera.position.set(0,3.1,10.5); storyState.controls.target.set(0,0,0); }
+      else { storyState.camera.position.set(4.2,2.3,7.8); storyState.controls.target.set(0,0,0); }
+      storyState.controls.update();
+      host.classList.remove('rm3d-story-transition');
+      void host.offsetWidth;
+      host.classList.add('rm3d-story-transition');
+      const names = ['01 / FIELD LANDSCAPE', '02 / LEAF DETAIL', '03 / CONNECTED SYSTEM', '04 / CROP STRUCTURE'];
+      const label = $('.rm3d-cinematic-hud span:last-of-type', host);
+      if (label) label.textContent = names[Number(step) || 0];
+      const note = $('.rm3d-cinematic-note', host);
+      if (note) note.textContent = 'Chapter ' + ((Number(step)||0)+1) + ' of 4 · ' + sceneTitle(kind) + '. Drag to explore or select a highlighted part.';
+    }
+    try {
+      await loadEngine();
+      if (!host.isConnected) return;
+      storyState = {
+        host, kind: '', scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(38, 1, 0.1, 100),
+        controls: null, renderer: null, group: null, built: null, elapsed: 0, running: !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
+        pointer: new THREE.Vector2(), ray: new THREE.Raycaster(), clock: new THREE.Clock(), ro: null
+      };
+      storyState.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      storyState.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.35));
+      storyState.renderer.setSize(Math.max(1, sceneFrame.clientWidth), Math.max(1, sceneFrame.clientHeight), false);
+      storyState.renderer.outputColorSpace = THREE.SRGBColorSpace;
+      storyState.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      storyState.renderer.toneMappingExposure = 1.08;
+      storyState.scene.background = new THREE.Color('#dfe9df');
+      storyState.scene.fog = new THREE.Fog('#dfe9df', 15, 28);
+      storyState.scene.add(new THREE.HemisphereLight('#fff5df', '#5e785c', 2.1));
+      const key = new THREE.DirectionalLight('#fff0d6', 3.0); key.position.set(4,8,6); storyState.scene.add(key);
+      const rim = new THREE.DirectionalLight('#aecac7', 1.5); rim.position.set(-5,3,-5); storyState.scene.add(rim);
+      storyState.controls = new OrbitControls(storyState.camera, storyState.renderer.domElement);
+      storyState.controls.enableDamping = true; storyState.controls.dampingFactor = 0.055; storyState.controls.enablePan = false;
+      storyState.controls.minDistance = 2.8; storyState.controls.maxDistance = 17; storyState.controls.autoRotate = false;
+      host.append(storyState.renderer.domElement);
+      const wait = $('.rm3d-cinematic-load', host); if (wait) wait.remove();
+      stage.classList.add('rm3d-cinematic-active');
+      const initialStep = Number(stage.dataset.step || 0);
+      swapStoryScene(-1);
+      storyState.kind = '';
+      swapStoryScene(initialStep);
+      function frame() {
+        if (!host.isConnected) { observer?.disconnect(); storyState.controls?.dispose(); storyState.renderer?.dispose(); return; }
+        storyState.raf = requestAnimationFrame(frame);
+        const dt = Math.min(storyState.clock.getDelta(), 0.05);
+        if (storyState.running) {
+          storyState.elapsed += dt;
+          if (storyState.kind === 'farm' && storyState.built && storyState.built.model) {
+            storyState.built.model.rotation.z = Math.sin(storyState.elapsed * 0.7) * 0.012;
+            const clouds = storyState.group.children.find(o => o.type === 'Group' && o.children.length === 4);
+            if (clouds) clouds.children.forEach((c,i)=>{c.position.x=-7+i*4.6+Math.sin(storyState.elapsed*.13+i)*.35;});
+          }
+          if (storyState.kind === 'leaf' && storyState.built && storyState.built.model) storyState.built.model.rotation.y = Math.sin(storyState.elapsed * .55) * .08;
+          if (storyState.kind === 'crop' && storyState.built && storyState.built.model) storyState.built.model.rotation.z = Math.sin(storyState.elapsed * 1.1) * .022;
+          if (storyState.kind === 'architecture' && storyState.built && storyState.built.packets) storyState.built.packets.children.forEach(p=>{p.position.copy(p.userData.rmCurve.getPoint((storyState.elapsed*.22+p.userData.rmPhase)%1));});
+        }
+        storyState.controls.update(); storyState.renderer.render(storyState.scene, storyState.camera);
+      }
+      const size = () => { const w=Math.max(1,sceneFrame.clientWidth),h=Math.max(1,sceneFrame.clientHeight); storyState.renderer.setSize(w,h,false);storyState.camera.aspect=w/h;storyState.camera.updateProjectionMatrix(); };
+      storyState.ro = window.ResizeObserver ? new ResizeObserver(size) : null; storyState.ro?.observe(sceneFrame);
+      window.addEventListener('resize', size, { passive: true });
+      const ray = storyState.ray, pointer=storyState.pointer;
+      storyState.renderer.domElement.addEventListener('pointerdown',e=>{const r=sceneFrame.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;});
+      storyState.renderer.domElement.addEventListener('click',()=>{
+        ray.setFromCamera(pointer,storyState.camera);
+        const hit=ray.intersectObjects(storyState.scene.children,true).find(h=>h.object.userData.rmNote||h.object.userData.rmNodeId);
+        if(hit){const note=$('.rm3d-cinematic-note',host);if(note)note.textContent=(hit.object.userData.rmNodeId||'FIELD NOTE')+' · '+(hit.object.userData.rmNote||'Selectable part of the scene.');}
+      });
+      observer = new MutationObserver(()=>swapStoryScene(stage.dataset.step||0));
+      observer.observe(stage,{attributes:true,attributeFilter:['data-step']});
+      const motion=$('#motionToggle');
+      motion?.addEventListener('click',()=>{storyState.running=!storyState.running;});
+      window.addEventListener('pagehide',()=>{observer?.disconnect();storyState.ro?.disconnect();storyState.controls?.dispose();storyState.renderer?.dispose();},{once:true});
+      frame();
+    } catch(error) {
+      host.classList.add('rm3d-cinematic-error');
+      const wait=$('.rm3d-cinematic-load',host);
+      if(wait)wait.textContent='Interactive 3D story unavailable in this browser. The illustrated fallback remains visible.';
+      console.error('[Rythu Mitra cinematic 3D]',error);
+    }
+  }
   function addHomeExplorer() {
     const wrap = $('.landscape-wrap');
     if (!wrap) return;
@@ -507,7 +609,7 @@
     if (roadmap) roadmap.insertAdjacentElement('afterend', section); else body.append(section);
   }
   function init() {
-    if ($('#showcaseMain')) addHomeExplorer();
+    if ($('#showcaseMain')) { mountCinematicStory(); addHomeExplorer(); }
     if ($('#deepMain')) addPageExperience();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
