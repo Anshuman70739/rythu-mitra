@@ -35,15 +35,20 @@ def _count(table: str, where: str = "1=1", params: tuple = ()) -> int:
 
 @bp.get("/")
 def home():
-    # Backend-first bundle can be tested without a frontend template. Once the
-    # approved frontend is integrated, render it automatically.
-    for candidate in ("rythu_mitra.html", "index.html"):
+    """Serve the public Monsoon Atlas landing page."""
+    for candidate in ("landing.html", "rythu_mitra.html", "index.html"):
         try:
             current_app.jinja_env.get_template(candidate)
             return render_template(candidate, csrf_token=session.get("csrf_token", ""))
         except Exception:
             continue
     return jsonify(service="Rythu Mitra backend", api_prefix="/api/v1", health="/health", message="Backend is running. Integrate the approved frontend template to display the full website.")
+
+
+@bp.get("/app")
+def app_workspace():
+    """Serve the existing interactive farmer workspace separately from the landing page."""
+    return render_template("rythu_mitra.html", csrf_token=session.get("csrf_token", ""))
 
 
 @bp.get("/privacy-policy")
