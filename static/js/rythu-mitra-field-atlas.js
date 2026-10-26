@@ -296,12 +296,19 @@
       const rect=cinematicScene.getBoundingClientRect();
       const x=((event.clientX-rect.left)/rect.width-.5)*2;
       const y=((event.clientY-rect.top)/rect.height-.5)*2;
-      cinematicScene.style.setProperty('--pointer-x',x.toFixed(3));
-      cinematicScene.style.setProperty('--pointer-y',y.toFixed(3));
+      cinematicScene.style.setProperty('--sun-px',(x*-7).toFixed(1)+'px');
+      cinematicScene.style.setProperty('--sun-py',(y*-5).toFixed(1)+'px');
+      cinematicScene.style.setProperty('--back-hill-px',(x*8).toFixed(1)+'px');
+      cinematicScene.style.setProperty('--back-hill-py',(y*4).toFixed(1)+'px');
+      cinematicScene.style.setProperty('--mid-hill-px',(x*-5).toFixed(1)+'px');
+      cinematicScene.style.setProperty('--mid-hill-py',(y*3).toFixed(1)+'px');
+      cinematicScene.style.setProperty('--plant-px',(x*-3).toFixed(1)+'px');
+      cinematicScene.style.setProperty('--plant-py',(y*-2).toFixed(1)+'px');
+      cinematicScene.style.setProperty('--path-px',(x*4).toFixed(1)+'px');
+      cinematicScene.style.setProperty('--path-py',(y*3).toFixed(1)+'px');
     });
     cinematicScene.addEventListener('pointerleave',()=>{
-      cinematicScene.style.setProperty('--pointer-x','0');
-      cinematicScene.style.setProperty('--pointer-y','0');
+      ['--sun-px','--sun-py','--back-hill-px','--back-hill-py','--mid-hill-px','--mid-hill-py','--plant-px','--plant-py','--path-px','--path-py'].forEach(name=>cinematicScene.style.setProperty(name,'0px'));
     });
   }
 
