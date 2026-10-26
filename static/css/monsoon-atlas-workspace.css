@@ -376,3 +376,8 @@ h1, h2, h3, h4 { color: var(--atlas-app-ink); letter-spacing: -.025em; }
   .atlas-action-card,.atlas-stat-card,.atlas-tool-card,.panel,.module-card,.quick-link,.button { transition:none!important; }
   .atlas-action-card:hover,.atlas-stat-card:hover,.module-card:hover,.quick-link:hover { transform:none!important; }
 }
+
+
+@media (min-width: 1120px) {
+  .atlas-stat-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+}
