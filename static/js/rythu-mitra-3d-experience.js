@@ -368,10 +368,10 @@
     state.renderer.setSize(w, h, false); state.camera.aspect = w / h; state.camera.updateProjectionMatrix();
   }
   function animate(state) {
-    if (!state.host.isConnected) { state.ro?.disconnect(); state.controls?.dispose(); state.renderer?.dispose(); active.delete(state); return; }
+    if (!state.host.isConnected) { state.ro?.disconnect(); state.visibilityObserver?.disconnect(); state.controls?.dispose(); disposeObject(state.group); state.renderer?.dispose(); active.delete(state); return; }
     state.raf = requestAnimationFrame(() => animate(state));
     const dt = Math.min(state.clock.getDelta(), 0.05);
-    if (state.running) {
+    if (state.visible && state.running) {
       state.elapsed += dt;
       if (state.kind === 'farm' && state.group) {
         const field = state.group.children[0]; if (field) field.children.forEach((child, i) => { if (child.type === 'Group' && child.children.length > 0) child.rotation.z = Math.sin(state.elapsed * 1.2 + i * 0.7) * 0.018; });
@@ -385,8 +385,7 @@
       }
       if (state.kind === 'history' && state.built && state.built.model) state.built.model.rotation.y = Math.sin(state.elapsed * 0.17) * 0.12;
     }
-    state.controls.update();
-    state.renderer.render(state.scene, state.camera);
+    if (state.visible) { state.controls.update(); state.renderer.render(state.scene, state.camera); }
   }
   async function mount(host, kind, compact) {
     if (!host || host.dataset.rm3dMounted === 'true') return;
@@ -397,7 +396,7 @@
       await loadEngine();
       if (!host.isConnected) return;
       state = {
-        host, kind, compact: !!compact, scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(38, 1, 0.1, 100),
+        host, kind, compact: !!compact, visible: true, scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(38, 1, 0.1, 100),
         controls: null, renderer: null, group: null, built: null, raf: 0, elapsed: 0, running: !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
         showHotspots: true, exploded: false, fitDistance: 8, ro: null, pointer: new THREE.Vector2(),
         ray: new THREE.Raycaster(), stage: 0, clock: new THREE.Clock()
@@ -430,6 +429,11 @@
       if (optional && GLTFLoader) {
         new GLTFLoader().load(optional, gltf => { state.scene.add(gltf.scene); detail(state, '3D asset loaded', 'An optional GLB/GLTF asset loaded successfully. Procedural scene remains available as a reference.'); }, undefined, () => detail(state, 'Asset unavailable', 'The optional GLB/GLTF asset could not be loaded; procedural 3D remains active.'));
       }
+      state.visible = false;
+      state.visibilityObserver = window.IntersectionObserver ? new IntersectionObserver(entries => { state.visible = !!entries[0]?.isIntersecting; }) : null;
+      state.visibilityObserver?.observe(host);
+      const pauseButton = $('[data-action="pause"]', host);
+      if (!state.running && pauseButton) { pauseButton.textContent = 'Resume motion'; pauseButton.setAttribute('aria-pressed', 'true'); }
       active.add(state); animate(state);
     } catch (error) {
       host.classList.add('rm3d-error');
@@ -498,17 +502,18 @@
       storyState.controls.enableDamping = true; storyState.controls.dampingFactor = 0.055; storyState.controls.enablePan = false;
       storyState.controls.minDistance = 2.8; storyState.controls.maxDistance = 17; storyState.controls.autoRotate = false;
       host.append(storyState.renderer.domElement);
+      let storyVisible = true;
+      const storyVisibility = window.IntersectionObserver ? new IntersectionObserver(entries => { storyVisible = !!entries[0]?.isIntersecting; }) : null;
+      storyVisibility?.observe(stage);
       const wait = $('.rm3d-cinematic-load', host); if (wait) wait.remove();
       stage.classList.add('rm3d-cinematic-active');
       const initialStep = Number(stage.dataset.step || 0);
-      swapStoryScene(-1);
-      storyState.kind = '';
       swapStoryScene(initialStep);
       function frame() {
-        if (!host.isConnected) { observer?.disconnect(); storyState.controls?.dispose(); storyState.renderer?.dispose(); return; }
+        if (!host.isConnected) { observer?.disconnect(); storyState.ro?.disconnect(); storyState.controls?.dispose(); disposeObject(storyState.group); storyState.renderer?.dispose(); return; }
         storyState.raf = requestAnimationFrame(frame);
         const dt = Math.min(storyState.clock.getDelta(), 0.05);
-        if (storyState.running) {
+        if (storyVisible && storyState.running) {
           storyState.elapsed += dt;
           if (storyState.kind === 'farm' && storyState.built && storyState.built.model) {
             storyState.built.model.rotation.z = Math.sin(storyState.elapsed * 0.7) * 0.012;
@@ -519,7 +524,7 @@
           if (storyState.kind === 'crop' && storyState.built && storyState.built.model) storyState.built.model.rotation.z = Math.sin(storyState.elapsed * 1.1) * .022;
           if (storyState.kind === 'architecture' && storyState.built && storyState.built.packets) storyState.built.packets.children.forEach(p=>{p.position.copy(p.userData.rmCurve.getPoint((storyState.elapsed*.22+p.userData.rmPhase)%1));});
         }
-        storyState.controls.update(); storyState.renderer.render(storyState.scene, storyState.camera);
+        if (storyVisible) { storyState.controls.update(); storyState.renderer.render(storyState.scene, storyState.camera); }
       }
       const size = () => { const w=Math.max(1,sceneFrame.clientWidth),h=Math.max(1,sceneFrame.clientHeight); storyState.renderer.setSize(w,h,false);storyState.camera.aspect=w/h;storyState.camera.updateProjectionMatrix(); };
       storyState.ro = window.ResizeObserver ? new ResizeObserver(size) : null; storyState.ro?.observe(sceneFrame);
@@ -535,7 +540,7 @@
       observer.observe(stage,{attributes:true,attributeFilter:['data-step']});
       const motion=$('#motionToggle');
       motion?.addEventListener('click',()=>{storyState.running=!storyState.running;});
-      window.addEventListener('pagehide',()=>{observer?.disconnect();storyState.ro?.disconnect();storyState.controls?.dispose();storyState.renderer?.dispose();},{once:true});
+      window.addEventListener('pagehide',()=>{observer?.disconnect();storyVisibility?.disconnect();storyState.ro?.disconnect();storyState.controls?.dispose();disposeObject(storyState.group);storyState.renderer?.dispose();},{once:true});
       frame();
     } catch(error) {
       host.classList.add('rm3d-cinematic-error');
@@ -614,6 +619,6 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
-  window.addEventListener('pagehide', () => active.forEach(s => { cancelAnimationFrame(s.raf); s.ro?.disconnect(); s.controls?.dispose(); s.renderer?.dispose(); }));
+  window.addEventListener('pagehide', () => active.forEach(s => { cancelAnimationFrame(s.raf); s.ro?.disconnect(); s.visibilityObserver?.disconnect(); s.controls?.dispose(); disposeObject(s.group); s.renderer?.dispose(); }));
   window.RythuMitra3D = Object.freeze({ version: VERSION, engine: 'Three.js / WebGL', scenes: Object.keys(BUILDERS), modelInference: false, dataUploads: false });
 })();
