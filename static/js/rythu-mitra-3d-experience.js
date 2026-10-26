@@ -368,7 +368,7 @@
     state.renderer.setSize(w, h, false); state.camera.aspect = w / h; state.camera.updateProjectionMatrix();
   }
   function animate(state) {
-    if (!state.host.isConnected) { state.ro?.disconnect(); active.delete(state); return; }
+    if (!state.host.isConnected) { state.ro?.disconnect(); state.controls?.dispose(); state.renderer?.dispose(); active.delete(state); return; }
     state.raf = requestAnimationFrame(() => animate(state));
     const dt = Math.min(state.clock.getDelta(), 0.05);
     if (state.running) {
@@ -500,7 +500,7 @@
       '<li><span class="rm-history-date">REPOSITORY RECORD</span><h3>Initial project upload</h3><p>Foundation project files were added to the repository.</p><a href="https://github.com/Anshuman70739/rythu-mitra/commit/941d0db3c20e2b55f47fb15b09f4fef0350e74d5" target="_blank" rel="noopener">View commit ↗</a></li>' +
       '<li><span class="rm-history-date">MODEL / PROJECT INTEGRATION</span><h3>Frontend, backend and model bundle integrated</h3><p>Commit notes record the project bundle and model assets. The commit also documents that disease-name inference remains blocked until its authoritative 15-class mapping is supplied.</p><a href="https://github.com/Anshuman70739/rythu-mitra/commit/05ade39888e4c034317908c8f9c355726f3700c0" target="_blank" rel="noopener">View commit ↗</a></li>' +
       '<li><span class="rm-history-date">ACCESSIBILITY / FALLBACK</span><h3>Guest crop tools kept available</h3><p>A repository change preserved Crop Planning and Crop Health access after guest-session fallback.</p><a href="https://github.com/Anshuman70739/rythu-mitra/commit/92fb3b41e1d3aaf980ec3ad00293a15b0b272f57" target="_blank" rel="noopener">View commit ↗</a></li>' +
-      '<li><span class="rm-history-date">CURRENT VISUAL SHOWCASE</span><h3>Field Atlas and interactive 3D revision</h3><p>The separate experiment branch has a cinematic Field Atlas layout. This revision adds procedural WebGL scenes, real drag rotation and zoom, interactive hotspots, stages, animated data packets, and a truthful history section. Verify deployment status before treating this revision as live.</p><span class="rm-history-planned">SHOWCASE CHANGE · VERIFY LIVE</span></li>' +
+      '<li><span class="rm-history-date">CURRENT VISUAL SHOWCASE</span><h3>Field Atlas and interactive 3D revision</h3><p>The separate experiment branch has a cinematic Field Atlas layout. This revision adds procedural WebGL scenes, real drag rotation and zoom, interactive hotspots, stages, animated data packets, and a truthful history section. Verify deployment status before treating this revision as live.</p><a href="https://github.com/Anshuman70739/rythu-mitra/commits/experiment/dashboard-visual-masterpiece/" target="_blank" rel="noopener">View actual branch history ↗</a><span class="rm-history-planned">SHOWCASE CHANGE · VERIFY LIVE</span></li>' +
       '<li><span class="rm-history-date">PLANNED — NOT COMPLETED</span><h3>Connect verified model and provider results</h3><p>Future work: integrate the actual crop and plant-health model routes with validated schemas, real errors, loading states and source labels. This showcase does not perform inference or upload images.</p><span class="rm-history-planned">PLANNED</span></li>' +
     '</ol>';
     const roadmap = $('.deep-roadmap', body);
