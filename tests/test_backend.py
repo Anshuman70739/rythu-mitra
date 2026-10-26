@@ -7,6 +7,7 @@ def test_health_ready_and_session_contract(client):
     assert client.get("/health").status_code == 200
     ready = client.get("/ready")
     assert ready.status_code == 200
+    assert ready.get_json()["weather"] == "OPEN_METEO_FALLBACK"
     session = client.get("/api/session").get_json()
     assert session["success"] is True
     assert isinstance(session["csrf_token"], str) and len(session["csrf_token"]) >= 20
