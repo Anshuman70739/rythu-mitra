@@ -57,9 +57,7 @@
       new THREE.Vector3(0, 0.04, 0.065), new THREE.Vector3(0.012, 0.45, 0.066),
       new THREE.Vector3(0, 0.94, 0.066), new THREE.Vector3(0, 1.42, 0.065)
     ]), 16, 0.011, 5, false), veinMat);
-    vein.position.copy(leaf.position);
-    vein.scale.copy(leaf.scale);
-    vein.rotation.copy(leaf.rotation);
+    // Vein geometry is already defined in the leaf's local coordinate space.
     leaf.add(vein);
     for (let i = 0; i < 4; i++) {
       const yy = 0.25 + i * 0.25;
