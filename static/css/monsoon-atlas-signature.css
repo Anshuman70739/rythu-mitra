@@ -1,0 +1,123 @@
+/* Monsoon Atlas signature layer — cinematic transitions, refined depth and safe motion. */
+:root{
+  --atlas-signature-ink:#183B36;
+  --atlas-signature-teal:#397D78;
+  --atlas-signature-sage:#83A987;
+  --atlas-signature-sky:#DCEBF2;
+  --atlas-signature-amber:#EAAF4D;
+  --atlas-signature-curve:cubic-bezier(.2,.78,.22,1);
+}
+/* Page-to-page curtain: the overlay is created only by the navigation script. */
+.atlas-route-curtain{
+  position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:
+    radial-gradient(circle at 78% 20%,rgba(234,175,77,.32),transparent 24%),
+    linear-gradient(128deg,#183B36 0%,#285D51 52%,#397D78 100%);
+  clip-path:circle(0 at var(--atlas-origin-x,85vw) var(--atlas-origin-y,12vh));
+  transition:clip-path .62s var(--atlas-signature-curve);
+  contain:strict;
+}
+.atlas-route-curtain.is-active{
+  clip-path:circle(155vmax at var(--atlas-origin-x,85vw) var(--atlas-origin-y,12vh));
+}
+.showcase-page.route-arrived #main{
+  animation:atlas-arrive .72s var(--atlas-signature-curve) both;
+}
+@keyframes atlas-arrive{
+  from{opacity:.72;transform:translateY(10px);filter:blur(2px)}
+  to{opacity:1;transform:translateY(0);filter:blur(0)}
+}
+/* A little more depth in the existing illustrated story; its content remains readable. */
+.showcase-page .hero__scene{
+  transform-style:preserve-3d;
+  will-change:transform;
+  transition:transform .5s var(--atlas-signature-curve);
+}
+.showcase-page .scene-landscape{transform:translateZ(12px);transform-origin:50% 60%}
+.showcase-page .scene-sun{transform:translateZ(28px)}
+.showcase-page .scene-float{transform:translateZ(42px)}
+.showcase-page .chapter-stage-wrap{
+  perspective:1300px;
+}
+.showcase-page .chapter-stage{
+  transform-style:preserve-3d;
+  backface-visibility:hidden;
+}
+.showcase-page .chapter-card{
+  transition:opacity .5s var(--atlas-signature-curve),transform .6s var(--atlas-signature-curve),border-color .35s ease,box-shadow .4s ease;
+}
+.showcase-page .chapter-card:hover{
+  transform:translate3d(5px,-2px,0);
+}
+.showcase-page .chapter-stage > *{
+  backface-visibility:hidden;
+}
+/* Workspace reveal hooks are added only after JS confirms motion is allowed. */
+.app-shell .atlas-motion-item{
+  opacity:0;
+  transform:translate3d(0,18px,0) scale(.992);
+  clip-path:inset(0 0 4% 0 round 20px);
+  transition:opacity .68s var(--atlas-signature-curve),transform .76s var(--atlas-signature-curve),clip-path .84s var(--atlas-signature-curve),box-shadow .4s ease,border-color .35s ease;
+  transition-delay:var(--atlas-motion-delay,0ms);
+}
+.app-shell .atlas-motion-item.is-atlas-visible{
+  opacity:1;transform:none;clip-path:inset(0 0 0 0 round 20px);
+}
+.app-shell .atlas-dashboard-hero{
+  isolation:isolate;
+  perspective:1100px;
+}
+.app-shell .atlas-dashboard-hero::after{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  opacity:.65;
+  background:
+    radial-gradient(ellipse at 94% 3%,rgba(234,175,77,.18),transparent 28%),
+    repeating-radial-gradient(ellipse at 105% 5%,transparent 0 30px,rgba(57,125,120,.045) 31px 32px,transparent 33px 63px);
+  mask-image:linear-gradient(135deg,#000,transparent 78%);
+}
+.app-shell .atlas-dashboard-hero__art{
+  transform-style:preserve-3d;
+  animation:atlas-art-arrive .95s var(--atlas-signature-curve) both;
+  transform-origin:center;
+}
+.app-shell .atlas-dashboard-hero__art svg{
+  filter:drop-shadow(0 12px 22px rgba(24,59,54,.08));
+  transform:translateZ(16px);
+}
+.app-shell .atlas-dashboard-hero__art-note{backdrop-filter:blur(16px)}
+.app-shell .atlas-stat-card,.app-shell .atlas-action-card,.app-shell .panel,.app-shell .module-card,.app-shell .feature-tile,.app-shell .tool-card{
+  transform-origin:center;
+  transition:transform .32s var(--atlas-signature-curve),box-shadow .35s ease,border-color .35s ease,background-color .3s ease;
+}
+.app-shell .atlas-stat-card:hover,.app-shell .atlas-action-card:hover,.app-shell .module-card:hover,.app-shell .feature-tile:hover,.app-shell .tool-card:hover{
+  transform:translateY(-4px) scale(1.008);
+}
+.app-shell .atlas-action-card__icon,.app-shell .atlas-stat-card__icon{
+  transition:transform .45s var(--atlas-signature-curve),box-shadow .35s ease;
+}
+.app-shell .atlas-action-card:hover .atlas-action-card__icon,.app-shell .atlas-stat-card:hover .atlas-stat-card__icon{
+  transform:translateY(-2px) rotate(-4deg) scale(1.06);
+  box-shadow:0 8px 18px rgba(24,59,54,.08);
+}
+.app-shell .button--primary{position:relative;overflow:hidden;isolation:isolate}
+.app-shell .button--primary::after{
+  content:"";position:absolute;inset:-30% auto -30% -60%;width:38%;z-index:-1;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.3),transparent);
+  transform:skewX(-20deg);transition:left .65s var(--atlas-signature-curve);
+}
+.app-shell .button--primary:hover::after{left:130%}
+@keyframes atlas-art-arrive{from{opacity:.55;transform:translate3d(0,12px,0) rotateY(-3deg)}to{opacity:1;transform:translate3d(0,0,0) rotateY(0)}}
+@media (hover:none),(max-width:760px){
+  .showcase-page .hero__scene{will-change:auto;transition:none}
+  .showcase-page .chapter-card:hover{transform:none}
+  .app-shell .atlas-motion-item{transform:translateY(10px) scale(.998)}
+  .app-shell .atlas-stat-card:hover,.app-shell .atlas-action-card:hover,.app-shell .module-card:hover,.app-shell .feature-tile:hover,.app-shell .tool-card:hover{transform:none}
+  .app-shell .button--primary::after{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .atlas-route-curtain{display:none!important;transition:none!important}
+  .showcase-page.route-arrived #main,.app-shell .atlas-dashboard-hero__art{animation:none!important}
+  .app-shell .atlas-motion-item{opacity:1!important;transform:none!important;clip-path:none!important;transition:none!important}
+  .showcase-page .hero__scene,.showcase-page .chapter-card,.app-shell .atlas-stat-card,.app-shell .atlas-action-card,.app-shell .panel,.app-shell .module-card,.app-shell .feature-tile,.app-shell .tool-card{transition:none!important;transform:none!important;will-change:auto!important}
+  .app-shell .button--primary::after{display:none}
+}

@@ -516,36 +516,224 @@
     try { sessionStorage.setItem('rm-field-signature-played','1'); } catch { /* Animation remains one-time per render state. */ }
   }
 
-    function renderGuestHome(title = t('home.title','Farm tasks and latest updates')) {
-      return htmlPage('home', `<section class="hero-panel"><svg id="fieldSignature" class="field-signature" viewBox="0 0 260 150" aria-hidden="true" focusable="false"><path pathLength="1" d="M8 28 C56 4 111 8 151 28 S222 55 252 23"/><path pathLength="1" d="M8 57 C52 35 105 37 151 57 S220 83 252 52"/><path pathLength="1" d="M8 86 C54 65 110 66 155 86 S217 110 252 81"/><path pathLength="1" d="M8 115 C54 96 106 96 153 116 S218 140 252 110"/></svg><span class="kicker">${esc(t('top.kicker','FIELD NOTEBOOK / TELANGANA'))}</span><h2>${esc(t('home.guestTitle'))}</h2><p>${esc(t('home.guestBody'))}</p><div class="button-row"><button class="button button--primary" data-action="open-auth" data-auth-mode="login">${esc(t('home.signIn'))}</button><button class="button button--secondary" data-action="open-auth" data-auth-mode="register">${esc(t('home.register'))}</button></div></section><div class="grid grid--2">${panel(t('home.shortTitle'), `<div class="module-grid">${cardLink('crop-planning',t('nav.cropPlanning'),t('page.cropPlanningDesc'),'i-plan')}${cardLink('crop-health',t('nav.cropHealth'),t('page.cropHealthDesc'),'i-leaf')}${cardLink('seed-safety',t('nav.seedSafety'),t('page.seedSafetyDesc'),'i-shield')}${cardLink('weather',t('nav.weather'),t('page.weatherDesc'),'i-weather')}${cardLink('markets',t('nav.markets'),t('page.marketsDesc'),'i-market')}</div>`)}${panel(t('home.weather'), `<p class="muted-copy">${esc(t('weather.noProvider'))}</p>${statusBadge('UNAVAILABLE')}`, '')}</div>`, { title });
+    function renderGuestHome(title = t('home.title', 'Farm tasks and latest updates')) {
+      const sceneAlt = t('landing.sceneAlt', 'Illustrated fields in the Telangana countryside with birds crossing the sky and plants moving in a gentle breeze.');
+      const tools = [
+        ['crop-planning', t('landing.cropTitle', 'Plan a crop'), t('landing.cropBody', 'Compare crop suitability using soil and field conditions.'), 'i-plan'],
+        ['crop-health', t('landing.healthTitle', 'Check crop health'), t('landing.healthBody', 'Open the crop photo workflow and check analysis availability.'), 'i-leaf'],
+        ['weather', t('landing.weatherTitle', 'Plan around weather'), t('landing.weatherBody', 'Weather is shown when a provider is configured.'), 'i-weather'],
+        ['markets', t('landing.marketTitle', 'Review mandi prices'), t('landing.marketBody', 'Available prices include their source and reporting date.'), 'i-market']
+      ].map(([route, label, desc, symbol], index) => `<a class='rm-tool-card rm-tool-card--${index + 1}' href='#/${route}'><span class='rm-tool-icon' aria-hidden='true'>${icon(symbol)}</span><span class='rm-tool-copy'><h3>${esc(label)}</h3><p>${esc(desc)}</p></span><span class='rm-tool-arrow' aria-hidden='true'>↗</span></a>`).join('');
+      const content = `<section class='rm-landing-hero' aria-labelledby='landingTitle'>
+        <div class='rm-landing-copy'>
+          <p class='rm-landing-eyebrow'><span class='rm-landing-dot' aria-hidden='true'></span>${esc(t('landing.eyebrow', 'A calmer way to plan your farm'))}</p>
+          <h1 id='landingTitle'>${esc(t('home.guestTitle'))}</h1>
+          <p class='rm-landing-lede'>${esc(t('home.guestBody'))}</p>
+          <div class='button-row rm-landing-actions'><button type='button' class='button button--primary' data-action='open-auth' data-auth-mode='register'>${esc(t('home.register'))}</button><button type='button' class='button button--secondary' data-action='open-auth' data-auth-mode='login'>${esc(t('home.signIn'))}</button></div>
+          <p class='rm-landing-note'>${esc(t('landing.dataNote', 'Weather, mandi data and crop-health results are shown only when their data sources or verified model labels are available.'))}</p>
+        </div>
+        <div class='rm-landscape' role='img' aria-label='${esc(sceneAlt)}'>
+          <svg class='rm-landscape-art' viewBox='0 0 560 420' aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg'>
+            <rect width='560' height='420' fill='var(--rm-landing-sky)'/>
+            <circle class='rm-sun' cx='438' cy='76' r='34'/>
+            <path class='rm-cloud' d='M87 94c-2-15 10-26 24-23 7-20 34-22 44-3 16-3 28 9 27 24H87Z'/>
+            <path class='rm-field-far' d='M0 205c86-36 170-23 251 9s181 45 309 1v205H0Z'/>
+            <path class='rm-field-mid' d='M0 265c94-30 183-20 278 14s183 35 282-2v143H0Z'/>
+            <path class='rm-field-front' d='M0 319c104-35 200-17 294 16s177 32 266 3v82H0Z'/>
+            <g class='rm-field-contours' fill='none'><path d='M-25 248c92-30 173-18 270 12s202 47 342 0'/><path d='M-25 279c92-30 173-18 270 12s202 47 342 0'/><path d='M-25 311c92-30 173-18 270 12s202 47 342 0'/><path d='M-25 343c92-30 173-18 270 12s202 47 342 0'/><path d='M-25 376c92-30 173-18 270 12s202 47 342 0'/></g>
+            <g class='rm-crop-row' fill='none'><path d='M52 420c35-42 74-76 120-105'/><path d='M100 420c35-42 74-76 120-105'/><path d='M152 420c35-42 74-76 120-105'/><path d='M204 420c35-42 74-76 120-105'/><path d='M256 420c35-42 74-76 120-105'/><path d='M308 420c35-42 74-76 120-105'/><path d='M360 420c35-42 74-76 120-105'/></g>
+            <g transform='translate(56 347)'><g class='rm-scene-plant rm-scene-plant--one'><path class='rm-plant-stem' d='M0 0c-2-35 3-70 16-103'/><path class='rm-plant-leaf' d='M5-44c-22-2-36-14-39-31 22 1 35 12 39 31Z'/><path class='rm-plant-leaf rm-plant-leaf--light' d='M9-70c23-4 38-18 41-35-22 4-36 17-41 35Z'/><path class='rm-plant-leaf' d='M13-91c-12-12-12-27-4-40 11 12 13 26 4 40Z'/></g></g>
+            <g transform='translate(178 385)'><g class='rm-scene-plant rm-scene-plant--two'><path class='rm-plant-stem' d='M0 0c0-31-4-57-15-88'/><path class='rm-plant-leaf' d='M-5-38c-20-4-32-16-32-32 20 3 31 15 32 32Z'/><path class='rm-plant-leaf rm-plant-leaf--light' d='M-8-58c17-5 28-18 28-33-18 4-27 17-28 33Z'/></g></g>
+            <g transform='translate(472 354)'><g class='rm-scene-plant rm-scene-plant--three'><path class='rm-plant-stem' d='M0 0c-2-35-3-62-17-98'/><path class='rm-plant-leaf' d='M-8-41c-21-5-35-18-35-34 22 3 34 17 35 34Z'/><path class='rm-plant-leaf rm-plant-leaf--light' d='M-12-62c18-5 29-18 29-34-18 4-28 17-29 34Z'/><path class='rm-plant-leaf' d='M-15-80c-10-13-9-27-1-39 9 13 10 26 1 39Z'/></g></g>
+            <g transform='translate(525 391)'><g class='rm-scene-plant rm-scene-plant--four'><path class='rm-plant-stem' d='M0 0c0-28 3-50 11-73'/><path class='rm-plant-leaf' d='M4-33c-17-3-28-14-27-28 17 2 27 12 27 28Z'/><path class='rm-plant-leaf rm-plant-leaf--light' d='M6-49c16-4 26-14 27-27-16 3-25 13-27 27Z'/></g></g>
+          </svg>
+          <div class='rm-birds' aria-hidden='true'><svg class='rm-bird-flight rm-bird-flight--one' viewBox='0 0 44 24'><path d='M2 13c7-9 13-9 20 0 7-9 13-9 20 0'/></svg><svg class='rm-bird-flight rm-bird-flight--two' viewBox='0 0 44 24'><path d='M2 13c7-9 13-9 20 0 7-9 13-9 20 0'/></svg><svg class='rm-bird-flight rm-bird-flight--three' viewBox='0 0 44 24'><path d='M2 13c7-9 13-9 20 0 7-9 13-9 20 0'/></svg></div>
+          <div class='rm-landscape-caption'><span class='rm-caption-mark' aria-hidden='true'></span><span>${esc(t('landing.sceneCaption', 'A field-first companion for everyday farm decisions'))}</span></div>
+        </div>
+      </section>
+      <section class='rm-landing-tools' aria-labelledby='landingToolsTitle'><div class='rm-tools-heading'><h2 id='landingToolsTitle'>${esc(t('landing.toolsTitle', 'Start with a farm decision'))}</h2><p>${esc(t('landing.toolsBody', 'Open a tool when you need it. Sign in to save farm details and records.'))}</p></div><div class='rm-tool-grid'>${tools}</div></section>`;
+      return '<div class="atlas-workspace-home">' + content + '</div>';
     }
 
+  document.addEventListener('visibilitychange', () => document.documentElement.classList.toggle('rm-tab-hidden', document.hidden));
+  document.documentElement.classList.toggle('rm-tab-hidden', document.hidden);
+
 async function renderHome() {
-    const title = t('home.title','Farm tasks and latest updates');
+    const title = t('home.title', 'Farm tasks and latest updates');
     if (!state.user) return renderGuestHome(title);
+
     let data;
-    try { data = mapDashboardResponse(await api('/api/dashboard')); }
-    catch (error) {
-      if (error.status === 401) { state.user = null; state.session = { ...(state.session || {}), user: null }; state.sessionStatus = 'signed-out'; renderNavigation(); return renderGuestHome(title); }
+    try {
+      data = mapDashboardResponse(await api('/api/dashboard'));
+    } catch (error) {
+      if (error.status === 401) {
+        state.user = null;
+        state.session = { ...(state.session || {}), user: null };
+        state.sessionStatus = 'signed-out';
+        renderNavigation();
+        return renderGuestHome(title);
+      }
       return htmlPage('home', errorBox(error.message, 'home'));
     }
+
     const profile = data.profile || {};
     const weather = data.weather || {};
     const tasks = Array.isArray(data.crop_calendar) ? data.crop_calendar : [];
-    const actions = (Array.isArray(data.actions) ? data.actions : []).map(item => typeof item === 'string' ? item : (item?.title || item?.action || item?.text || item?.label)).filter(item => typeof item === 'string' && item.trim());
+    const actions = (Array.isArray(data.actions) ? data.actions : [])
+      .map(item => typeof item === 'string' ? item : (item?.title || item?.action || item?.text || item?.label))
+      .filter(item => typeof item === 'string' && item.trim());
     const markets = Array.isArray(data.market) ? data.market : [];
     const notes = Array.isArray(data.notifications) ? data.notifications : [];
     const expenses = data.finance_summary?.expense_total;
     const income = data.finance_summary?.income_total;
-    const taskRows = tasks.length ? `<ul class="action-list">${tasks.slice(0,8).map((task,i)=>`<li><span class="action-number">${String(i+1).padStart(2,'0')}</span><div class="action-copy"><strong>${esc(task.task || task.title || t('common.untitled','Untitled task'))}</strong><p>${esc([task.crop,task.stage,task.due_date ? `${t('field.due_date','Due')}: ${task.due_date}` : ''].filter(Boolean).join(' · '))}</p><div class="status-line">${statusBadge(task.status || 'NOT_STATED')}${task.data_type ? statusBadge(task.data_type) : ''}${['OVERDUE','DUE','UPCOMING'].includes(task.status) ? button(t('calendar.markCompleted','Mark completed'),'complete-task',`data-id="${esc(task.id)}"`,'button button--quiet button--small') : ''}</div></div></li>`).join('')}</ul>` : emptyState(t('common.noData'), t('home.noActions'), `<a class="button button--secondary button--small" href="#/calendar">${esc(t('nav.calendar'))}</a>`);
-    const weatherBody = weather && weather.success ? `<div class="weather-current"><strong class="weather-temp">${weather.temperature == null ? 'Not available' : `${esc(num(weather.temperature))}°`}</strong><div><strong>${esc(profile.district || t('weather.locationDefault','Selected location'))}</strong><div class="status-line">${statusBadge(weather.status || 'UNAVAILABLE')}${weather.data_type ? statusBadge(weather.data_type) : ''}</div></div></div><div class="weather-metrics">${[[t('weather.humidity','Humidity'),weather.humidity,'%'],[t('weather.rainfall','Rainfall'),weather.rainfall,' mm'],[t('weather.rainChance','Rain chance'),weather.rain_probability,'%'],[t('weather.wind','Wind'),weather.wind,' km/h']].map(([l,v,u])=>`<div class="weather-metric"><span>${esc(l)}</span><strong>${v == null ? 'Not available' : `${esc(num(v))}${u}`}</strong></div>`).join('')}</div><p class="field-help">${esc(weather.reason || weather.source_name || t('common.noSourceMetadata'))}</p>${sourceLine(weather)}` : `<p>${esc(weather.error || t('home.noWeather'))}</p>${statusBadge(weather.status || 'UNAVAILABLE')}`;
-    const marketBody = markets.length ? `<div class="resource-list">${markets.slice(0,3).map(m=>`<article class="record-card"><div class="record-card-head"><h4>${esc(m.commodity || 'Not available')} · ${esc(m.market || 'Not available')}</h4>${statusBadge(m.data_type || m.freshness_status || 'UNAVAILABLE')}</div><p>${esc(t('field.price_date','Price date'))}: ${esc(m.price_date || 'Not available')}${m.is_stale ? ` · ${esc(t('markets.stale','Stale price record'))}` : ''}</p><dl class="record-values"><div class="record-value"><dt>${esc(t('field.modal_price','Modal price'))}</dt><dd>${esc(m.modal_price == null ? 'Not available' : `${money(m.modal_price)} / ${m.unit || 'quintal'}`)}</dd></div></dl>${sourceLine(m)}</article>`).join('')}</div>` : `<p>${esc(t('home.noMarket'))}</p>${statusBadge('UNAVAILABLE')}`;
-    const noticeBody = notes.length ? `<div class="notice-list">${notes.map(n=>`<article class="notice-item notice-item--${esc(n.severity || 'info')}"><div class="status-line">${statusBadge(n.data_type || 'USER_SUBMITTED')}<small>${esc(formatDate(n.created_at))}</small></div><h3>${esc(n.title || t('common.notice','Notice'))}</h3><p>${esc(n.body || '')}</p></article>`).join('')}</div>` : emptyState(t('notifications.none','No notification records'), t('notifications.noneHelp','Notifications appear here only when returned by the backend.'));
-    const actionsMarkup = actions.length ? `<ol class="action-list">${actions.map((text,i)=>`<li><span class="action-number">${String(i+1).padStart(2,'0')}</span><div class="action-copy"><strong>${esc(text)}</strong><p>${esc(t('home.notRecommendation','These dashboard notes are not automatically verified farm-specific recommendations.'))}</p></div></li>`).join('')}</ol>` : emptyState(t('home.actionTitle'),t('home.noActions'));
-    const body = `<section class="hero-panel"><svg id="fieldSignature" class="field-signature" viewBox="0 0 260 150" aria-hidden="true" focusable="false"><path pathLength="1" d="M8 28 C56 4 111 8 151 28 S222 55 252 23"/><path pathLength="1" d="M8 57 C52 35 105 37 151 57 S220 83 252 52"/><path pathLength="1" d="M8 86 C54 65 110 66 155 86 S217 110 252 81"/><path pathLength="1" d="M8 115 C54 96 106 96 153 116 S218 140 252 110"/></svg><span class="kicker">${esc(t('home.actionTitle'))} / ${esc(formatDate(new Date().toISOString().slice(0,10)))}</span><h2>${esc(t('home.hello','Hello'))}, ${esc(profile.name || state.user.name || t('role.farmer','Farmer'))}</h2><p class="home-context">${esc([profile.current_crop,profile.crop_stage,profile.district].filter(Boolean).join(' · ') || t('home.profile'))}</p><p class="home-supporting-copy">${esc(title)}</p><div class="status-line">${statusBadge(data.status || 'PARTIAL_DASHBOARD')}${statusBadge(data.data_type || 'MIXED')}<span class="field-help">${esc(t('home.notRecommendation'))}</span></div><div class="button-row"><a class="button button--primary" href="#/calendar">${esc(t('nav.calendar'))}</a><a class="button button--secondary" href="#/crop-health">${esc(t('nav.cropHealth'))}</a><a class="button button--quiet" href="#/seed-safety">${esc(t('nav.seedSafety'))}</a></div></section><div class="grid grid--2">${panel(t('home.actionTitle'),actionsMarkup)}${panel(t('home.taskTitle'),taskRows,'',`<a class="text-button" href="#/calendar">${esc(t('common.viewAll','View tasks'))} →</a>`)}</div><div class="grid grid--2">${panel(t('home.weather'),weatherBody,'')}${panel(t('home.market'),marketBody,'')}</div>${panel(t('notifications.title','Notifications & seed alerts'),noticeBody)}${(expenses != null || income != null) ? `<section class="home-finance-line" aria-label="${esc(t('home.financeSnapshot','Recorded farm finances'))}"><strong>${esc(t('home.financeSnapshot','Recorded farm finances'))}</strong><span>${esc(t('finance.expenses','Recorded expenses'))}: <b>${expenses == null ? esc(t('common.unavailable','Unavailable')) : esc(money(expenses))}</b></span><span>${esc(t('finance.income','Recorded income'))}: <b>${income == null ? esc(t('common.unavailable','Unavailable')) : esc(money(income))}</b></span><small>${esc(t('finance.recordedOnly','User-entered records only'))}</small></section>` : ''}<div class="quick-link-grid">${cardLink('crop-planning',t('nav.cropPlanning'),t('page.cropPlanningDesc'),'i-calendar')}${cardLink('weather',t('nav.weather'),t('page.weatherDesc'),'i-weather')}${cardLink('markets',t('nav.markets'),t('page.marketsDesc'),'i-market')}${cardLink('soil-inputs',t('nav.soilInputs'),t('page.soilInputsDesc'),'i-soil')}</div>`;
-    return htmlPage('home', body, { title });
-  }
+    const firstMarket = markets[0] || null;
+    const profileContext = [profile.current_crop, profile.crop_stage, profile.district].filter(Boolean).join(' · ') || t('home.profile', 'Selected farmer profile');
+    const today = esc(formatDate(new Date().toISOString().slice(0, 10)));
+    const farmerName = profile.name || state.user.name || t('role.farmer', 'Farmer');
 
+    const taskRows = tasks.length
+      ? '<ul class="action-list">' + tasks.slice(0, 8).map((task, i) => {
+          const taskStatus = task.status || 'NOT_STATED';
+          const completeButton = ['OVERDUE', 'DUE', 'UPCOMING'].includes(task.status)
+            ? button(t('calendar.markCompleted', 'Mark completed'), 'complete-task', 'data-id="' + esc(task.id) + '"', 'button button--quiet button--small')
+            : '';
+          const subline = [task.crop, task.stage, task.due_date ? (t('field.due_date', 'Due') + ': ' + task.due_date) : ''].filter(Boolean).join(' · ');
+          return '<li><span class="action-number">' + String(i + 1).padStart(2, '0') + '</span><div class="action-copy"><strong>' +
+            esc(task.task || task.title || t('common.untitled', 'Untitled task')) + '</strong><p>' + esc(subline) +
+            '</p><div class="status-line">' + statusBadge(taskStatus) + (task.data_type ? statusBadge(task.data_type) : '') +
+            completeButton + '</div></div></li>';
+        }).join('') + '</ul>'
+      : emptyState(t('common.noData', 'No records are available yet.'), t('home.noActions', 'The backend returned no tasks for this view.'), '<a class="button button--quiet button--small" href="#/calendar">' + esc(t('nav.calendar', 'Crop Calendar')) + '</a>');
+
+    const weatherAvailable = Boolean(weather && weather.success);
+    const weatherBody = weatherAvailable
+      ? '<div class="weather-current"><strong class="weather-temp">' +
+        (weather.temperature == null ? esc(t('common.unavailable', 'Unavailable')) : esc(num(weather.temperature)) + '°') +
+        '</strong><div><strong>' + esc(profile.district || t('weather.locationDefault', 'Selected location')) +
+        '</strong><div class="status-line">' + statusBadge(weather.status || 'UNAVAILABLE') +
+        (weather.data_type ? statusBadge(weather.data_type) : '') + '</div></div></div><div class="weather-metrics">' +
+        [[t('weather.humidity', 'Humidity'), weather.humidity, '%'], [t('weather.rainfall', 'Rainfall'), weather.rainfall, ' mm'],
+          [t('weather.rainChance', 'Rain chance'), weather.rain_probability, '%'], [t('weather.wind', 'Wind'), weather.wind, ' km/h']]
+          .map(([label, value, unit]) => '<div class="weather-metric"><span>' + esc(label) + '</span><strong>' +
+            (value == null ? esc(t('common.unavailable', 'Unavailable')) : esc(num(value)) + unit) + '</strong></div>').join('') +
+        '</div><p class="field-help">' + esc(weather.reason || weather.source_name || t('common.noSourceMetadata', 'No source metadata returned.')) +
+        '</p>' + sourceLine(weather)
+      : '<div class="atlas-empty-source"><span class="atlas-empty-source__icon">' + icon('i-weather') + '</span><p>' +
+        esc(weather.error || t('home.noWeather', 'Weather was not available in the dashboard response.')) +
+        '</p><div class="status-line">' + statusBadge(weather.status || 'UNAVAILABLE') +
+        (weather.data_type ? statusBadge(weather.data_type) : '') + '</div></div>';
+
+    const marketBody = markets.length
+      ? '<div class="resource-list">' + markets.slice(0, 3).map(m => {
+          return '<article class="record-card"><div class="record-card-head"><h4>' +
+            esc(m.commodity || 'Not available') + ' · ' + esc(m.market || 'Not available') + '</h4>' +
+            statusBadge(m.data_type || m.freshness_status || 'UNAVAILABLE') + '</div><p>' +
+            esc(t('field.price_date', 'Price date')) + ': ' + esc(m.price_date || t('common.unavailable', 'Unavailable')) +
+            (m.is_stale ? ' · ' + esc(t('markets.stale', 'Stale price record')) : '') +
+            '</p><dl class="record-values"><div class="record-value"><dt>' + esc(t('field.modal_price', 'Modal price')) +
+            '</dt><dd>' + esc(m.modal_price == null ? t('common.unavailable', 'Unavailable') : money(m.modal_price) + ' / ' + (m.unit || 'quintal')) +
+            '</dd></div></dl>' + sourceLine(m) + '</article>';
+        }).join('') + '</div>'
+      : '<div class="atlas-empty-source"><span class="atlas-empty-source__icon">' + icon('i-market') + '</span><p>' +
+        esc(t('home.noMarket', 'No market record was returned. Open Markets to query configured sources.')) +
+        '</p>' + statusBadge('UNAVAILABLE') + '</div>';
+
+    const noticeBody = notes.length
+      ? '<div class="notice-list">' + notes.map(n =>
+          '<article class="notice-item notice-item--' + esc(n.severity || 'info') + '"><div class="status-line">' +
+          statusBadge(n.data_type || 'USER_SUBMITTED') + '<small>' + esc(formatDate(n.created_at)) +
+          '</small></div><h3>' + esc(n.title || t('common.notice', 'Notice')) + '</h3><p>' +
+          esc(n.body || '') + '</p></article>'
+        ).join('') + '</div>'
+      : emptyState(t('notifications.none', 'No notification records'), t('notifications.noneHelp', 'Notifications appear here only when returned by the backend.'));
+
+    const actionsMarkup = actions.length
+      ? '<ol class="action-list">' + actions.map((actionText, i) =>
+          '<li><span class="action-number">' + String(i + 1).padStart(2, '0') +
+          '</span><div class="action-copy"><strong>' + esc(actionText) + '</strong><p>' +
+          esc(t('home.notRecommendation', 'These dashboard notes are not automatically verified farm-specific recommendations.')) +
+          '</p></div></li>'
+        ).join('') + '</ol>'
+      : emptyState(t('home.actionTitle', 'Today’s field notes'), t('home.noActions', 'The backend returned no tasks for this view.'));
+
+    const toolCard = (route, label, description, symbol, tone) =>
+      '<a class="atlas-action-card" href="#/' + esc(route) + '"><span class="atlas-action-card__icon ' + esc(tone) + '">' +
+      icon(symbol) + '</span><span class="atlas-action-card__copy"><strong>' + esc(label) + '</strong><small>' +
+      esc(description) + '</small></span><span class="atlas-action-card__arrow" aria-hidden="true">↗</span></a>';
+
+    const quickTools = [
+      ['crop-planning', t('nav.cropPlanning', 'Crop Planning'), t('landing.cropBody', 'Compare crop suitability using soil and field conditions.'), 'i-plan', 'atlas-tone--leaf'],
+      ['crop-health', t('nav.cropHealth', 'Crop Health'), t('landing.healthBody', 'Open the crop photo workflow and check analysis availability.'), 'i-leaf', 'atlas-tone--crop'],
+      ['weather', t('nav.weather', 'Weather'), t('landing.weatherBody', 'Weather is shown when a provider is configured.'), 'i-weather', 'atlas-tone--sky'],
+      ['markets', t('nav.markets', 'Markets'), t('landing.marketBody', 'Available prices include their source and reporting date.'), 'i-market', 'atlas-tone--gold'],
+      ['schemes', t('nav.schemes', 'Schemes & Benefits'), t('schemes.matchNote', 'Scheme matches are not official eligibility decisions.'), 'i-shield', 'atlas-tone--terracotta'],
+      ['soil-inputs', t('nav.soilInputs', 'Soil inputs'), t('page.soilInputsDesc', 'Keep soil test values and input records traceable.'), 'i-soil', 'atlas-tone--leaf']
+    ].map(([route, label, description, symbol, tone]) => toolCard(route, label, description, symbol, tone)).join('');
+
+    const weatherValue = weatherAvailable && weather.temperature != null ? esc(num(weather.temperature)) + '°' : '-';
+    const weatherNote = weatherAvailable ? (weather.source_name || weather.reason || t('common.noSourceMetadata', 'No source metadata returned.')) : t('home.noWeather', 'Weather was not available in the dashboard response.');
+    const marketValue = markets.length ? esc(num(markets.length, 0)) : '-';
+    const marketNote = firstMarket ? (firstMarket.price_date ? (t('field.price_date', 'Price date') + ': ' + firstMarket.price_date) : t('home.market', 'Market snapshot')) : t('home.noMarket', 'No market record was returned.');
+    const stats = [
+      { label: t('home.taskTitle', 'Crop tasks returned by the backend'), value: esc(num(tasks.length, 0)), note: t('home.tasksNote', 'Tasks returned by backend'), symbol: 'i-plan', tone: 'atlas-tone--leaf', badge: statusBadge(data.status || 'PARTIAL_DASHBOARD') },
+      { label: t('home.weather', 'Weather status'), value: weatherValue, note: weatherNote, symbol: 'i-weather', tone: 'atlas-tone--sky', badge: statusBadge(weather.status || 'UNAVAILABLE') },
+      { label: t('home.market', 'Market snapshot'), value: marketValue, note: marketNote, symbol: 'i-market', tone: 'atlas-tone--gold', badge: statusBadge(firstMarket?.data_type || firstMarket?.freshness_status || 'UNAVAILABLE') },
+      { label: t('notifications.title', 'Notifications'), value: esc(num(notes.length, 0)), note: t('notifications.noneHelp', 'Notifications appear here only when returned by the backend.'), symbol: 'i-bell', tone: 'atlas-tone--terracotta', badge: statusBadge(notes.length ? 'USER_SUBMITTED' : 'UNAVAILABLE') }
+    ].map(stat => '<article class="atlas-stat-card"><span class="atlas-stat-card__icon ' + stat.tone + '">' + icon(stat.symbol) +
+        '</span><div class="atlas-stat-card__content"><p>' + esc(stat.label) + '</p><strong>' + stat.value + '</strong><small>' +
+        esc(stat.note) + '</small></div><div class="atlas-stat-card__status">' + stat.badge + '</div></article>').join('');
+
+    const dashboardActions = '<div class="button-row atlas-dashboard-actions"><a class="button button--primary" href="#/calendar">' +
+      esc(t('nav.calendar', 'Crop Calendar')) + '</a><a class="button button--outline" href="#/crop-health">' +
+      esc(t('nav.cropHealth', 'Crop Health')) + '</a><a class="button button--quiet" href="#/seed-safety">' +
+      esc(t('nav.seedSafety', 'Seed Safety')) + '</a></div>';
+
+    const financePanel = (expenses != null || income != null)
+      ? '<section class="atlas-finance-card"><span class="atlas-section-kicker">' +
+        esc(t('home.financeSnapshot', 'Recorded farm finances')) + '</span><div class="atlas-finance-row"><span>' +
+        esc(t('finance.expenses', 'Recorded expenses')) + '</span><strong>' +
+        (expenses == null ? esc(t('common.unavailable', 'Unavailable')) : esc(money(expenses))) +
+        '</strong></div><div class="atlas-finance-row"><span>' + esc(t('finance.income', 'Recorded income')) +
+        '</span><strong>' + (income == null ? esc(t('common.unavailable', 'Unavailable')) : esc(money(income))) +
+        '</strong></div><small>' + esc(t('finance.recordedOnly', 'User-entered records only')) + '</small></section>'
+      : '';
+
+    return '<div class="atlas-dashboard">' +
+      '<header class="atlas-dashboard-hero"><div class="atlas-dashboard-hero__copy">' +
+        '<p class="atlas-eyebrow"><span class="atlas-eyebrow__dot"></span>' + esc(t('home.actionTitle', 'Today’s field notes')) +
+        ' <span class="atlas-eyebrow__sep">·</span> ' + today + '</p>' +
+        '<h1>' + esc(t('home.hello', 'Hello')) + ', <em>' + esc(farmerName) + '</em></h1>' +
+        '<p class="atlas-dashboard-hero__context">' + esc(profileContext) + '</p>' +
+        '<p class="atlas-dashboard-hero__intro">' + esc(t('home.desc', title)) + '</p>' +
+        '<div class="status-line atlas-dashboard-status">' + statusBadge(data.status || 'PARTIAL_DASHBOARD') +
+          statusBadge(data.data_type || 'MIXED') + '<span class="field-help">' + esc(t('home.notRecommendation')) + '</span></div>' +
+        dashboardActions +
+      '</div><div class="atlas-dashboard-hero__art" aria-hidden="true"><svg viewBox="0 0 440 260" focusable="false">' +
+        '<circle cx="330" cy="63" r="39" fill="#EAAF4D" opacity=".95"/>' +
+        '<circle cx="330" cy="63" r="59" fill="none" stroke="#F2DCA9" stroke-width="2"/>' +
+        '<path d="M0 154 C80 104 125 142 195 148 S304 102 440 140 V260 H0Z" fill="#C8E0D1"/>' +
+        '<path d="M0 184 C90 137 135 184 210 177 S340 136 440 176 V260 H0Z" fill="#91BE9E"/>' +
+        '<path d="M0 215 C90 177 160 222 230 211 S350 183 440 208 V260 H0Z" fill="#4D8B6D"/>' +
+        '<g fill="none" stroke="#DFF0D8" stroke-width="2" opacity=".85"><path d="M20 260 C79 210 138 205 192 223"/><path d="M96 260 C152 220 201 218 255 232"/><path d="M210 260 C268 223 313 223 365 240"/></g>' +
+        '<g fill="none" stroke="#397D78" stroke-width="4" stroke-linecap="round"><path d="M154 78q13-14 26 0q13-14 26 0"/><path d="M202 102q9-10 18 0q9-10 18 0"/></g>' +
+      '</svg><div class="atlas-dashboard-hero__art-note"><span class="atlas-dashboard-hero__art-dot"></span><span>' +
+        esc(profile.district || t('weather.locationDefault', 'Selected location')) + '</span><small>' +
+        esc(t('home.profile', 'Selected farmer profile')) + '</small></div></div></header>' +
+      '<section class="atlas-stat-grid" aria-label="' + esc(t('home.shortTitle', 'Quick access')) + '">' + stats + '</section>' +
+      '<div class="atlas-dashboard-layout"><div class="atlas-dashboard-main">' +
+        panel(t('home.actionTitle', 'Today’s field notes'), actionsMarkup, t('home.notRecommendation', 'Dashboard actions are not automatically verified recommendations.')) +
+        panel(t('home.taskTitle', 'Crop tasks returned by the backend'), taskRows, t('home.tasksNote', 'Tasks returned by backend'), '<a class="text-button" href="#/calendar">' + esc(t('common.viewAll', 'View tasks')) + ' ↗</a>') +
+        '<div class="atlas-panel-two-up">' + panel(t('home.weather', 'Weather status'), weatherBody, t('page.weatherDesc', 'Weather appears only when returned by a configured source.')) +
+        panel(t('home.market', 'Market snapshot'), marketBody, t('page.marketsDesc', 'Market data keeps its observation date and source.')) + '</div>' +
+        panel(t('notifications.title', 'Notifications & seed alerts'), noticeBody, t('notifications.noneHelp', 'Notifications appear here only when returned by the backend.')) +
+      '</div><aside class="atlas-dashboard-aside"><section class="atlas-quick-tools"><div class="atlas-quick-tools__heading"><p class="atlas-section-kicker">' +
+        esc(t('home.shortTitle', 'Quick access')) + '</p><h2>' + esc(t('home.q', 'What should I do today?')) + '</h2></div>' +
+        '<div class="atlas-action-grid">' + quickTools + '</div></section>' + financePanel +
+        '<section class="atlas-honesty-note"><span class="atlas-honesty-note__mark">' + icon('i-shield') +
+        '</span><div><strong>' + esc(t('landing.dataNote', 'Information is shown only when sources are available.')) +
+        '</strong><p>' + esc(t('home.notRecommendation', 'Dashboard notes are not automatically verified farm-specific recommendations.')) +
+        '</p></div></section></aside></div></div>';
+  }
   function renderMore() {
     const groups = MORE_GROUPS.map(group => `<section><div class="group-heading"><h2>${esc(t(group.key,humanize(group.key)))}</h2></div><div class="module-grid">${group.items.map(([route,key,desc])=>cardLink(route,t(key),desc,MODULE_ICONS[route] || 'i-calendar')).join('')}</div></section>`).join('');
     const adminLink = state.user?.role === 'admin' ? `<section><div class="group-heading"><h2>${esc(t('nav.admin'))}</h2></div><div class="module-grid">${cardLink('admin',t('page.admin'),t('page.adminDesc'),MODULE_ICONS.admin)}</div></section>` : '';

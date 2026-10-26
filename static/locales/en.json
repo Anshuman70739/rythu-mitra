@@ -943,5 +943,19 @@
   "weather": {
     "enterLocationFirst": "Enter your district or city to request weather information.",
     "locationRequiredTitle": "Choose a location"
-  }
+  },
+  "landing.eyebrow": "A calmer way to plan your farm",
+  "landing.sceneAlt": "Illustrated fields in the Telangana countryside with birds crossing the sky and plants moving in a gentle breeze.",
+  "landing.dataNote": "Weather, mandi data and crop-health results are shown only when their data sources or verified model labels are available.",
+  "landing.toolsTitle": "Start with a farm decision",
+  "landing.toolsBody": "Open a tool when you need it. Sign in to save farm details and records.",
+  "landing.cropTitle": "Plan a crop",
+  "landing.cropBody": "Compare crop suitability using soil and field conditions.",
+  "landing.healthTitle": "Check crop health",
+  "landing.healthBody": "Open the crop photo workflow and check analysis availability.",
+  "landing.weatherTitle": "Plan around weather",
+  "landing.weatherBody": "Weather is shown when a provider is configured.",
+  "landing.marketTitle": "Review mandi prices",
+  "landing.marketBody": "Available prices include their source and reporting date.",
+  "landing.sceneCaption": "A field-first companion for everyday farm decisions"
 }

@@ -13,6 +13,98 @@ def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
+def _open_meteo_weather(city: str, *, fallback_reason: str | None = None) -> dict:
+    """No-key weather fallback using Open-Meteo model forecasts, with explicit provenance."""
+    fetched = _utc_now()
+    cache_key = city.strip().casefold()
+    try:
+        geo_response = requests.get(
+            "https://geocoding-api.open-meteo.com/v1/search",
+            params={"name": city, "count": 10, "language": "en", "format": "json", "countryCode": "IN"},
+            timeout=(3.05, 8),
+        )
+        geo_response.raise_for_status()
+        geo_body = geo_response.json()
+        places = geo_body.get("results") if isinstance(geo_body, dict) else None
+        if not isinstance(places, list) or not places:
+            return {"success": False, "status": "UNAVAILABLE", "data_type": "UNAVAILABLE",
+                    "source_name": "Open-Meteo", "source_url": "https://open-meteo.com/",
+                    "error": "No matching Indian location was found. Check the spelling of the district or city."}
+        place = next((p for p in places if str(p.get("admin1", "")).casefold() == "telangana"), places[0])
+        latitude, longitude = place.get("latitude"), place.get("longitude")
+        if not isinstance(latitude, (int, float)) or not isinstance(longitude, (int, float)):
+            raise ValueError("Geocoding response is missing coordinates")
+        response = requests.get(
+            "https://api.open-meteo.com/v1/forecast",
+            params={
+                "latitude": latitude,
+                "longitude": longitude,
+                "current": "temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m",
+                "hourly": "temperature_2m,precipitation_probability,precipitation",
+                "forecast_days": 2,
+                "timezone": "auto",
+                "wind_speed_unit": "kmh",
+            },
+            timeout=(3.05, 10),
+        )
+        response.raise_for_status()
+        body = response.json()
+        current = body.get("current") if isinstance(body, dict) else None
+        hourly = body.get("hourly") if isinstance(body, dict) else None
+        if not isinstance(current, dict) or not isinstance(hourly, dict):
+            raise ValueError("Open-Meteo response is missing current or hourly data")
+        temperature = current.get("temperature_2m")
+        humidity = current.get("relative_humidity_2m")
+        if not isinstance(temperature, (int, float)) or not isinstance(humidity, (int, float)):
+            raise ValueError("Open-Meteo response is missing temperature or humidity")
+        times = hourly.get("time") if isinstance(hourly.get("time"), list) else []
+        temps = hourly.get("temperature_2m") if isinstance(hourly.get("temperature_2m"), list) else []
+        pops = hourly.get("precipitation_probability") if isinstance(hourly.get("precipitation_probability"), list) else []
+        rains = hourly.get("precipitation") if isinstance(hourly.get("precipitation"), list) else []
+        current_time = str(current.get("time") or "")
+        start_index = next((i for i, value in enumerate(times) if str(value) >= current_time), 0)
+        forecast = []
+        rain_probs = []
+        for i in range(start_index, min(len(times), start_index + 8)):
+            temp = temps[i] if i < len(temps) else None
+            pop = pops[i] if i < len(pops) else None
+            rain = rains[i] if i < len(rains) else None
+            if isinstance(pop, (int, float)):
+                pop = int(round(max(0, min(100, float(pop)))))
+                rain_probs.append(pop)
+            forecast.append({
+                "time": times[i],
+                "temperature": round(float(temp), 1) if isinstance(temp, (int, float)) else None,
+                "rain_probability": pop if isinstance(pop, (int, float)) else None,
+                "rainfall": round(float(rain), 1) if isinstance(rain, (int, float)) else None,
+            })
+        wind = current.get("wind_speed_10m", 0)
+        rainfall = current.get("precipitation", 0)
+        result = {
+            "success": True, "status": "MODEL_OUTPUT", "data_type": "MODEL_OUTPUT", "is_current": True,
+            "source_name": "Open-Meteo (model-based weather)", "source_url": "https://open-meteo.com/",
+            "provider_observed_at": current_time or None, "server_fetched_at": fetched,
+            "last_updated": fetched, "cache_age_seconds": 0,
+            "temperature": round(float(temperature), 1), "humidity": int(round(float(humidity))),
+            "rainfall": round(float(rainfall), 1) if isinstance(rainfall, (int, float)) else None,
+            "rain_probability": max(rain_probs) if rain_probs else None,
+            "wind": round(float(wind), 1) if isinstance(wind, (int, float)) else None,
+            "forecast": forecast,
+            "advisories": ["Model-based weather guidance only; confirm conditions locally before spraying or other time-sensitive farm work."],
+            "note": "Current conditions are model-based estimates, not a direct local weather-station observation. Open-Meteo data attribution: CC BY 4.0.",
+        }
+        if fallback_reason:
+            result["fallback_note"] = fallback_reason
+        _CACHE[cache_key] = (time.monotonic(), dict(result))
+        return result
+    except (requests.RequestException, ValueError, TypeError, KeyError):
+        return {
+            "success": False, "status": "UNAVAILABLE", "data_type": "UNAVAILABLE",
+            "source_name": "Open-Meteo", "source_url": "https://open-meteo.com/",
+            "error": "Weather data could not be fetched for this location right now. Check the city name and retry.",
+        }
+
+
 def get_weather(city: str, *, force_refresh: bool = False) -> dict:
     key = str(current_app.config.get("OPENWEATHER_API_KEY", "")).strip()
     cache_key = city.strip().casefold()
@@ -38,19 +130,17 @@ def get_weather(city: str, *, force_refresh: bool = False) -> dict:
                 "advisories": ["DEMO WEATHER — NOT CURRENT. Do not use this example for a farm decision."],
                 "reason": "No weather API key is configured; values are fictional demo fixtures.",
             }
-        return {"success": False, "status": "UNAVAILABLE", "data_type": "UNAVAILABLE",
-                "source_name": None, "source_url": None, "provider_observed_at": None,
-                "server_fetched_at": None, "error": "Live weather is not configured. No current weather is available."}
+        return _open_meteo_weather(city)
     fetched = _utc_now()
     try:
         response = requests.get("https://api.openweathermap.org/data/2.5/weather",
             params={"q": city, "appid": key, "units": "metric"}, timeout=8)
         if response.status_code == 404:
-            return {"success": False, "status": "UNAVAILABLE", "data_type": "UNAVAILABLE", "error": "Location not found."}
+            return _open_meteo_weather(city, fallback_reason="OpenWeather did not resolve the location.")
         if response.status_code in (401, 403):
-            return {"success": False, "status": "UNAVAILABLE", "data_type": "UNAVAILABLE", "error": "Weather provider credentials are invalid or not enabled."}
+            return _open_meteo_weather(city, fallback_reason="OpenWeather credentials are unavailable; used no-key Open-Meteo fallback.")
         if response.status_code == 429:
-            return {"success": False, "status": "UNAVAILABLE", "data_type": "UNAVAILABLE", "error": "Weather provider rate limit reached."}
+            return _open_meteo_weather(city, fallback_reason="OpenWeather rate limit reached; used no-key Open-Meteo fallback.")
         response.raise_for_status()
         data = response.json()
         main = data.get("main") if isinstance(data, dict) else None
@@ -101,6 +191,6 @@ def get_weather(city: str, *, force_refresh: bool = False) -> dict:
         _CACHE[cache_key] = (time.monotonic(), dict(result))
         return result
     except requests.Timeout:
-        return {"success": False, "status": "UNAVAILABLE", "data_type": "UNAVAILABLE", "error": "Weather provider timed out."}
+        return _open_meteo_weather(city, fallback_reason="OpenWeather timed out; used no-key Open-Meteo fallback.")
     except (requests.RequestException, ValueError, TypeError, KeyError):
-        return {"success": False, "status": "UNAVAILABLE", "data_type": "UNAVAILABLE", "error": "Weather provider response could not be used."}
+        return _open_meteo_weather(city, fallback_reason="OpenWeather data was unavailable; used no-key Open-Meteo fallback.")

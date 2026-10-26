@@ -35,15 +35,38 @@ def _count(table: str, where: str = "1=1", params: tuple = ()) -> int:
 
 @bp.get("/")
 def home():
-    # Backend-first bundle can be tested without a frontend template. Once the
-    # approved frontend is integrated, render it automatically.
-    for candidate in ("rythu_mitra.html", "index.html"):
+    """Serve the public Monsoon Atlas landing page."""
+    for candidate in ("landing.html", "rythu_mitra.html", "index.html"):
         try:
             current_app.jinja_env.get_template(candidate)
             return render_template(candidate, csrf_token=session.get("csrf_token", ""))
         except Exception:
             continue
     return jsonify(service="Rythu Mitra backend", api_prefix="/api/v1", health="/health", message="Backend is running. Integrate the approved frontend template to display the full website.")
+
+
+@bp.get("/app")
+def app_workspace():
+    """Serve the existing interactive farmer workspace separately from the landing page."""
+    return render_template("rythu_mitra.html", csrf_token=session.get("csrf_token", ""))
+
+
+@bp.get("/about")
+def public_about():
+    """Serve the public project story page."""
+    return render_template("showcase_page.html", page="about", csrf_token=session.get("csrf_token", ""))
+
+
+@bp.get("/features")
+def public_features():
+    """Serve the public feature showcase page."""
+    return render_template("showcase_page.html", page="features", csrf_token=session.get("csrf_token", ""))
+
+
+@bp.get("/architecture")
+def public_architecture():
+    """Serve the public technical architecture story page."""
+    return render_template("showcase_page.html", page="architecture", csrf_token=session.get("csrf_token", ""))
 
 
 @bp.get("/privacy-policy")
@@ -520,14 +543,85 @@ def market_trend():
 @bp.get("/api/schemes/matches")
 @require_auth()
 def scheme_matches():
-    user=current_user(); profile_complete=bool(user["district"] and user["land_area"] and user["current_crop"])
-    table=RESOURCE_TABLES["schemes"]
-    with connect() as conn:rows=conn.execute(f"SELECT * FROM {table} WHERE status IN ('ACTIVE','APPROVED','PUBLISHED') ORDER BY created_at DESC LIMIT 100").fetchall()
-    matches=[]
+    user = current_user()
+    profile_complete = bool(user["district"] and user["land_area"] and user["current_crop"])
+    match_status = "VERIFY_OFFICIALLY" if profile_complete else "MORE_INFORMATION_REQUIRED"
+    table = RESOURCE_TABLES["schemes"]
+    with connect() as conn:
+        rows = conn.execute(
+            f"SELECT * FROM {table} WHERE status IN ('ACTIVE','APPROVED','PUBLISHED') ORDER BY created_at DESC LIMIT 100"
+        ).fetchall()
+
+    matches = []
+    known_names = set()
     for row in rows:
-        payload=json_load(row["payload_json"])
-        matches.append({"id":row["id"],**payload,"match_status":"POSSIBLE_MATCH" if profile_complete else "MORE_INFORMATION_REQUIRED","eligibility_note":"Not an eligibility decision. Confirm current eligibility, required documents and application status with the official authority.","status":"VERIFY_OFFICIALLY","data_type":row["data_type"],"source_name":row["source_name"],"source_url":row["source_url"],"last_verified":row["last_verified"]})
-    return jsonify(success=True,profile_complete=profile_complete,matches=matches)
+        payload = json_load(row["payload_json"])
+        name = str(payload.get("name") or "").strip()
+        if name:
+            known_names.add(name.casefold())
+        matches.append({
+            "id": row["id"], **payload,
+            "match_status": match_status,
+            "eligibility_note": "This is not an eligibility decision. Confirm current eligibility, required documents, deadlines and application status with the official authority.",
+            "status": "VERIFY_OFFICIALLY",
+            "data_type": row["data_type"],
+            "source_name": row["source_name"],
+            "source_url": row["source_url"],
+            "last_verified": row["last_verified"],
+        })
+
+    # Public, source-labelled starter directory so a new deployment with an empty
+    # SQLite database still shows useful official scheme entry points.
+    curated_schemes = [
+        {
+            "id": "curated-pm-kisan",
+            "name": "PM-KISAN Samman Nidhi",
+            "description": "Central Government income-support scheme for eligible farmer families.",
+            "benefit": "Support amount, installment status and exclusions must be checked against the current official rules.",
+            "eligibility": "Eligibility depends on the current PM-KISAN guidelines and exclusion criteria.",
+            "official_url": "https://pmkisan.gov.in/",
+            "source_name": "Government of India — PM-KISAN",
+            "source_url": "https://pmkisan.gov.in/",
+        },
+        {
+            "id": "curated-rythu-bharosa",
+            "name": "Telangana Rythu Bharosa",
+            "description": "Telangana State agriculture support scheme. Use the official portal for current government orders and notices.",
+            "benefit": "Current coverage, amounts, season schedule and application process must be verified from official state announcements.",
+            "eligibility": "Check the latest Telangana Government rules and district-level instructions.",
+            "official_url": "https://rythubharosa.telangana.gov.in/",
+            "source_name": "Government of Telangana — Rythu Bharosa",
+            "source_url": "https://rythubharosa.telangana.gov.in/",
+        },
+        {
+            "id": "curated-pmfby",
+            "name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+            "description": "Central crop-insurance programme for notified crops and areas under applicable seasonal rules.",
+            "benefit": "Insurance coverage, premium share and claim process depend on notified crops, location, season and scheme rules.",
+            "eligibility": "Confirm crop/area notification, enrolment dates and current season requirements on the official portal.",
+            "official_url": "https://pmfby.gov.in/",
+            "source_name": "Government of India — PMFBY",
+            "source_url": "https://pmfby.gov.in/",
+        },
+    ]
+    for scheme in curated_schemes:
+        if scheme["name"].casefold() in known_names:
+            continue
+        matches.append({
+            **scheme,
+            "match_status": match_status,
+            "eligibility_note": "Curated official entry point only; this is not an eligibility decision. Verify current rules, documents, deadlines and application status on the official website.",
+            "status": "VERIFY_OFFICIALLY",
+            "data_type": "CURATED",
+            "last_verified": None,
+        })
+
+    return jsonify(
+        success=True,
+        profile_complete=profile_complete,
+        matches=matches,
+        note="Scheme directory includes curated official entry points. No live eligibility check or application submission is implied.",
+    )
 
 
 @bp.get("/health")
@@ -542,7 +636,7 @@ def ready():
         with connect() as conn:
             conn.execute("SELECT 1").fetchone()
             version=conn.execute("SELECT MAX(version) FROM schema_migrations").fetchone()[0]
-        return jsonify(status="ready",database="healthy",schema_version=version,models={"crop":"configured" if has_model_asset("crop_model.pkl") else "unavailable", "disease":"configured" if has_disease_model_bundle() else "unavailable"},weather="configured" if current_app.config.get("OPENWEATHER_API_KEY") else "unavailable",market_adapter="configured" if (current_app.config.get("DATA_GOV_IN_API_KEY") or current_app.config.get("MARKET_DATA_BASE_URL")) else "unavailable")
+        return jsonify(status="ready",database="healthy",schema_version=version,models={"crop":"configured" if has_model_asset("crop_model.pkl") else "unavailable", "disease":"configured" if has_disease_model_bundle() else "unavailable"},weather="OPENWEATHER" if current_app.config.get("OPENWEATHER_API_KEY") else "OPEN_METEO_FALLBACK",market_adapter="configured" if (current_app.config.get("DATA_GOV_IN_API_KEY") or current_app.config.get("MARKET_DATA_BASE_URL")) else "unavailable")
     except Exception:
         current_app.logger.exception("Readiness probe failed")
         return jsonify(status="not_ready",database="unavailable"),503
