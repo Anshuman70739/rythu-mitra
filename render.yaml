@@ -1,0 +1,38 @@
+services:
+  - type: keyvalue
+    name: rythu-mitra-preview-redis
+    plan: free
+    region: singapore
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
+
+  - type: web
+    name: rythu-mitra-animated-preview
+    runtime: python
+    plan: free
+    region: singapore
+    branch: preview/landing-animations
+    autoDeployTrigger: commit
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --workers 1 --threads 4 --timeout 120 backend:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: APP_ENV
+        value: production
+      - key: DEMO_MODE
+        value: "false"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: rythu-mitra-preview-redis
+          property: connectionString
+      - key: DATABASE_URL
+        value: sqlite:///data/rythu_mitra.db
+      - key: MARKET_DEFAULT_STATE
+        value: Telangana
+      - key: LOG_LEVEL
+        value: INFO
