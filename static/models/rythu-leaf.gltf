@@ -1,0 +1,173 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "Rythu Mitra Field Atlas model builder"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0,
+        1
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Leaf blade",
+      "mesh": 0
+    },
+    {
+      "name": "Midrib and veins",
+      "mesh": 1
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Leaf blade",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0
+          },
+          "indices": 1,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Midrib and veins",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 2
+          },
+          "indices": 3,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "Material #4d8350",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.30196078431372547,
+          0.5137254901960784,
+          0.3137254901960784,
+          1
+        ],
+        "metallicFactor": 0.02,
+        "roughnessFactor": 0.7
+      },
+      "doubleSided": true
+    },
+    {
+      "name": "Material #d8e5ad",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.8470588235294118,
+          0.8980392156862745,
+          0.6784313725490196,
+          1
+        ],
+        "metallicFactor": 0.02,
+        "roughnessFactor": 0.7
+      },
+      "doubleSided": true
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 2016,
+      "uri": "data:application/octet-stream;base64,CtcjvAAAAABCYOU8CtcjPAAAAABCYOU8CtcjvAAAAABCYOW8CtcjPAAAAABCYOW8zczMvQZbMD5CYOU8zczMPQZbMD5CYOU8zczMvQZbMD5CYOW8zczMPQZbMD5CYOW8XI9CvgZbsD5CYOU8XI9CPgZbsD5CYOU8XI9CvgZbsD5CYOW8XI9CPgZbsD5CYOW8AACAvkREBD9CYOU8AACAPkREBD9CYOU8AACAvkREBD9CYOW8AACAPkREBD9CYOW8KVyPvgZbMD9CYOU8KVyPPgZbMD9CYOU8KVyPvgZbMD9CYOW8KVyPPgZbMD9CYOW8uB6FvsdxXD9CYOU8uB6FPsdxXD9CYOU8uB6FvsdxXD9CYOW8uB6FPsdxXD9CYOW8rkdhvkREhD9CYOU8rkdhPkREhD9CYOU8rkdhvkREhD9CYOW8rkdhPkREhD9CYOW8mpkZvqVPmj9CYOU8mpkZPqVPmj9CYOU8mpkZvqVPmj9CYOW8mpkZPqVPmj9CYOW8CtejvQZbsD9CYOU8CtejPQZbsD9CYOU8CtejvQZbsD9CYOW8CtejPQZbsD9CYOW8j8J1vGZmxj9CYOU8j8J1PGZmxj9CYOU8j8J1vGZmxj9CYOW8j8J1PGZmxj9CYOW8AAABAAUAAAAFAAQAAwACAAYAAwAGAAcAAAAEAAYAAAAGAAIABQABAAMABQADAAcABAAFAAkABAAJAAgABwAGAAoABwAKAAsABAAIAAoABAAKAAYACQAFAAcACQAHAAsACAAJAA0ACAANAAwACwAKAA4ACwAOAA8ACAAMAA4ACAAOAAoADQAJAAsADQALAA8ADAANABEADAARABAADwAOABIADwASABMADAAQABIADAASAA4AEQANAA8AEQAPABMAEAARABUAEAAVABQAEwASABYAEwAWABcAEAAUABYAEAAWABIAFQARABMAFQATABcAFAAVABkAFAAZABgAFwAWABoAFwAaABsAFAAYABoAFAAaABYAGQAVABcAGQAXABsAGAAZAB0AGAAdABwAGwAaAB4AGwAeAB8AGAAcAB4AGAAeABoAHQAZABsAHQAbAB8AHAAdACEAHAAhACAAHwAeACIAHwAiACMAHAAgACIAHAAiAB4AIQAdAB8AIQAfACMAIAAhACUAIAAlACQAIwAiACYAIwAmACcAIAAkACYAIAAmACIAJQAhACMAJQAjACcAAAABAAMAAAADAAIAJQAkACYAJQAmACcApptEvI/C9TxvEoM9pptEPI/C9TxvEoM9pptEvI/CdT5vEoM9pptEPI/CdT5vEoM9pptEvI/C9T5vEoM9pptEPI/C9T5vEoM9pptEvKRwPT9vEoM9pptEPKRwPT9vEoM9pptEvFyPgj9vEoM9pptEPFyPgj9vEoM9pptEvArXoz9vEoM9pptEPArXoz9vEoM9pptEvFK4vj9vEoM9pptEPFK4vj9vEoM9pptEvAZbMD6PwnU9zczMvVD6pD7sUTg9xSCwvVD6pD7sUTg9pptEu5/0ST4j23k9pptEPAZbMD6PwnU9zczMPVD6pD7sUTg9xSCwPVD6pD7sUTg9pptEO5/0ST4j23k9pptEvAZbsD6PwnU9XI9CvtIn/T7sUTg9WDk0vtIn/T7sUTg9pptEu9InvT4j23k9pptEPAZbsD6PwnU9XI9CPtIn/T7sUTg9WDk0PtIn/T7sUTg9pptEO9InvT4j23k9pptEvEREBD+PwnU9AACAvquqKj/sUTg9/KlxvquqKj/sUTg9pptEu6uqCj8j23k9pptEPEREBD+PwnU9AACAPquqKj/sUTg9/KlxPquqKj/sUTg9pptEO6uqCj8j23k9pptEvAZbMD+PwnU9KVyPvmzBVj/sUTg9JzGIvmzBVj/sUTg9pptEu2zBNj8j23k9pptEPAZbMD+PwnU9KVyPPmzBVj/sUTg9JzGIPmzBVj/sUTg9pptEO2zBNj8j23k9pptEvMdxXD+PwnU9uB6FvhdsgT/sUTg9bed7vhdsgT/sUTg9pptEuy7YYj8j23k9pptEPMdxXD+PwnU9uB6FPhdsgT/sUTg9bed7PhdsgT/sUTg9pptEOy7YYj8j23k9pptEvEREhD+PwnU9rkdhvnd3lz/sUTg9qvFSvnd3lz/sUTg9pptEu3d3hz8j23k9pptEPEREhD+PwnU9rkdhPnd3lz/sUTg9qvFSPnd3lz/sUTg9pptEO3d3hz8j23k9pptEvKVPmj+PwnU9mpkZvtiCrT/sUTg9lkMLvtiCrT/sUTg9pptEu9iCnT8j23k9pptEPKVPmj+PwnU9mpkZPtiCrT/sUTg9lkMLPtiCrT/sUTg9pptEO9iCnT8j23k9AAABAAMAAAADAAIAAgADAAUAAgAFAAQABAAFAAcABAAHAAYABgAHAAkABgAJAAgACAAJAAsACAALAAoACgALAA0ACgANAAwADgAQAA8ADgAPABEAEgAUABMAEgATABUAFgAYABcAFgAXABkAGgAcABsAGgAbAB0AHgAgAB8AHgAfACEAIgAkACMAIgAjACUAJgAoACcAJgAnACkAKgAsACsAKgArAC0ALgAwAC8ALgAvADEAMgA0ADMAMgAzADUANgA4ADcANgA3ADkAOgA8ADsAOgA7AD0APgBAAD8APgA/AEEAQgBEAEMAQgBDAEUA"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 480,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 480,
+      "byteLength": 456,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 936,
+      "byteLength": 840,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1776,
+      "byteLength": 240,
+      "target": 34963
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 40,
+      "type": "VEC3",
+      "min": [
+        -0.2800000011920929,
+        0,
+        -0.02800000086426735
+      ],
+      "max": [
+        0.2800000011920929,
+        1.5499999523162842,
+        0.02800000086426735
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5123,
+      "count": 228,
+      "type": "SCALAR",
+      "min": [
+        0
+      ],
+      "max": [
+        39
+      ]
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 70,
+      "type": "VEC3",
+      "min": [
+        -0.2800000011920929,
+        0.029999999329447746,
+        0.04500000178813934
+      ],
+      "max": [
+        0.2800000011920929,
+        1.4900000095367432,
+        0.06400000303983688
+      ]
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5123,
+      "count": 120,
+      "type": "SCALAR",
+      "min": [
+        0
+      ],
+      "max": [
+        69
+      ]
+    }
+  ]
+}
