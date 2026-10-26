@@ -59,9 +59,12 @@ jobs:
 
           required = [
               "templates/rythu_mitra.html",
+              "templates/landing.html",
               "templates/privacy_policy.html",
               "templates/terms_and_conditions.html",
               "static/js/rythu-mitra-app.js",
+              "static/js/monsoon-atlas.js",
+              "static/css/monsoon-atlas.css",
               "models/crop_model.pkl",
               "models/plant_disease_model.h5",
               "data/DISEASE_LABELS_REQUIRED.md",
@@ -81,7 +84,9 @@ jobs:
           node-version: "22"
 
       - name: Validate frontend JavaScript
-        run: node --check static/js/rythu-mitra-app.js
+        run: |
+          node --check static/js/rythu-mitra-app.js
+          node --check static/js/monsoon-atlas.js
 
       - name: Start Flask and smoke-test core HTTP routes
         shell: bash
@@ -121,8 +126,9 @@ jobs:
 
           base = "http://127.0.0.1:5000"
           paths = [
-              "/", "/health", "/ready", "/api/session", "/privacy-policy",
+              "/", "/app", "/health", "/ready", "/api/session", "/privacy-policy",
               "/terms-and-conditions", "/static/favicon.svg",
+              "/static/css/monsoon-atlas.css", "/static/js/monsoon-atlas.js",
           ]
           for path in paths:
               with urlopen(base + path, timeout=5) as response:
@@ -133,9 +139,14 @@ jobs:
                   raise SystemExit(f"FAIL {path}: HTTP {status}, empty_body={not body}")
               if path == "/" and (
                   "text/html" not in content_type
+                  or b"Empowering Farmers," not in body
+              ):
+                  raise SystemExit("Public Monsoon Atlas landing page did not return expected HTML.")
+              if path == "/app" and (
+                  "text/html" not in content_type
                   or b"Rythu Mitra | Farmer decision support" not in body
               ):
-                  raise SystemExit("Homepage did not return the expected HTML shell.")
+                  raise SystemExit("Existing farmer workspace did not return expected HTML.")
               if path == "/api/session":
                   session_data = json.loads(body)
                   if not session_data.get("csrf_token"):
