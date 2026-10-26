@@ -48,7 +48,7 @@
       'future.title':'Room for the next good idea.','future.p':'These are possible directions—not promised or completed features.',
       'collab.kicker':'07 / BUILD IT THOUGHTFULLY','collab.title':'A promising idea grows<br><em>with the right people.</em>',
       'collab.intro':'Rythu Mitra is an academic project in development. Feedback from collaborators, domain experts and potential users can help prioritise what to validate and build next.',
-      'collab.button':'Discuss collaboration','team.label':'TEAM & COLLABORATION · ROLES TO CONFIRM','team.context':'Project & field context','team.frontend':'Frontend experience','team.model':'Model & evaluation','team.data':'Data source verification','footer.note':'A farmer decision-support project concept.<br>Built with care; transparent about what remains to be verified.'
+      'collab.button':'Discuss collaboration','team.label':'TEAM & COLLABORATION · ROLES TO CONFIRM','team.context':'Project & field context','team.frontend':'Frontend experience','team.model':'Model & evaluation','team.data':'Data source verification','journey.kicker':'THE FIELD ATLAS / A SCROLLING STORY','journey.1idx':'01 / THE FIELD','journey.1title':'Every season<br><em>begins with a question.</em>','journey.1p':'A field changes with the soil, the weather, the season and the care it receives. A useful decision starts with seeing that whole picture.','journey.2idx':'02 / THE FRAGMENTS','journey.2title':'The clues are there.<br><em>But not always together.</em>','journey.2p':'Crop suitability, plant-health observations, market reports and schemes can sit in separate places. Understanding the context takes effort.','journey.3idx':'03 / THE CONNECTION','journey.3title':'Connect the evidence.<br><em>Keep the limits visible.</em>','journey.3p':'Rythu Mitra explores a single space where user inputs, verified data and model-assisted workflows can be explained with their sources and uncertainty.','journey.4idx':'04 / THE PURPOSE','journey.4title':'Technology in service<br><em>of human decisions.</em>','journey.4p':'The goal is not to replace a farmer or local expert. It is to make useful context easier to examine before a decision is made.','journey.cta':'Explore the interactive project','journey.controls':'THE JOURNEY','arch.deep.kicker':'INTERACTIVE TECHNICAL EXPLORER','arch.deep.p':'Want to see data move through the system? Run a step-by-step architecture simulation and inspect every boundary.','arch.deep.cta':'Run the data-flow explorer','footer.note':'A farmer decision-support project concept.<br>Built with care; transparent about what remains to be verified.'
     },
     te: {
       'nav.story':'ప్రాజెక్ట్ కథ','nav.approach':'మా విధానం','nav.models':'మోడళ్లు','nav.architecture':'సాంకేతిక నిర్మాణం','nav.roadmap':'భవిష్యత్ ప్రణాళిక',
@@ -90,7 +90,7 @@
       'future.title':'తదుపరి మంచి ఆలోచనకు స్థలం.','future.p':'ఇవి సాధ్యమైన దిశలు మాత్రమే—పూర్తయిన లేదా హామీ ఇచ్చిన ఫీచర్లు కావు.',
       'collab.kicker':'07 / ఆలోచనతో నిర్మిద్దాం','collab.title':'మంచి ఆలోచన ఎదుగుతుంది<br><em>సరైన వ్యక్తులతో.</em>',
       'collab.intro':'రైతు మిత్ర అభివృద్ధిలో ఉన్న విద్యా ప్రాజెక్ట్. సహకారులు, రంగ నిపుణులు, భావితర వినియోగదారుల అభిప్రాయాలు తదుపరి ధృవీకరణ, నిర్మాణ పనులకు ప్రాధాన్యం నిర్ణయించడంలో సహాయపడతాయి.',
-      'collab.button':'సహకారం గురించి చర్చించండి','team.label':'బృందం & సహకారం · పాత్రలు నిర్ధారించాలి','team.context':'ప్రాజెక్ట్ & క్షేత్ర సందర్భం','team.frontend':'ఫ్రంట్‌ఎండ్ అనుభవం','team.model':'మోడల్ & మూల్యాంకనం','team.data':'డేటా మూలాల ధృవీకరణ','footer.note':'రైతు నిర్ణయ సహాయక ప్రాజెక్ట్ కాన్సెప్ట్.<br>ధృవీకరించాల్సిన విషయాలపై పారదర్శకతతో రూపొందించబడింది.'
+      'collab.button':'సహకారం గురించి చర్చించండి','team.label':'బృందం & సహకారం · పాత్రలు నిర్ధారించాలి','team.context':'ప్రాజెక్ట్ & క్షేత్ర సందర్భం','team.frontend':'ఫ్రంట్‌ఎండ్ అనుభవం','team.model':'మోడల్ & మూల్యాంకనం','team.data':'డేటా మూలాల ధృవీకరణ','journey.kicker':'ఫీల్డ్ అట్లాస్ / స్క్రోలింగ్ కథ','journey.1idx':'01 / పొలం','journey.1title':'ప్రతి సీజన్‌లో<br><em>ఒక ప్రశ్నతో ఆరంభం.</em>','journey.1p':'నేల, వాతావరణం, కాలం, సంరక్షణతో పొలం మారుతుంది. ఉపయోగకరమైన నిర్ణయం మొత్తం సందర్భాన్ని చూడటంతో మొదలవుతుంది.','journey.2idx':'02 / విడిపోయిన సంకేతాలు','journey.2title':'సంకేతాలు ఉన్నాయి.<br><em>కానీ ఎప్పుడూ కలిసుండవు.</em>','journey.2p':'పంట అనుకూలత, మొక్కల ఆరోగ్యం, మార్కెట్ నివేదికలు, పథకాల సమాచారం వేర్వేరు చోట్ల ఉండవచ్చు. వాటిని అర్థం చేసుకోవడానికి శ్రమ అవసరం.','journey.3idx':'03 / అనుసంధానం','journey.3title':'ఆధారాలను కలపండి.<br><em>పరిమితులను స్పష్టంగా చూపండి.</em>','journey.3p':'వినియోగదారు ఇన్‌పుట్లు, ధృవీకరించిన డేటా, మోడల్ ఆధారిత ప్రక్రియలను వాటి మూలాలు, అనిశ్చితితో వివరించే ఒక వేదికను రైతు మిత్ర పరిశీలిస్తోంది.','journey.4idx':'04 / ఉద్దేశ్యం','journey.4title':'మానవ నిర్ణయాలకు<br><em>తోడ్పడే సాంకేతికత.</em>','journey.4p':'రైతు లేదా స్థానిక నిపుణుడిని భర్తీ చేయడం లక్ష్యం కాదు. నిర్ణయానికి ముందు ఉపయోగకరమైన సందర్భాన్ని సులభంగా పరిశీలించడమే లక్ష్యం.','journey.cta':'ఇంటరాక్టివ్ ప్రాజెక్ట్‌ను చూడండి','journey.controls':'ప్రయాణం','arch.deep.kicker':'ఇంటరాక్టివ్ సాంకేతిక ఎక్స్‌ప్లోరర్','arch.deep.p':'సిస్టమ్‌లో డేటా ఎలా ప్రయాణిస్తుందో చూడాలా? దశలవారీ ఆర్కిటెక్చర్ సిమ్యులేషన్‌ను అమలు చేసి సరిహద్దులను పరిశీలించండి.','arch.deep.cta':'డేటా ఫ్లో ఎక్స్‌ప్లోరర్‌ను అమలు చేయండి','footer.note':'రైతు నిర్ణయ సహాయక ప్రాజెక్ట్ కాన్సెప్ట్.<br>ధృవీకరించాల్సిన విషయాలపై పారదర్శకతతో రూపొందించబడింది.'
     }
   };
   const mapped = [
@@ -110,7 +110,12 @@
     ['.integrity-note strong','integrity.title'],['.integrity-note p','integrity.p'],['.architecture-intro p','arch.map.title'],['.architecture-intro small','arch.map.p'],
     ['.status-grid article:nth-child(1) h3','status.card1'],['.status-grid article:nth-child(1) p','status.card1p'],['.status-grid article:nth-child(2) h3','status.card2'],['.status-grid article:nth-child(2) p','status.card2p'],['.status-grid article:nth-child(3) h3','status.card3'],['.status-grid article:nth-child(3) p','status.card3p'],
     ['.roadmap-line article:nth-child(1) h3','roadmap.card1'],['.roadmap-line article:nth-child(1) p','roadmap.card1p'],['.roadmap-line article:nth-child(2) h3','roadmap.card2'],['.roadmap-line article:nth-child(2) p','roadmap.card2p'],['.roadmap-line article:nth-child(3) h3','roadmap.card3'],['.roadmap-line article:nth-child(3) p','roadmap.card3p'],
-    ['.future-catalogue h3','future.title'],['.future-catalogue p','future.p'],['.collab-copy .section-kicker','collab.kicker'],['.collab-copy h2','collab.title'],['.collab-copy>p:not(.fineprint)','collab.intro'],['#collabButton','collab.button'],['.team-areas-label','team.label'],['.team-area-list span:nth-child(1)','team.context'],['.team-area-list span:nth-child(2)','team.frontend'],['.team-area-list span:nth-child(3)','team.model'],['.team-area-list span:nth-child(4)','team.data'],['.site-footer>p','footer.note']
+    ['.future-catalogue h3','future.title'],['.future-catalogue p','future.p'],['.collab-copy .section-kicker','collab.kicker'],['.collab-copy h2','collab.title'],['.collab-copy>p:not(.fineprint)','collab.intro'],['#collabButton','collab.button'],['.team-areas-label','team.label'],['.team-area-list span:nth-child(1)','team.context'],['.team-area-list span:nth-child(2)','team.frontend'],['.team-area-list span:nth-child(3)','team.model'],['.team-area-list span:nth-child(4)','team.data'],
+    ['.cinematic-copy>.section-kicker','journey.kicker'],['.journey-chapter:nth-child(1) .journey-index','journey.1idx'],['.journey-chapter:nth-child(1) h2','journey.1title'],['.journey-chapter:nth-child(1) p','journey.1p'],
+    ['.journey-chapter:nth-child(2) .journey-index','journey.2idx'],['.journey-chapter:nth-child(2) h2','journey.2title'],['.journey-chapter:nth-child(2) p','journey.2p'],
+    ['.journey-chapter:nth-child(3) .journey-index','journey.3idx'],['.journey-chapter:nth-child(3) h2','journey.3title'],['.journey-chapter:nth-child(3) p','journey.3p'],
+    ['.journey-chapter:nth-child(4) .journey-index','journey.4idx'],['.journey-chapter:nth-child(4) h2','journey.4title'],['.journey-chapter:nth-child(4) p','journey.4p'],['.journey-end-link','journey.cta'],['.journey-controls-label','journey.controls'],
+    ['.architecture-deep-link .section-kicker','arch.deep.kicker'],['.architecture-deep-link p','arch.deep.p'],['.architecture-deep-link .button','arch.deep.cta'],['.site-footer>p','footer.note']
   ];
   const englishSnapshots = new Map();
   function setLanguage(lang) {
@@ -248,6 +253,40 @@
   } else {
     $$('.scroll-reveal').forEach(el=>el.classList.add('is-visible'));
   }
+
+  function initCinematicJourney(){
+    const section=$('#journey'),stage=$('#cinematicStage');
+    if(!section||!stage)return;
+    const chapters=$('.journey-chapter',section),pips=$('[data-journey-jump]',section);
+    let frame=0,active=-1;
+    const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+    function update(){
+      frame=0;
+      const rect=section.getBoundingClientRect();
+      const stickyTop=parseFloat(getComputedStyle(stage).top)||0;
+      const travel=Math.max(1,section.offsetHeight-stage.offsetHeight);
+      const progress=clamp((stickyTop-rect.top)/travel,0,.999);
+      const step=clamp(Math.floor(progress*4),0,3);
+      if(step!==active){
+        active=step;stage.dataset.step=String(step);
+        chapters.forEach((chapter,i)=>{const on=i===step;chapter.classList.toggle('is-active',on);chapter.setAttribute('aria-hidden',String(!on));});
+        pips.forEach((button,i)=>button.classList.toggle('is-active',i===step));
+      }
+    }
+    function queue(){if(!frame)frame=requestAnimationFrame(update);}
+    window.addEventListener('scroll',queue,{passive:true});
+    window.addEventListener('resize',queue,{passive:true});
+    pips.forEach((button,i)=>button.addEventListener('click',()=>{
+      const rect=section.getBoundingClientRect();
+      const stickyTop=parseFloat(getComputedStyle(stage).top)||0;
+      const travel=Math.max(1,section.offsetHeight-stage.offsetHeight);
+      const start=window.scrollY+rect.top-stickyTop;
+      const target=start+travel*((i+.5)/4);
+      window.scrollTo({top:target,behavior:state.motionPaused?'auto':'smooth'});
+    }));
+    update();
+  }
+  initCinematicJourney();
 
   // Keep the demo lab state visibly separate from real outputs.
   window.RythuMitraShowcase = Object.freeze({
