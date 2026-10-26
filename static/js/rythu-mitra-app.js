@@ -516,9 +516,47 @@
     try { sessionStorage.setItem('rm-field-signature-played','1'); } catch { /* Animation remains one-time per render state. */ }
   }
 
-    function renderGuestHome(title = t('home.title','Farm tasks and latest updates')) {
-      return htmlPage('home', `<section class="hero-panel"><svg id="fieldSignature" class="field-signature" viewBox="0 0 260 150" aria-hidden="true" focusable="false"><path pathLength="1" d="M8 28 C56 4 111 8 151 28 S222 55 252 23"/><path pathLength="1" d="M8 57 C52 35 105 37 151 57 S220 83 252 52"/><path pathLength="1" d="M8 86 C54 65 110 66 155 86 S217 110 252 81"/><path pathLength="1" d="M8 115 C54 96 106 96 153 116 S218 140 252 110"/></svg><span class="kicker">${esc(t('top.kicker','FIELD NOTEBOOK / TELANGANA'))}</span><h2>${esc(t('home.guestTitle'))}</h2><p>${esc(t('home.guestBody'))}</p><div class="button-row"><button class="button button--primary" data-action="open-auth" data-auth-mode="login">${esc(t('home.signIn'))}</button><button class="button button--secondary" data-action="open-auth" data-auth-mode="register">${esc(t('home.register'))}</button></div></section><div class="grid grid--2">${panel(t('home.shortTitle'), `<div class="module-grid">${cardLink('crop-planning',t('nav.cropPlanning'),t('page.cropPlanningDesc'),'i-plan')}${cardLink('crop-health',t('nav.cropHealth'),t('page.cropHealthDesc'),'i-leaf')}${cardLink('seed-safety',t('nav.seedSafety'),t('page.seedSafetyDesc'),'i-shield')}${cardLink('weather',t('nav.weather'),t('page.weatherDesc'),'i-weather')}${cardLink('markets',t('nav.markets'),t('page.marketsDesc'),'i-market')}</div>`)}${panel(t('home.weather'), `<p class="muted-copy">${esc(t('weather.noProvider'))}</p>${statusBadge('UNAVAILABLE')}`, '')}</div>`, { title });
+    function renderGuestHome(title = t('home.title', 'Farm tasks and latest updates')) {
+      const sceneAlt = t('landing.sceneAlt', 'Illustrated fields in the Telangana countryside with birds crossing the sky and plants moving in a gentle breeze.');
+      const tools = [
+        ['crop-planning', t('landing.cropTitle', 'Plan a crop'), t('landing.cropBody', 'Compare crop suitability using soil and field conditions.'), 'i-plan'],
+        ['crop-health', t('landing.healthTitle', 'Check crop health'), t('landing.healthBody', 'Open the crop photo workflow and check analysis availability.'), 'i-leaf'],
+        ['weather', t('landing.weatherTitle', 'Plan around weather'), t('landing.weatherBody', 'Weather is shown when a provider is configured.'), 'i-weather'],
+        ['markets', t('landing.marketTitle', 'Review mandi prices'), t('landing.marketBody', 'Available prices include their source and reporting date.'), 'i-market']
+      ].map(([route, label, desc, symbol], index) => `<a class='rm-tool-card rm-tool-card--${index + 1}' href='#/${route}'><span class='rm-tool-icon' aria-hidden='true'>${icon(symbol)}</span><span class='rm-tool-copy'><h3>${esc(label)}</h3><p>${esc(desc)}</p></span><span class='rm-tool-arrow' aria-hidden='true'>↗</span></a>`).join('');
+      const content = `<section class='rm-landing-hero' aria-labelledby='landingTitle'>
+        <div class='rm-landing-copy'>
+          <p class='rm-landing-eyebrow'><span class='rm-landing-dot' aria-hidden='true'></span>${esc(t('landing.eyebrow', 'A calmer way to plan your farm'))}</p>
+          <h2 id='landingTitle'>${esc(t('home.guestTitle'))}</h2>
+          <p class='rm-landing-lede'>${esc(t('home.guestBody'))}</p>
+          <div class='button-row rm-landing-actions'><button type='button' class='button button--primary' data-action='open-auth' data-auth-mode='register'>${esc(t('home.register'))}</button><button type='button' class='button button--secondary' data-action='open-auth' data-auth-mode='login'>${esc(t('home.signIn'))}</button></div>
+          <p class='rm-landing-note'>${esc(t('landing.dataNote', 'Weather, mandi data and crop-health results are shown only when their data sources or verified model labels are available.'))}</p>
+        </div>
+        <div class='rm-landscape' role='img' aria-label='${esc(sceneAlt)}'>
+          <svg class='rm-landscape-art' viewBox='0 0 560 420' aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg'>
+            <rect width='560' height='420' fill='var(--rm-landing-sky)'/>
+            <circle class='rm-sun' cx='438' cy='76' r='34'/>
+            <path class='rm-cloud' d='M87 94c-2-15 10-26 24-23 7-20 34-22 44-3 16-3 28 9 27 24H87Z'/>
+            <path class='rm-field-far' d='M0 205c86-36 170-23 251 9s181 45 309 1v205H0Z'/>
+            <path class='rm-field-mid' d='M0 265c94-30 183-20 278 14s183 35 282-2v143H0Z'/>
+            <path class='rm-field-front' d='M0 319c104-35 200-17 294 16s177 32 266 3v82H0Z'/>
+            <g class='rm-field-contours' fill='none'><path d='M-25 248c92-30 173-18 270 12s202 47 342 0'/><path d='M-25 279c92-30 173-18 270 12s202 47 342 0'/><path d='M-25 311c92-30 173-18 270 12s202 47 342 0'/><path d='M-25 343c92-30 173-18 270 12s202 47 342 0'/><path d='M-25 376c92-30 173-18 270 12s202 47 342 0'/></g>
+            <g class='rm-crop-row' fill='none'><path d='M52 420c35-42 74-76 120-105'/><path d='M100 420c35-42 74-76 120-105'/><path d='M152 420c35-42 74-76 120-105'/><path d='M204 420c35-42 74-76 120-105'/><path d='M256 420c35-42 74-76 120-105'/><path d='M308 420c35-42 74-76 120-105'/><path d='M360 420c35-42 74-76 120-105'/></g>
+            <g transform='translate(56 347)'><g class='rm-scene-plant rm-scene-plant--one'><path class='rm-plant-stem' d='M0 0c-2-35 3-70 16-103'/><path class='rm-plant-leaf' d='M5-44c-22-2-36-14-39-31 22 1 35 12 39 31Z'/><path class='rm-plant-leaf rm-plant-leaf--light' d='M9-70c23-4 38-18 41-35-22 4-36 17-41 35Z'/><path class='rm-plant-leaf' d='M13-91c-12-12-12-27-4-40 11 12 13 26 4 40Z'/></g></g>
+            <g transform='translate(178 385)'><g class='rm-scene-plant rm-scene-plant--two'><path class='rm-plant-stem' d='M0 0c0-31-4-57-15-88'/><path class='rm-plant-leaf' d='M-5-38c-20-4-32-16-32-32 20 3 31 15 32 32Z'/><path class='rm-plant-leaf rm-plant-leaf--light' d='M-8-58c17-5 28-18 28-33-18 4-27 17-28 33Z'/></g></g>
+            <g transform='translate(472 354)'><g class='rm-scene-plant rm-scene-plant--three'><path class='rm-plant-stem' d='M0 0c-2-35-3-62-17-98'/><path class='rm-plant-leaf' d='M-8-41c-21-5-35-18-35-34 22 3 34 17 35 34Z'/><path class='rm-plant-leaf rm-plant-leaf--light' d='M-12-62c18-5 29-18 29-34-18 4-28 17-29 34Z'/><path class='rm-plant-leaf' d='M-15-80c-10-13-9-27-1-39 9 13 10 26 1 39Z'/></g></g>
+            <g transform='translate(525 391)'><g class='rm-scene-plant rm-scene-plant--four'><path class='rm-plant-stem' d='M0 0c0-28 3-50 11-73'/><path class='rm-plant-leaf' d='M4-33c-17-3-28-14-27-28 17 2 27 12 27 28Z'/><path class='rm-plant-leaf rm-plant-leaf--light' d='M6-49c16-4 26-14 27-27-16 3-25 13-27 27Z'/></g></g>
+          </svg>
+          <div class='rm-birds' aria-hidden='true'><svg class='rm-bird-flight rm-bird-flight--one' viewBox='0 0 44 24'><path d='M2 13c7-9 13-9 20 0 7-9 13-9 20 0'/></svg><svg class='rm-bird-flight rm-bird-flight--two' viewBox='0 0 44 24'><path d='M2 13c7-9 13-9 20 0 7-9 13-9 20 0'/></svg><svg class='rm-bird-flight rm-bird-flight--three' viewBox='0 0 44 24'><path d='M2 13c7-9 13-9 20 0 7-9 13-9 20 0'/></svg></div>
+          <div class='rm-landscape-caption'><span class='rm-caption-mark' aria-hidden='true'></span><span>${esc(t('landing.sceneCaption', 'A field-first companion for everyday farm decisions'))}</span></div>
+        </div>
+      </section>
+      <section class='rm-landing-tools' aria-labelledby='landingToolsTitle'><div class='rm-tools-heading'><h2 id='landingToolsTitle'>${esc(t('landing.toolsTitle', 'Start with a farm decision'))}</h2><p>${esc(t('landing.toolsBody', 'Open a tool when you need it. Sign in to save farm details and records.'))}</p></div><div class='rm-tool-grid'>${tools}</div></section>`;
+      return htmlPage('home', content, { title });
     }
+
+  document.addEventListener('visibilitychange', () => document.documentElement.classList.toggle('rm-tab-hidden', document.hidden));
+  document.documentElement.classList.toggle('rm-tab-hidden', document.hidden);
 
 async function renderHome() {
     const title = t('home.title','Farm tasks and latest updates');
