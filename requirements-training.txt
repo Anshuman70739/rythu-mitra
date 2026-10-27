@@ -1,3 +1,0 @@
-# Optional only, for train_model.py. The deployed crop model is already supplied in models/.
--r requirements.txt
-pandas>=2.2,<4.0
