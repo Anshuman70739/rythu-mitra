@@ -1,0 +1,40 @@
+/* Monsoon Atlas cinematic workspace layer — presentation-only overrides. */
+:root{--atlas-cinematic-shadow:0 22px 60px rgba(24,59,54,.09);--atlas-cinematic-ease:cubic-bezier(.2,.78,.22,1)}
+body{background:radial-gradient(ellipse at 90% 0%,rgba(220,235,242,.42),transparent 35%),var(--atlas-app-paper,var(--paper));}
+.app-shell{isolation:isolate;position:relative}
+.app-shell:before{content:"";position:fixed;z-index:-1;pointer-events:none;inset:0;background:repeating-radial-gradient(ellipse at 100% 0%,transparent 0 45px,rgba(57,125,120,.025) 46px 47px,transparent 48px 92px);mask-image:linear-gradient(150deg,#000,transparent 65%);opacity:.85}
+.topbar{background:rgba(250,251,247,.88);backdrop-filter:blur(22px);border-bottom:1px solid rgba(215,227,222,.78);box-shadow:0 5px 26px rgba(24,59,54,.035)}
+.topbar .brand strong{letter-spacing:-.045em}
+.sidebar{background:linear-gradient(180deg,#F8FAF5,#EAF2EB);border-right:1px solid var(--atlas-app-line,var(--line));}
+.sidebar a,.sidebar button{transition:background .28s var(--atlas-cinematic-ease),transform .28s var(--atlas-cinematic-ease),color .28s}
+.sidebar a:hover,.sidebar button:hover{transform:translateX(3px)}
+.main-content{position:relative}
+.page-view{animation:atlas-workspace-enter .68s var(--atlas-cinematic-ease) both}
+.page-heading h1{letter-spacing:-.055em}
+.page-heading .kicker{letter-spacing:.16em}
+.panel,.hero-panel,.stat-card,.tool-card,.feature-tile,.empty-state,.data-card{transition:transform .38s var(--atlas-cinematic-ease),box-shadow .4s var(--atlas-cinematic-ease),border-color .35s}
+.panel:hover,.hero-panel:hover,.stat-card:hover,.tool-card:hover,.feature-tile:hover,.data-card:hover{box-shadow:var(--atlas-cinematic-shadow,0 22px 60px rgba(24,59,54,.09));border-color:#B9CFC6}
+.panel-head h2,.panel h2{letter-spacing:-.04em}
+.button,.icon-button,.profile-button,.nav-item{transition:transform .2s var(--atlas-cinematic-ease),box-shadow .24s,background-color .24s,border-color .24s}
+.button:hover:not(:disabled),.icon-button:hover:not(:disabled){transform:translateY(-2px)}
+.button:active:not(:disabled),.icon-button:active:not(:disabled){transform:scale(.98)}
+.button--primary{background:linear-gradient(115deg,#183B36,#397D68);box-shadow:0 8px 21px rgba(24,59,54,.14)}
+.button--primary:hover:not(:disabled){box-shadow:0 13px 28px rgba(24,59,54,.22)}
+input,select,textarea{transition:border-color .2s,box-shadow .2s,background .2s}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px rgba(57,125,120,.11)}
+.main-content .panel,.main-content .hero-panel,.main-content .stat-card,.main-content .tool-card{position:relative;overflow:hidden}
+.main-content .panel:before,.main-content .hero-panel:before{content:"";position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.96),transparent);pointer-events:none}
+.app-shell .hero-panel{background:radial-gradient(circle at 100% 0%,rgba(234,175,77,.13),transparent 35%),linear-gradient(140deg,#FDFCF7,#E7F1E9);border-color:#D4E2D8}
+.app-shell .hero-panel:after{content:"";position:absolute;right:-70px;bottom:-105px;width:240px;height:240px;border:1px solid rgba(57,125,120,.15);border-radius:50%;box-shadow:0 0 0 22px rgba(57,125,120,.025),0 0 0 48px rgba(57,125,120,.025);pointer-events:none}
+.app-shell .stat-card{background:linear-gradient(145deg,#fff,#FAFBF7)}
+.app-shell .tool-card{background:#fff}
+.app-shell .status-pill,.app-shell .badge{letter-spacing:.02em}
+.app-shell .panel-head{position:relative}
+.app-shell .panel-body{position:relative}
+.workspace-atlas-accent{position:absolute;top:0;right:0;width:170px;height:170px;pointer-events:none;opacity:.45}
+.workspace-atlas-accent:before{content:"";position:absolute;inset:-40px -45px auto auto;width:150px;height:150px;border-radius:50%;border:1px solid #B8D3C4;box-shadow:0 0 0 16px rgba(131,169,135,.055),0 0 0 33px rgba(131,169,135,.035)}
+.workspace-atlas-accent:after{content:"";position:absolute;right:16px;top:22px;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#F5D690,rgba(245,214,144,0) 70%)}
+@keyframes atlas-workspace-enter{from{opacity:.75;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@media(hover:hover) and (pointer:fine){.panel:hover,.stat-card:hover,.tool-card:hover{transform:translateY(-3px)}}
+@media(max-width:760px){.app-shell:before{opacity:.45}.main-content{padding-top:18px}.panel,.hero-panel{border-radius:18px}.main-content .panel:hover,.main-content .hero-panel:hover,.main-content .stat-card:hover,.main-content .tool-card:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.page-view{animation:none}.panel,.hero-panel,.stat-card,.tool-card,.feature-tile,.button,.icon-button,.profile-button{transition:none!important}.panel:hover,.hero-panel:hover,.stat-card:hover,.tool-card:hover{transform:none!important}}
