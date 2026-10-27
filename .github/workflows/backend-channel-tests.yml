@@ -1,0 +1,37 @@
+name: Backend-first verification
+
+on:
+  push:
+    branches:
+      - "backend/multichannel-foundation-20261027"
+  pull_request:
+    branches:
+      - "integration/complete-model-bundle-20261018"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install base dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Check dependency consistency
+        run: python -m pip check
+      - name: Compile backend and tests
+        run: python -m compileall -q app.py backend.py run.py rythu_mitra_backend scripts tests
+      - name: Run complete test suite
+        run: python -m pytest -q
+      - name: Run health/readiness smoke check
+        run: python scripts/health_check.py
