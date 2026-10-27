@@ -36,7 +36,7 @@ def _reply(message: str, language: str) -> dict:
         answer = _MENU[lang]
         status = "DEMO"
         human = False
-    elif normalized in {"1", "weather", "వాతావరణం"}:
+    elif normalized in {"1", "weather", "వాతావరణం"} or normalized.startswith("weather "):
         # A city can be supplied as "weather Hyderabad"; never invent weather.
         city = " ".join(text.split()[1:]) if len(text.split()) > 1 else ""
         if city:
