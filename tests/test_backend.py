@@ -73,6 +73,21 @@ def test_net_income_calculation_is_user_entered_math(client):
     assert body["data_type"] == "USER_ENTERED_CALCULATION"
 
 
+def test_calculators_round_currency_half_up_to_paise(client):
+    token = client.get("/api/session").get_json()["csrf_token"]
+    response = client.post("/api/market-net-income", json={"quantity":1,"price":2.675}, headers={"X-CSRF-Token":token})
+    assert response.status_code == 200
+    assert response.get_json()["selling_value"] == 2.68
+
+    storage = client.post("/api/storage-calculation", json={
+        "quantity":1,"days":1,"cost_per_quintal_day":0.005,
+        "sell_now_price":2.675,"future_price":2.675
+    }, headers={"X-CSRF-Token":token})
+    assert storage.status_code == 200
+    assert storage.get_json()["storage_cost"] == 0.01
+    assert storage.get_json()["sell_now"] == 2.68
+
+
 def test_missing_weather_key_is_unavailable_not_fake_live_data(client):
     from rythu_mitra_backend.services import weather
     weather._CACHE.clear()
@@ -244,3 +259,4 @@ def test_official_mandi_malformed_rows_are_not_returned(app, client, monkeypatch
     assert response.status_code == 503
     assert response.get_json()["records"] == []
     assert response.get_json()["status"] == "UNAVAILABLE"
+
