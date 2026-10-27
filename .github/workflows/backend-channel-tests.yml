@@ -33,6 +33,10 @@ jobs:
         run: python -m compileall -q app.py backend.py run.py rythu_mitra_backend scripts tests
       - name: Run complete test suite
         run: python -m pytest -q
+      - name: Check frontend API contract markers
+        run: python scripts/check_frontend_contract.py
+      - name: Check main frontend JavaScript syntax
+        run: node --check static/js/rythu-mitra-app.js
       - name: Smoke-test trusted crop model inference
         run: python scripts/check_crop_model.py
       - name: Run health/readiness smoke check
