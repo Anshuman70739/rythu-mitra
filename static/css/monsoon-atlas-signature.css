@@ -20,7 +20,7 @@
 .atlas-route-curtain.is-active{
   clip-path:circle(155vmax at var(--atlas-origin-x,85vw) var(--atlas-origin-y,12vh));
 }
-.showcase-page.route-arrived #main{
+.landing-page.route-arrived #main{
   animation:atlas-arrive .72s var(--atlas-signature-curve) both;
 }
 @keyframes atlas-arrive{
@@ -28,28 +28,28 @@
   to{opacity:1;transform:translateY(0);filter:blur(0)}
 }
 /* A little more depth in the existing illustrated story; its content remains readable. */
-.showcase-page .hero__scene{
+.landing-page .hero__scene{
   transform-style:preserve-3d;
   will-change:transform;
   transition:transform .5s var(--atlas-signature-curve);
 }
-.showcase-page .scene-landscape{transform:translateZ(12px);transform-origin:50% 60%}
-.showcase-page .scene-sun{transform:translateZ(28px)}
-.showcase-page .scene-float{transform:translateZ(42px)}
-.showcase-page .chapter-stage-wrap{
+.landing-page .scene-landscape{transform:translateZ(12px);transform-origin:50% 60%}
+.landing-page .scene-sun{transform:translateZ(28px)}
+.landing-page .scene-float{transform:translateZ(42px)}
+.landing-page .chapter-stage-wrap{
   perspective:1300px;
 }
-.showcase-page .chapter-stage{
+.landing-page .chapter-stage{
   transform-style:preserve-3d;
   backface-visibility:hidden;
 }
-.showcase-page .chapter-card{
+.landing-page .chapter-card{
   transition:opacity .5s var(--atlas-signature-curve),transform .6s var(--atlas-signature-curve),border-color .35s ease,box-shadow .4s ease;
 }
-.showcase-page .chapter-card:hover{
+.landing-page .chapter-card:hover{
   transform:translate3d(5px,-2px,0);
 }
-.showcase-page .chapter-stage > *{
+.landing-page .chapter-stage > *{
   backface-visibility:hidden;
 }
 /* Workspace reveal hooks are added only after JS confirms motion is allowed. */
@@ -108,16 +108,16 @@
 .app-shell .button--primary:hover::after{left:130%}
 @keyframes atlas-art-arrive{from{opacity:.55;transform:translate3d(0,12px,0) rotateY(-3deg)}to{opacity:1;transform:translate3d(0,0,0) rotateY(0)}}
 @media (hover:none),(max-width:760px){
-  .showcase-page .hero__scene{will-change:auto;transition:none}
-  .showcase-page .chapter-card:hover{transform:none}
+  .landing-page .hero__scene{will-change:auto;transition:none}
+  .landing-page .chapter-card:hover{transform:none}
   .app-shell .atlas-motion-item{transform:translateY(10px) scale(.998)}
   .app-shell .atlas-stat-card:hover,.app-shell .atlas-action-card:hover,.app-shell .module-card:hover,.app-shell .feature-tile:hover,.app-shell .tool-card:hover{transform:none}
   .app-shell .button--primary::after{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   .atlas-route-curtain{display:none!important;transition:none!important}
-  .showcase-page.route-arrived #main,.app-shell .atlas-dashboard-hero__art{animation:none!important}
+  .landing-page.route-arrived #main,.app-shell .atlas-dashboard-hero__art{animation:none!important}
   .app-shell .atlas-motion-item{opacity:1!important;transform:none!important;clip-path:none!important;transition:none!important}
-  .showcase-page .hero__scene,.showcase-page .chapter-card,.app-shell .atlas-stat-card,.app-shell .atlas-action-card,.app-shell .panel,.app-shell .module-card,.app-shell .feature-tile,.app-shell .tool-card{transition:none!important;transform:none!important;will-change:auto!important}
+  .landing-page .hero__scene,.landing-page .chapter-card,.app-shell .atlas-stat-card,.app-shell .atlas-action-card,.app-shell .panel,.app-shell .module-card,.app-shell .feature-tile,.app-shell .tool-card{transition:none!important;transform:none!important;will-change:auto!important}
   .app-shell .button--primary::after{display:none}
 }
