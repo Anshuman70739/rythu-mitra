@@ -40,6 +40,15 @@ def _reply(message: str, language: str) -> dict:
         # A city can be supplied as "weather Hyderabad"; never invent weather.
         city = " ".join(text.split()[1:]) if len(text.split()) > 1 else ""
         if city:
+            # Do not let process-global weather cache data from another app/test
+            # configuration masquerade as configured live data.
+            if not current_app.config.get("OPENWEATHER_API_KEY") and not current_app.config.get("DEMO_MODE"):
+                return {
+                    "success": True, "channel": "demo-chat", "language": lang,
+                    "status": "UNAVAILABLE",
+                    "answer": "Live weather is not configured. No current weather is available.",
+                    "source": None, "updated_at": None, "requires_human": False, "demo": True,
+                }
             weather = get_weather(city)
             if weather.get("success"):
                 if weather.get("status") == "DEMO":
