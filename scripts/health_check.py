@@ -1,4 +1,4 @@
-""""Check Flask startup, SQLite readiness, folders, and configured integrations."""
+"""Check Flask startup, SQLite readiness, folders, and configured integrations."""
 from __future__ import annotations
 
 import json
