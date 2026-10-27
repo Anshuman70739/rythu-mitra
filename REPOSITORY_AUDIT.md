@@ -52,7 +52,7 @@ GitHub Actions run 40543551554 on commit 0d07a049f0b74ca85c22e820d772811b549c7e3
 - pytest: **34 passed in 8.12 seconds**;
 - health/readiness smoke script: failed because scripts/health_check.py called helpers using Flask current_app outside an application context.
 
-Fix committed on the same feature branch as 053bd4b2aba6faf81003b0ca5ae4a87e156f5527. A new CI run was queued at audit time; its final result is **PENDING** until GitHub Actions reports a conclusion.
+Fix committed on the same feature branch as 053bd4b2aba6faf81003b0ca5ae4a87e156f5527. After the fix, GitHub Actions run 40546560369 completed successfully: dependency check, compile check, **34 pytest tests**, and health/readiness smoke check all passed. A subsequent run 40546770944 also passed after adding the crop-model smoke check. The current verified crop-model smoke result is one prediction (`rice`) from the seven ordered input features; this is a load/inference check only, not an accuracy or field-validity claim.
 
 ## Changes in this increment
 
@@ -62,7 +62,8 @@ Fix committed on the same feature branch as 053bd4b2aba6faf81003b0ca5ae4a87e156f
 - tests/test_channels.py: tests language/menu behavior, no fabricated market prices, unverified disease-label warnings, input validation, CSRF, and missing weather configuration.
 - docs/MULTICHANNEL_BACKEND_CONTRACT.md: documents the demo route contract and limitations.
 - .github/workflows/backend-channel-tests.yml: backend verification workflow.
-- scripts/health_check.py: latest fix wraps model readiness helpers in a Flask app context.
+- scripts/health_check.py: fixed Flask application-context usage; verified health/readiness returned HTTP 200 in CI.
+- scripts/check_crop_model.py: added a smoke test for loading the trusted crop artifact and running one prediction; CI returned `rice` for the fixed seven-feature sample. This does not establish model accuracy.
 
 ## Prioritized next work
 
