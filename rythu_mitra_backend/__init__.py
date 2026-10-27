@@ -15,6 +15,7 @@ from .routes.disease import bp as disease_bp
 from .routes.legacy import bp as legacy_bp
 from .routes.admin import bp as admin_bp
 from .routes.misc import bp as misc_bp
+from .routes.channels import bp as channels_bp
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -49,6 +50,7 @@ def create_app(test_config: dict | None = None) -> Flask:
     app.register_blueprint(legacy_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(misc_bp)
+    app.register_blueprint(channels_bp)
 
     @app.before_request
     def ensure_session_tokens():
