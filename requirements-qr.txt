@@ -1,3 +1,0 @@
-# Optional QR/barcode decoding. Also install the OS zbar shared library.
--r requirements.txt
-pyzbar>=0.1.9,<0.2
