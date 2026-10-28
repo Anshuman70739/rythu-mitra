@@ -1,6 +1,7 @@
 """Core auth, dashboard, crop/weather, market, and calculator APIs."""
 from __future__ import annotations
 from datetime import datetime, timezone, date
+from decimal import Decimal, ROUND_HALF_UP
 import json
 import math
 import secrets
@@ -15,6 +16,11 @@ from ..services.markets import fetch_configured_provider
 bp = Blueprint("core", __name__)
 PROFILE_TEXT_FIELDS = {"name":120,"language":2,"district":80,"mandal":80,"village":80,"soil_type":100,"irrigation":100,"current_crop":100,"crop_stage":100,"previous_crop":100,"season":50}
 PROFILE_NUM_FIELDS = {"land_area":(0.01,100000),"budget":(0,100000000),"experience":(0,100)}
+
+
+def _currency(value: Decimal) -> float:
+    """Round INR amounts to paise using decimal arithmetic and half-up rounding."""
+    return float(value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
 
 
 def model_fertilizer_reference(n: float, p: float, k: float) -> list[str]:
@@ -239,9 +245,11 @@ def market_net_income():
         other = number_field(data,"other_costs",minimum=0,maximum=100_000_000) or 0
     except ValueError as exc:
         return api_error(str(exc))
-    selling = qty * price
-    net = selling - transport - charges - storage - other
-    return jsonify(success=True, status="CALCULATED", data_type="USER_ENTERED_CALCULATION", selling_value=round(selling,2), expected_selling_value=round(selling,2), estimated_net_income=round(net,2), costs={"transport":transport,"market_charges":charges,"storage":storage,"other":other}, disclaimer="Arithmetic estimate only. It uses the values you supplied and does not forecast price, yield, quality, payment or profit.")
+    quantity, unit_price = Decimal(str(qty)), Decimal(str(price))
+    cost_values = [Decimal(str(value)) for value in (transport, charges, storage, other)]
+    selling = quantity * unit_price
+    net = selling - sum(cost_values, Decimal("0"))
+    return jsonify(success=True, status="CALCULATED", data_type="USER_ENTERED_CALCULATION", selling_value=_currency(selling), expected_selling_value=_currency(selling), estimated_net_income=_currency(net), costs={"transport":_currency(cost_values[0]),"market_charges":_currency(cost_values[1]),"storage":_currency(cost_values[2]),"other":_currency(cost_values[3])}, disclaimer="Arithmetic estimate only. It uses the values you supplied and does not forecast price, yield, quality, payment or profit.")
 
 
 @bp.post("/api/storage-calculation")
@@ -259,10 +267,15 @@ def storage_calculation():
         charges=number_field(data,"charges",minimum=0,maximum=100_000_000) or 0
         spoilage=number_field(data,"spoilage_cost",minimum=0,maximum=100_000_000) or 0
     except ValueError as exc: return api_error(str(exc))
-    cost=qty*days*daily
-    sell_now=qty*now_price-transport-charges
-    store_then=qty*future-transport-charges-cost-spoilage
-    return jsonify(success=True, status="CALCULATED", data_type="USER_ENTERED_CALCULATION", storage_cost=round(cost,2), sell_now=round(sell_now,2), store_then_sell=round(store_then,2), difference=round(store_then-sell_now,2), disclaimer="Scenario arithmetic only. Future price is user-entered, not a prediction; spoilage, moisture loss, quality change, interest and delays may alter results.")
+    quantity, storage_days = Decimal(str(qty)), Decimal(str(days))
+    daily_cost = Decimal(str(daily))
+    transport_cost, market_charges, spoilage_cost = map(Decimal, map(str, (transport, charges, spoilage)))
+    current_value = quantity * Decimal(str(now_price))
+    future_value = quantity * Decimal(str(future))
+    cost = quantity * storage_days * daily_cost
+    sell_now = current_value - transport_cost - market_charges
+    store_then = future_value - transport_cost - market_charges - cost - spoilage_cost
+    return jsonify(success=True, status="CALCULATED", data_type="USER_ENTERED_CALCULATION", storage_cost=_currency(cost), sell_now=_currency(sell_now), store_then_sell=_currency(store_then), difference=_currency(store_then-sell_now), disclaimer="Scenario arithmetic only. Future price is user-entered, not a prediction; spoilage, moisture loss, quality change, interest and delays may alter results.")
 
 
 @bp.post("/api/finance/break-even")
@@ -556,3 +569,4 @@ def admin_summary():
     counts["experts"]=_count("users","role='expert'")
     counts["buyers"]=_count("users","role='buyer'")
     return jsonify(success=True,counts=counts,system_status={"database":"healthy","crop_model":"configured" if has_model_asset("crop_model.pkl") else "unavailable","disease_model":"configured" if has_disease_model_bundle() else "unavailable","weather":"configured" if current_app.config.get("OPENWEATHER_API_KEY") else "unavailable","market_adapter":"configured" if (current_app.config.get("DATA_GOV_IN_API_KEY") or current_app.config.get("MARKET_DATA_BASE_URL")) else "unavailable"})
+
